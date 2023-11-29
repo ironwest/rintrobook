@@ -1,0 +1,14 @@
+{
+  "hash": "de3f9d2228931c45383164e4825366dd",
+  "result": {
+    "markdown": "---\ntitle: 指定方法(L45)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n\n\nここからは、今から作成するtekitou2.txtをRに読み込む方法について解説していきます。\n\nまずは、あえて文字化けするファイルを作成していきましょう\n\nFile->New File->Text File\n\nで新しいファイルを作成して、そのなかになんでも良いので日本語を入力します。そして、\n\nFile->Save with Encoding\n\nで「CP932」を選択して保存してください。\n\nこのCP932というのは、Windowsでは標準的に使われている文字コードです。\n\nでは、このファイルを読み込みます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(readr)\nread_file(\"ichiji/tekitou2.txt\")\n```\n:::\n\n\n\nうまく読み込めましたか?\n\n私の画面と同様に、見事に文字化けしているはずです。\n\nこれは、Rでは、utf-8という文字コードが\n標準で使われるため、\n\n先ほど、CP932の文字コードで保存したファイルを\nUTF-8の文字コードで読み込んだため、\nめちゃくちゃな記号となってしまったという\nのが実態です。\n\nCP932の文字コードの問題は、マックであれば\nそもそもUTF-8が標準的な文字コードであるため\n問題にはなりませんが、Windowsだと\n頻繁に出会います\n\nこの問題を解決するには、read_file関数に\n読み込もうとするファイルがどの文字コードで\n保存されているかを指定してあげればよいです。\n\n文字コードを指定するためには、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlocale()\n```\n:::\n\n\n\nという関数で呼び出した結果の、Encodingの値を変更してあげることで、実は簡単に対応できます。今、locale()で呼び出したオブジェクトを変数に保存しましょう。\n\n(これからは、結果や変数、Rの中に存在するもののことをまとめてオブジェクトと呼びます)\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ninitial_locale <- locale()\ninitial_locale\n```\n:::\n\n\n\nこのinitial_localeを、read_file関数のlocale Argumentに渡してあげると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nread_file(\"ichiji/tekitou2.txt\", \n          locale = initial_locale)\n```\n:::\n\n\n\n先ほどと同様に文字化けした結果がでてきています。このtekitou2.txtはcp932の文字コードで保存されているため、read_fileのlocale Argumentに対して、きちんと、CP932で読み込むように指定してあげる必要があります。\n\nこの、文字コードの指定、実はすごく簡単で\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n?locale\n```\n:::\n\n\n\nの、encoding ArgumentをデフォルトのUTF-8からcp932に変更してあげるだけで\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlocale_with_cp932 <- locale(encoding = \"cp932\")\nlocale_with_cp932\n```\n:::\n\n\n\nこのオブジェクトを利用して、read_fileを呼び出してあげると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nread_file(\"ichiji/tekitou2.txt\", \n          locale = locale_with_cp932)\n```\n:::\n\n\n\nうまくいきました！\n\n今回は、説明のためにわざわざlocaleオブジェクトを含んだ変数を作成していますが、一般的には、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nread_file(\"ichiji/tekitou2.txt\", locale(encoding=\"cp932\"))\n```\n:::\n\n\n\nという風に、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n?read_file\n```\n:::\n\n\n\nのUsageのところの並び順で値を与えてあげれば読み込めますので、readrの関数で日本語の文字化けに出会ったときは、locale(encoding=\"cp932\")というコマンドを覚えておいてください。\n\n次の動画では、文字コードがわからない場合の対処方法について解説を行いますが、少しマニアックな話となりますので、飛ばしていただいて構いません。\n\n今後、動画のタイトルに(さらに知りたい人へ)と書いてあるものは飛ばしても問題ないようにコースを作成しておりますので時間のない方は、どんどん飛ばして進んでもらっても大丈夫です。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

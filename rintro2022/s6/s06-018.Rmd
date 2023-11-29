@@ -1,0 +1,30 @@
+---
+title: 差の計算
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides073.jpg){group="slides"}
+
+![](slides/slides074.jpg){group="slides"}
+
+![](slides/slides075.jpg){group="slides"}
+
+![](slides/slides076.jpg){group="slides"}
+
+![](slides/slides077.jpg){group="slides"}
+
+![](slides/slides078.jpg){group="slides"}
+
+![](slides/slides079.jpg){group="slides"}
+
+![](slides/slides080.jpg){group="slides"}
+
+![](slides/slides081.jpg){group="slides"}
+:::

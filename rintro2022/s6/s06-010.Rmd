@@ -1,0 +1,198 @@
+---
+title: 全体集計の実践(tidyverse)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+id <- 1:15
+age <- c(30,40,65,34,86,43,64,26,87,45,76,24,97,45,34)
+gender <- c("m","m","f","f","f","m","m","f","f","m","f","f","m","m","m")
+isx <- c(F,T,F,F,T,T,T,F,T,F,T,F,F,F,T)
+
+dat <- tibble(id     = id, 
+              age    = age, 
+              gender = gender, 
+              isx    = isx   )
+```
+
+それでは、
+
+|年齢:平均(最小-最大)| XX.XX(XX-XX)|
+|性別:男性 人数(%)   | XX(XX.X%)   |
+
+という形の結果を求めてみましょう。
+まずは集計です
+
+```{r}
+dat %>% 
+  summarise(
+    age_mean = mean(age),
+    age_min  = min(age),
+    age_max  = max(age),
+    gender_male_n = sum(gender=="m"),
+    gender_male_p = 100*(gender_male_n/n())
+  )
+```
+
+できましたね?
+次に結果となる列を作成してみましょう。
+
+```{r}
+dat %>% 
+  summarise(
+    age_mean = mean(age),
+    age_min  = min(age),
+    age_max  = max(age),
+    gender_male_n = sum(gender=="m"),
+    gender_male_p = 100*(gender_male_n/n())
+  ) %>% 
+  mutate(
+    `年齢:平均(最小-最大)` = str_c(age_mean,"(",age_min,"-",age_max,")"),
+    `性別:男性 人数(%)`    = str_c(gender_male_n,"(", gender_male_p,"%)")
+  ) %>% 
+  select(matches("^年齢|^性別"))
+```
+ここでmatchesは正規表現で列名を指定することが、
+可能です
+ここまでの結果なにかがへんです。
+
+ここで、結果を文字列に変更して、str_c関数で文字列同士
+の結合をしているのですが、
+```{r}
+x <- mean(dat$age)
+y <- min(dat$age)
+z <- max(dat$age)
+
+x
+y
+z
+
+str_c(x,"(",y,"-",z,")")
+```
+
+このように、年齢の平均値の桁数がものすごく長い形で文字列に変更されてしまっています。
+
+これは、
+
+```{r}
+as.character(x)
+```
+
+で変換しても同じ様な問題が生じるので、「うまい形に変換」してあげる必要があります。
+
+この場合、利用するのはformat関数が有名です。
+
+```{r}
+format(1.234567,digits = 1)
+format(1.234567,digits = 2)
+format(1.234567,digits = 3)
+format(1.234567,digits = 4)
+format(1.234567,digits = 5)
+```
+
+このようなかたちで、digitsで桁数を指定してあげると頭からの桁数を指定して、四捨五入をしたうえで文字に変換してくれます。ただしこれだと、小数点2桁に固定して表示したいような場合は、
+
+```{r}
+format(2.345, digits=3)
+format(234.567, digits=3)
+```
+
+整数部分の桁数に影響を受けるため、うまくいきません。
+
+かならず小数点2桁で表示したいというケースでは、小数点を指定して四捨五入してくれる、round関数を併用するとうまくいきます。
+
+```{r}
+round(  2.3454656456454456,2) 
+round(234.5676456456456456,2) 
+
+format(round(  2.3454656456454456,2) )
+format(round(234.5676456456456456,2) )
+```
+このように、round関数と組み合わせてあげると、うまくいきます。
+
+ただし、
+
+```{r}
+format(round(2  ,2))
+format(round(2.1,2))
+```
+
+このように、「整数」の場合や小数の長さが目的の長さに足りない場合は小数点2桁を印字してくれないので、format の　nsmall引数を利用します。
+
+```{r}
+format(1.0123, nsmall=2)
+format(round(2  ,2), nsmall = 2)
+format(round(2.1,2), nsmall = 2)
+```
+
+これは「表示されないといけない」小数の桁数を指定してあげると、0で埋めてくれます。
+
+というわけで
+
+```{r}
+str_c(x,"(",y,"-",z,")")
+```
+
+は、
+
+```{r}
+x2 <- format(round(x,2),nsmall=2)
+y2 <- format(round(y,2),nsmall=2)
+z2 <- format(round(z,2),nsmall=2)
+
+str_c(x2,"(",y2,"-",z2,")")
+```
+
+という形で表示できました。
+
+では、今の知識を利用して、
+
+```{r}
+dat %>% 
+  summarise(
+    age_mean      = mean(age),
+    age_min       = min(age),
+    age_max       = max(age),
+    gender_male_n = sum(gender=="m"),
+    gender_male_p = 100*(gender_male_n/n())
+  ) %>% 
+  mutate(
+    `年齢:平均(最小-最大)` = str_c(age_mean,"(",age_min,"-",age_max,")"),
+    `性別:男性 人数(%)`    = str_c(gender_male_n,"(", gender_male_p,"%)")
+  ) %>% 
+  select(matches("^年齢|^性別"))
+```
+
+の表示を良い感じにするのであれば、mutate部分で利用する変数の数字にformatと、roundを入れてあげればよいです。5個の変数全てに適応してあげましょう。
+
+```{r}
+dat %>% 
+  summarise(
+    age_mean      = mean(age),
+    age_min       = min(age),
+    age_max       = max(age),
+    gender_male_n = sum(gender=="m"),
+    gender_male_p = 100*(gender_male_n/n())
+  ) %>% 
+  mutate(
+    age_mean      = format(round(age_mean,2),nsmall=2),
+    age_min       = format(round(age_min ,2),nsmall=2),
+    age_max       = format(round(age_max ,2),nsmall=2),
+    gender_male_p = format(round(gender_male_p,2),nsmall=2),
+    gender_male_n = format(round(gender_male_n,2),nsmall=2)
+  ) %>% 
+  mutate(
+    `年齢:平均(最小-最大)` = str_c(age_mean,"(",age_min,"-",age_max,")"),
+    `性別:男性 人数(%)`    = str_c(gender_male_n,"(", gender_male_p,"%)")
+  ) %>% 
+  select(matches("^年齢|^性別"))
+```
+
+はい。うまく表示できましたね?
+
+ただ、1回目のmutate部分で、format...の部分変数名を入れ替えて繰り返しているだけになっており、面倒ではありませんでしたか?次の動画で、このように「同じ操作を複数列に行う」ケースのもっと短い書き方をお伝えいたします。
+

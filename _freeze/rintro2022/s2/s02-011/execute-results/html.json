@@ -1,0 +1,14 @@
+{
+  "hash": "ced92f0c1b37daae980ed22ccbec9104",
+  "result": {
+    "markdown": "---\ntitle: 変数(実践)(L16)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n\nRで変数を実践してみましょう変数は、単なる文字列でつくることができます。\n\nhakoという変数を作って、そこに数字型の5を保存するには、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako <- 5\n```\n:::\n\n\n\nという、<-　という記号を用います。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5\n```\n:::\n:::\n\n\n\nを実行すると、コンソールペーンに中身を表示することができます。\n\nまた、Environmentペーンにもhakoという名前で数字の5が表示されていますね？\n\nhakoは、いつでも中身をいれかえることができます\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako <- 489\nhako\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 489\n```\n:::\n:::\n\n\n\nこんな風に5は消えて、新しい数字489が入りました。\n\n以上が基本です。あとは色々と実験してみましょう！\n\n### 実験1: hakoでなくて、\"hako\"なら？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n\"hako\" <- 987\nhako\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 987\n```\n:::\n:::\n\n\n\n入ってしまいます。打つのが面倒ですけどね。\n\n### 実験2: 文字列型も入れられる？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako <- \"私の好きな文字\"\n```\n:::\n\n\n\n入りました！変数には基本的になんでも保存できます。\n\n### 実験3: 変数の名前に使える文字は？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n# -hako <- 5\n# _hako <- 10\n# +hako <- 10\n# @hako <- 15\n# 1hako <- 12\n```\n:::\n\n\n\n記号や、数字で始まる変数名はだめです。ただし、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n.hako <- 10\n.hako\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 10\n```\n:::\n:::\n\n\n\n`.`ではじまる変数は大丈夫です\n\nあとは、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako1 <- 20\n```\n:::\n\n\n\n数字は先頭に来なければ使えますし、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako_1 <- 25\n```\n:::\n\n\n\nアンダースコア(_)も先頭に来なければ使えます。\n\nということで、まとめると\n\n.1 記号は基本的には使えません。\n.2 ただし、「.」は大丈夫\n.3 数字とアンダースコアは先頭に置かなければ大丈夫\n\nということになります。\n\nここで作成したもの、消しておきましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrm(.hako)\n```\n:::\n\n\n\n`rm`はremoveの略で、作成した変数を消す命令です。\n\n二つ以上を消すことも可能で、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrm(hako1, hako_1)\n```\n:::\n\n\n\nこんな感じで消すことができます。\n\n最後に、おまけですが、\n\n### 実験4:日本語の文字列は使える？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nにほんごのはこ <- 123\n```\n:::\n\n\n\n日本語の変数名ができました！\n\nただし、これはよくわからないエラーが発生する可能性があるので非推奨です。\n\n消しておきましょう\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrm(にほんごのはこ)\n```\n:::\n\n\n\n消えません・・・\n先ほどは消えていたのに、日本語を変数にすると、このように、想定以外の動作をすることが良くあります。\n\nとりあえず、全部消す命令を出して対処しておきましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nrm(list=ls())\n```\n:::\n\n\n\n消えました！\nいきなり命令が複雑になったように見えますが、次の動画では\n\nこの部分の解説を行います。\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

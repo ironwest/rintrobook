@@ -1,0 +1,20 @@
+{
+  "hash": "cf6174fe19eab73cf5fe82e5fcc9eff5",
+  "result": {
+    "markdown": "---\ntitle: 状況設定\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5d/slides013.jpg){group=\"slides\"}\n\n![](slides/s5d/slides014.jpg){group=\"slides\"}\n\n![](slides/s5d/slides015.jpg){group=\"slides\"}\n\n![](slides/s5d/slides016.jpg){group=\"slides\"}\n\n![](slides/s5d/slides017.jpg){group=\"slides\"}\n\n![](slides/s5d/slides018.jpg){group=\"slides\"}\n\n![](slides/s5d/slides019.jpg){group=\"slides\"}\n\n![](slides/s5d/slides020.jpg){group=\"slides\"}\n:::\n",
+    "supporting": [
+      "s06-003_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

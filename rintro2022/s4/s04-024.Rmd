@@ -1,0 +1,104 @@
+---
+title: X軸のテキストが重なる場合の解消法
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+グラフを作成していてよくある困りごとがx軸にカテゴリカル変数を入れた場合にその文字列が長すぎてしまう場合です。
+
+ちょっと極端ですが、
+
+```{r}
+table <- tibble(
+  item_name　= c("究極のマスクメロンアイスクリーム",
+                "イチゴたっぷりショートケーキイタリア風",
+                "和栗の贅沢ブラックモンブラン",
+                "朝どれ卵のなめらかプリン",
+                "マンゴーと南国フルーツのタルト",
+                "フルーツをたっぷりつかったロールケーキ"),
+  uriage_kosu = c(39,42,73,88,93,132)
+)
+
+gg <- ggplot(table) + 
+  geom_col(aes(item_name, uriage_kosu), stat="identity")
+
+gg
+```
+
+このようにX軸が重なってしまったというときの回避策をここで解説しておきます。なお、ここでは、x軸の表示の話であるためscale_x_discreteで設定をいじっていきます。
+
+* scale_color_discreteでlegendの設定をいじったのと同じようなイメージです。
+
+その1:x軸の表示を回転させる
+
+```{r}
+gg +
+  scale_x_discrete(guide = guide_axis(angle=45))
+```
+
+できました！
+
+ここでは、scale_x_discreteのguideアーギュメントに、guide_axis関数の結果をわたしてあげることでグラフの表示を操作しています
+
+```{r}
+guide_axis(angle=45)
+```
+
+また、実はggplot2が難しいといわれる理由の一つに、同じ結果を複数の書き方で実現できてしまうところがあります。
+
+scale_x_discreteでなくて、
+
+```{r}
+gg +
+　theme(axis.text.x = element_text(angle=45,hjust=1))
+```
+
+themeでaxis.text.xの設定をいじっても同じ効果になります。
+
+ただし、theme_classicなどを設定すると上書きされるので、
+
+```{r}
+gg +
+  theme(axis.text.x = element_text(angle=45, hjust = 1)) +
+  theme_classic()
+```
+
+注意が必要です。
+
+hjustやtheme_xxの上書き等気にしないといけないことが多いので、scale_x_discreteのguideをいじるほうが良いと思います。
+
+その2:x軸の表示をずらす
+
+こちらの方法もguideで設定できます。
+
+```{r}
+gg +
+  scale_x_discrete(guide = guide_axis(n.dodge = 3))
+
+gg + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 4))
+```
+
+こんな感じで、guide_axisのn.dodgeアーギュメントに数字を与えてあげることで、テキストをずらして表示することが可能です。
+
+このグラフの問題としてはグラフ自体は拡大すると文字が全部入りますが、小さいグラフで文字がはみ出てしまっています。何とかす
+るために、余白を増やしてあげましょうグラフ全体の余白はthemeでplot.marginに
+
+```{r}
+margin(1,2,3,4,"pt")
+```
+
+関数の結果を与えてあげることで実現できます
+
+```{r}
+gg + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 6)) +
+  theme(plot.margin = margin(10,40,10,20,"pt"))
+```
+
+いかがでしょうか?

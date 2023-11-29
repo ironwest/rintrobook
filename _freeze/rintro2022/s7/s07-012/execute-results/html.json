@@ -1,0 +1,14 @@
+{
+  "hash": "f13a780011b5427c0a709d568b60fd93",
+  "result": {
+    "markdown": "---\ntitle: Openxlsx:Excelへの出力\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(openxlsx)\n```\n:::\n\n\n\nここからは、エクセルへの出力について解説していきます。\n\nここで利用するのはopenxlsxというパッケージです。\n\n早速、installしてみましょう\n```\ninstall.packages(\"openxlsx\")\n```\n\nこの、openxlsx、これまでの関数でデータを加工していくやり方と少し使い方が違って戸惑うかもしれませんが、それほどむずかしくありません\n\nここでは、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat <- tibble(\n  col1 = letters[1:5],\n  col2 = 1:5 \n)\n\ndat\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 5 × 2\n  col1   col2\n  <chr> <int>\n1 a         1\n2 b         2\n3 c         3\n4 d         4\n5 e         5\n```\n:::\n:::\n\n\n というデータを書き込んでみましょう。\n\nまず、エクセルブック（ファイル)を作ります\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nwb <- openxlsx::createWorkbook()\n```\n:::\n\n\n\nこの時点では、Rの中にだけしか存在していないオブジェクトであることに注意が必要です。\n\nそれで、ここから少しopenxlsxがこれまでと違うのはいちいち wb <- kansu(wb, ...)という様に入力しないでもよいというところです。\n\n\nnewというシートを足してあげて\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nopenxlsx::addWorksheet(wb,\"new\")\n```\n:::\n\n\n\nそのシートにデータ、datを書き込んで\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nopenxlsx::writeData(wb,\"new\",dat)\n```\n:::\n\n\n\nファイルをout1.xlsxという名前で保存する\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nopenxlsx::saveWorkbook(wb,\"out1.xlsx\",overwrite = TRUE)\n```\n:::\n\n\n\nという処理が、こんな感じで実行できます。\n\nフィルを開いてみましょう!\n\nいかがでしょうか?\n\n無事に書き込めていますね?\n\nこのopenxlsxパッケージ、セルの色を変えたり、セルを結合したり、罫線を引いたりというものを全てRの関数で実行することができます。\n\nここらへん、エクセルVBA（マクロ)を触ったことがある人にとってはなじみ深い操作かもしれませんね?\n\n本コースではOpenxlsxの詳しい使い方には踏み込みませんが、一応、wordやpowerpointでやったように、すでにあるファイルにデータを書き込む形で、あらかじめデザインしたものにデータを書き込む処理をご紹介いたします。\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

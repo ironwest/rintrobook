@@ -1,0 +1,36 @@
+---
+title: 相対パスの指定方法(L40)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides034.jpg)
+
+![](slides/slides035.jpg)
+
+![](slides/slides036.jpg)
+
+![](slides/slides037.jpg)
+
+![](slides/slides038.jpg)
+
+![](slides/slides039.jpg)
+
+![](slides/slides040.jpg)
+
+![](slides/slides041.jpg)
+
+![](slides/slides042.jpg)
+
+![](slides/slides043.jpg)
+
+![](slides/slides044.jpg)
+
+![](slides/slides045.jpg)
+:::

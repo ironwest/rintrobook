@@ -1,0 +1,37 @@
+---
+title: mutate()の説明
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5b/slides013.jpg){group="slides"}
+
+![](slides/s5b/slides014.jpg){group="slides"}
+
+![](slides/s5b/slides015.jpg){group="slides"}
+
+![](slides/s5b/slides016.jpg){group="slides"}
+
+![](slides/s5b/slides017.jpg){group="slides"}
+
+![](slides/s5b/slides018.jpg){group="slides"}
+
+![](slides/s5b/slides019.jpg){group="slides"}
+
+![](slides/s5b/slides020.jpg){group="slides"}
+
+![](slides/s5b/slides021.jpg){group="slides"}
+
+![](slides/s5b/slides022.jpg){group="slides"}
+
+![](slides/s5b/slides023.jpg){group="slides"}
+
+![](slides/s5b/slides024.jpg){group="slides"}
+:::
+

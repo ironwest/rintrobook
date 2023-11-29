@@ -1,0 +1,20 @@
+{
+  "hash": "786973a96fd82a4c23a30487da9c68fe",
+  "result": {
+    "markdown": "---\ntitle: 型を理解しよう(実践)(L13)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n\nそれでは、型が実際にどういう風に動くのか見ていきましょう。\n\nスライドでは、`いち+に`とひらがなで書いていましたが、\n\n実は、`\"1\"+\"2\"`と`1+2`もRにとって全く違う命令になります\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 + 2\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 3\n```\n:::\n:::\n\n\n\nは、このように3としっかり計算してくれました。\nしかし、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n\"1\"+\"2\"\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in \"1\" + \"2\": non-numeric argument to binary operator\n```\n:::\n:::\n\n\n\nはエラーが出てしまいます。\n\nR にとって、　1　と　\"1\"　は別物です。\n\n\n \"\"で囲まれた文字をRは、文字列型と認識します。\n\n文字列は、数値ではないため、Rは計算できなくてエラーを返すという仕組みです。\n\n\n|型の名前|例1       |例2    |      \n|:--------|:---------:|:---:|\n|数値型   | 1.123   | 2/3   |\n|整数型   | 4L      | 3L    |\n|文字列型 | \"1.123\" | \"ABCD\"|\n\nstr()という命令で囲ってあげると、それがどんな型なのかを\n表示してくれます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nstr(1.123)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n num 1.12\n```\n:::\n\n```{.r .cell-code}\nstr(4L)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n int 4\n```\n:::\n\n```{.r .cell-code}\nstr(\"ABCD\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n chr \"ABCD\"\n```\n:::\n:::\n\n\n\n特に、1.123の数字型と4Lという形でLがついた整数型の書き方は少し\n慣れておいていただくとよいでしょう。",
+    "supporting": [
+      "s02-008_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

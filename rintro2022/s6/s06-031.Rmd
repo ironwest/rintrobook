@@ -1,0 +1,61 @@
+---
+title: :時間の集計3
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides117.jpg){group="slides"}
+
+![](slides/slides118.jpg){group="slides"}
+
+![](slides/slides119.jpg){group="slides"}
+
+![](slides/slides120.jpg){group="slides"}
+
+![](slides/slides121.jpg){group="slides"}
+
+![](slides/slides122.jpg){group="slides"}
+
+![](slides/slides123.jpg){group="slides"}
+
+![](slides/slides124.jpg){group="slides"}
+
+![](slides/slides125.jpg){group="slides"}
+:::
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+{
+  dat <- read_csv("data/time.csv")
+  
+  dat <- dat |> 
+    slice(1:5) |> 
+    select(start,end)
+  
+  dat %>%
+    arrange(start) %>% 
+    mutate(interv = interval(start, end)) %>% 
+    mutate(
+      prev_overlap = int_overlaps(interv, lag(interv)),
+      prev_nextday = int_overlaps(interv, int_shift(lag(interv),days(1))),
+    ) %>%
+    mutate(prev_oa = prev_overlap | prev_nextday) %>% 
+    replace_na(list(prev_oa = FALSE)) %>% 
+    mutate(presc_id = cumsum(!prev_oa)) %>%
+    group_by(presc_id) %>% 
+    summarise(start = min(start), end = max(end))
+
+  
+}
+```

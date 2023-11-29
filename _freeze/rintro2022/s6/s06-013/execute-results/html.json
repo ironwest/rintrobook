@@ -1,0 +1,14 @@
+{
+  "hash": "c2de9e37104c527f00b64e7eaaa020a2",
+  "result": {
+    "markdown": "---\ntitle: イメージで理解する\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/slides044.jpg){group=\"slides\"}\n\n![](slides/slides045.jpg){group=\"slides\"}\n\n![](slides/slides046.jpg){group=\"slides\"}\n\n![](slides/slides047.jpg){group=\"slides\"}\n\n![](slides/slides048.jpg){group=\"slides\"}\n\n![](slides/slides049.jpg){group=\"slides\"}\n\n![](slides/slides050.jpg){group=\"slides\"}\n\n![](slides/slides051.jpg){group=\"slides\"}\n\n![](slides/slides052.jpg){group=\"slides\"}\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

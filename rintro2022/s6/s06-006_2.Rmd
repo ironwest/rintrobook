@@ -1,0 +1,70 @@
+---
+title: シンプルな書き方での演算(dplyr::summarise)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+dat <- tibble(
+  num = 1:10,
+  fac2 = rep(c("a","b"), 5),
+  fac3 = rep(c("A","B","C"), 4)[1:10]
+)
+```
+
+方法2: DplyrのSummarise関数
+
+実はDplyrには、attachと似たように利用できる`summarise`関数というものがあります。
+
+単純集計やグループ集計を行う場合に必須の関数になるため、単独での動きをしっかりと理解しておきましょう。
+
+```{r}
+dat %>% 
+  summarise(
+    kosu  = length(num),
+    mean1 = sum(num)/length(num),
+    mean2 = mean(num)
+  )
+```
+
+だいぶattachと挙動が違いますがじっくりとみてみましょう
+
+datというデータを%>%でsummariseに与えてあげると、summariseの中では列名を書くだけでそのベクトルを利用することができます
+
+summarieの中で、<新しい列名>=<ベクトル演算>とすることで、その列名にベクトルの演算結果がでてきます。
+
+```{r}
+length(dat$num)
+sum(dat$num)/length(dat$num)
+mean(dat$num)
+```
+
+これらの結果と、
+
+```{r}
+dat %>% 
+  summarise(
+    kosu  = length(num),
+    mean1 = sum(num)/length(num),
+    mean2 = mean(num)
+  )
+```
+
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+この動作、同じ結果ですね?
+
+このスクリプトの動作、腹落ちしましたか？
+
+この書き方の利点は、numという名前の変数がグローバル環境にあったとしても、問題なく意図した動作をしてくれるというところにあります。
+
+Environmentペーンを確認いただきたいのですが、ここまでのsummarise関数の実行時に、numという変数が存在している状態でした。しかし、それには影響を受けずに、与えられたデータ/tibbleの列名がついたベクトルを取り出すことができています。この特徴があるため、attachを使うよりも思わぬエラーが回避できると思います。
+
+また、summarise関数の中でだけ動作する特別な関数もあるので次の動画ではその説明を行います。
+

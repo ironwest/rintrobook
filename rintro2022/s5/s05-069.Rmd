@@ -1,0 +1,159 @@
+---
+title: 実践 left_join
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは、left_join、実践していきましょう。
+
+まずスライドで利用していたデータを作っておきます。
+
+```{r}
+library(tidyverse)
+
+dat <- tribble(
+  ~date　　 , ~patient_id, ~kensa_id, ~value,
+  "2020/4/1", 1          , "a342"   , 6.8   ,
+  "2020/4/1", 2          , "a342"   , 5.6   ,
+  "2020/4/2", 1          , "a341"   , 52    ,
+  "2020/4/2", 3          , "a340"   , 32
+)
+```
+
+ここで利用しているtribble関数、チルダ列名とかいて、その後、データを入力することで「表の形」そのままでtibbleが作れるので、こういう風に、データの位置を考えながら表を作成しないといけないときに結構便利です。
+
+```{r}
+kensa <- tribble(
+  ~kensa_id, ~kensa_name, ~unit,
+  "a340"   , "AST"      , "IU"       ,
+  "a341"   , "ALT"      , "IU"       ,
+  "a342"   , "HbA1c"    , "%"         
+)
+
+dat
+kensa
+```
+
+まず、これらのデータを結合していきましょう。
+
+```{r}
+left_join(dat, kensa, by = "kensa_id")
+```
+
+できました!
+
+パイプ関数を利用するのであれば、
+
+```{r}
+dat %>% 
+  left_join(kensa, by = "kensa_id")
+```
+
+でもOKです。パイプは一つ目のアーギュメントとして扱われるので、左側の表　 %>% 　left_join(右側の表...)となっている必要があることに注意が必要です。
+
+```{r}
+kensa2 <- kensa %>% rename(id = kensa_id)
+
+kensa2
+```
+
+ここで、
+
+```{r}
+colnames(dat)
+colnames(kensa2)
+```
+
+左と、右の表の結合したい列の名前が違う場合も処理しておきましょう。
+
+```{r}
+dat %>% 
+  left_join(kensa2, by="kensa_id")
+```
+
+だと、右側にkensa_idという名前の列がないのでエラーになります。
+
+```{r}
+dat %>% 
+  left_join(kensa2, by=c("kensa_id"="id"))
+```
+
+このようにベクトルで与えてあげるとうまくくっつきました。
+
+このベクトルで与えてあげる方法は、
+
+```{r}
+test1 <- tribble(
+  ~idA, ~idB, ~value1,
+  1   , 1   , 10     ,
+  1   , 2   , 11     ,
+  2   , 1   , 12     ,
+  2   , 2   , 13     ,
+  1   , 2   , 14     ,
+  2   , 2   , 15    
+  
+)
+
+test2 <- tribble(
+  ~category, ~id, ~value2,
+  1        , 1  , "dog" ,
+  1        , 2  , "cat" ,
+  2        , 1  , "pig" ,
+  2        , 2  , "cow"
+)
+
+test2
+```
+
+二つ以上の列を基準として結合する場合にも使えて、
+
+```{r}
+test1 %>% 
+  left_join(test2, by=c("idA"="category", "idB"="id"))
+```
+
+こんな風にくっつきます。
+
+また、ここで、
+
+```{r}
+samename1 <- test1 %>% rename(value = value1)
+samename2 <- test2 %>% rename(value = value2)
+
+colnames(samename1)
+colnames(samename2)
+```
+
+で、同じ名前の列が結合した後に出現する場合もみておきましょう。
+
+byの中身はここではあまり関係ないので、変数に収納しておきます。
+
+```{r}
+join_this <- c("idA"="category", "idB"="id")
+
+samename1 %>% 
+  left_join(samename2, by=join_this)
+```
+
+どうでしょうか?
+
+左と右の表にそれぞれ、結合に用いない列名が同じ、valueというものがあるため、left_joinすると、自動的に、value.x value.yと名前が変わっています。この動作、コントロールすることも可能で、
+
+```{r}
+samename1 %>% 
+  left_join(samename2, 
+            by=join_this, 
+            suffix=c("__left","__right"))
+```
+
+と、このようにsuffixアーギュメントに左、右の順番で、列名の後ろにくっつけたい文字列を指定してあげることができます。
+

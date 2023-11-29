@@ -1,0 +1,88 @@
+---
+title: data.frame関数
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+それでは、スライドでお伝えしたことを実際にRで動かして見ていきましょう。
+
+```{r}
+library(tidyverse)
+```
+
+まずは文字列型のベクトルを作成しましょう。
+
+```{r}
+alcohol = c("週1日以内","週4-6日","週4-6日","毎日","のまない","週1-3日","毎日")
+
+str(alcohol)
+```
+
+このベクトルに含まれているものは文字列ですね？
+文字列を利用して表を作成した場合に、実はdata.frameとtibbleでは結果が違ってきます。
+
+やってみましょう、
+
+```{r}
+dat_df <- data.frame(alcohol=alcohol)
+dat_ti <- tibble(alcohol=alcohol)
+
+str(dat_df)
+str(dat_ti)
+```
+
+str関数で、作成したそれぞれの表の型をみてみると、data.frameの方はalcohol列がFactorと表示されている一方、tibbleの方はchrと表示されています。
+
+実は、data.frameで作成した表は、文字列が勝手に因子に置き換わってしまっています
+
+すこしヘルプファイルを見てみましょう
+
+```{r}
+?data.frame
+```
+
+
+(*注：以下の`default.stringAsFactors()`は新しいRのVersionでは廃止されているため、うまく動きません)
+Usageの中の、stringsAsFactorsという設定がdefault.stringsAsFactors()となっており
+
+```{r}
+#default.stringsAsFactors()
+```
+
+TRUEになっています。
+
+strings(文字列)As(を)Factors(因子に)というオプションがTRUEになっているため、data.frame関数は勝手に文字列を因子型に変換してしまいます。
+
+この挙動、知らないと困るのは、例えば、間違って数値型に列を変換してしまったときに、
+
+```{r}
+str(alcohol)
+
+as.numeric(alcohol)
+```
+
+文字列型であれば数値型に変換できずエラーがでてしまうのですが、先のスライドでも解説したように、因子型は実態が数字とその対応表という形で保たれているイメージなので、
+
+```{r}
+as.numeric(dat_df$alcohol)
+```
+
+数字型に変換できてしまいます！
+
+この挙動、便利な反面、こまることが多いので、data.frame型を利用する場合は、
+
+```{r}
+dat_df2 <- data.frame(
+  alcohol=alcohol, 
+  stringsAsFactors = FALSE
+)
+
+str(dat_df2)
+```
+
+このように、stringAsFactorsのアーギュメントをFALSEとして作成する癖づけておくとよいと思います。
+
+tibble形式はこのようにかってに型を置き換えて表を作成したりはしないので、この設定を気にする必要はありません。このレクチャー以降は、原則tibbleで表を作成していきます。
+
+それでは、次の動画では因子型を作成する方法について解説していきます。

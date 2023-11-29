@@ -1,0 +1,146 @@
+---
+title: duration(sld100)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+ひとつ前の動画では、時刻と時刻の差、difftimeが、長さによって分や時間や日という単位に変わってしまい、計算結果の単位が合わなくて困るという話をしました。
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+t1 <- as_datetime(0)
+t2 <- as_datetime(59)
+t3 <- as_datetime(61)
+
+m2 <- t2-t1
+m3 <- t3-t1
+
+m2
+m3
+
+as.numeric(m2)
+as.numeric(m3)
+```
+
+このdifftimeの困りごとを解消するためにはlubridateのDuration クラスを利用しましょう。
+
+```{r}
+dur2 <- as.duration(m2)
+dur3 <- as.duration(m3)
+
+dur2
+dur3
+
+as.numeric(dur2)
+as.numeric(dur3)
+```
+
+いかがでしょうか?durationの表示は秒と分両方で記載されています。そしてas.numericで数字に変換した場合にdifftimeは単位がばらついた結果になっていましたが、durationは数字になってかつ、単位も秒で統一されていますね
+
+日付型もみてみましょう
+
+```{r}
+dy1 <- as_date(0)
+dy2 <- as_date(100)
+dy3 <- as_date(1000)
+
+dur2 <- dy2 -dy1
+dur3 <- dy3 -dy1
+
+as.duration(dur2)
+as.duration(dur3)
+```
+
+はい。この通り、やはり秒で表示されており、()の中に、週であったり年であったりが表示されています
+
+durationを利用することで秒で統一的に時刻や日付の差を計算することができます。
+
+このduration、lubridateに用意されている関数で「経過時間」を作成することができます。
+
+ちょっとやってみましょう。
+
+例えば、
+
+2020年12月30日の朝9時の24時間後の時刻を計算してみます。「24時間」をduration型で作成するには
+
+```{r}
+hr24 <- lubridate::dhours(24)
+hr24
+```
+
+このようにdhoursを利用します。
+
+lubridate::dと検索すると、dmonth dyear dminutes 等のdurationを作成するための関数がありますので必要に応じて利用してください。それで、このhr24を、
+
+```{r}
+t1 <- as_datetime("2019-3-1 09:00:00")
+```
+
+t1に足してあげましょう。
+
+```{r}
+t1 + hr24
+```
+
+24時間後の時刻になっていますね?
+
+このように、好きな時間をdurationで作成して時刻に対して足すことで「時間をすすめること」ができます。
+
+日付型でもやってみましょう。
+
+```{r}
+dy1 <- as_date("2020-2-20")
+
+dy1 + ddays(5) #無事、5日後の日付になっていますね?
+```
+
+これ1か月後とかもできるんですが・・・
+
+```{r}
+dy1 + dmonths(1)
+```
+
+??? なぜか日付ではなく時刻になっています。
+
+実は、
+
+```{r}
+dmonths(1)
+```
+
+は、4.35週間ときっちり「カレンダー上の1か月」ではありません
+
+```{r}
+dyears(1)/12
+```
+
+1年の長さを単純に12分の1にしただけなので、カレンダー上の1か月後という意味では間違いとなってしまいます。
+
+ちなみに、計算してみると
+
+```{r}
+as.numeric(months(1)) #秒
+as.numeric(months(1))/60 #分
+as.numeric(months(1))/60/60 #時間
+as.numeric(months(1))/60/60/24 #日
+```
+
+ということで30.4375日、物理的な時間を進めるのが、
+
+ + dmonths(1)
+
+という処理になります。
+
+以上、durationについての説明でした。
+
+物理的に経過した時間を計算するためには、このdurationは非常に便利です。ただし、月や年等をカレンダーで考えたい場合は、durationを使いづらいので、次はカレンダーの数値を変更する感覚で計算できる、periodについて解説していきます。
+

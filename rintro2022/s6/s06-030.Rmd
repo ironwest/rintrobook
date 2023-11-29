@@ -1,0 +1,36 @@
+---
+title: :時間の集計2
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides105.jpg){group="slides"}
+
+![](slides/slides106.jpg){group="slides"}
+
+![](slides/slides107.jpg){group="slides"}
+
+![](slides/slides108.jpg){group="slides"}
+
+![](slides/slides109.jpg){group="slides"}
+
+![](slides/slides110.jpg){group="slides"}
+
+![](slides/slides111.jpg){group="slides"}
+
+![](slides/slides112.jpg){group="slides"}
+
+![](slides/slides113.jpg){group="slides"}
+
+![](slides/slides114.jpg){group="slides"}
+
+![](slides/slides115.jpg){group="slides"}
+
+![](slides/slides116.jpg){group="slides"}
+:::

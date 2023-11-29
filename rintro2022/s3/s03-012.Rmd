@@ -1,0 +1,38 @@
+---
+title: ファイル拡張子(L47)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides056.jpg){group="slides"}
+
+![](slides/slides057.jpg){group="slides"}
+
+![](slides/slides058.jpg){group="slides"}
+
+![](slides/slides059.jpg){group="slides"}
+
+![](slides/slides060.jpg){group="slides"}
+
+![](slides/slides061.jpg){group="slides"}
+
+![](slides/slides062.jpg){group="slides"}
+
+![](slides/slides063.jpg){group="slides"}
+
+![](slides/slides064.jpg){group="slides"}
+
+![](slides/slides065.jpg){group="slides"}
+
+![](slides/slides066.jpg){group="slides"}
+
+![](slides/slides067.jpg){group="slides"}
+
+![](slides/slides068.jpg){group="slides"}
+:::

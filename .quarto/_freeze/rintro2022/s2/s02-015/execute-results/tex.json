@@ -1,0 +1,20 @@
+{
+  "hash": "9b9570feb61e3b0ff8b87c73a2f14869",
+  "result": {
+    "markdown": "---\ntitle: ベクトル(型変換)(L20)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nここでは、ベクトルの型変換について解説していきます。\nまず、ベクトルをつくりましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na <- c(\"1\",\"2\",\"3\",\"4\",\"5\")\n```\n:::\n\n\n\n足し算を行う方法を覚えていますか？\n\n\n`1   + 10 #OK`\n\n`\"1\" + 10 #NG`\n\n\nここで、aに10を足したらどうなるでしょうか？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na + 10\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in a + 10: non-numeric argument to binary operator\n```\n:::\n:::\n\n\n\nもちろん、文字列型に数字型を足す計算をすることはできないので、エラーになりますね？\n\n\nここまでの知識を利用して、「足し合わせる方法」思いつきますか？少し動画をとめて考えてみてください。\n\n\nできましたか？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nas.numeric(\"1\") + 10  \n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 11\n```\n:::\n:::\n\n\n\nで、型変換を行って数字型にしてから10を足してあげれば無事に計算できました\n\n同じことを、ベクトルaに対してやってみましょう\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nas.numeric(a)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4 5\n```\n:::\n\n```{.r .cell-code}\nas.numeric(a) + 10\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 11 12 13 14 15\n```\n:::\n:::\n\n\n\nできました！\n\nもちろん、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nb <- as.numeric(a)\nb + 10\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 11 12 13 14 15\n```\n:::\n:::\n\n\n\nとしても同じ結果になります。\n\n型変換を行う場合の注意点としては、次のようなベクトルがあったとして、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na <- c(\"1\",\"2\",\"3\",\"4\",\"5\",\"4\",\"3\",\"2\",\"1\",\"O\",\"1\",\"2\")\n\nas.numeric(a)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nWarning: NAs introduced by coercion\n```\n:::\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  1  2  3  4  5  4  3  2  1 NA  1  2\n```\n:::\n:::\n\n\n\nWarning/警告　が表示されました。\n実行結果も、\n\n`[1]  1  2  3  4  5  4  3  2　1 NA  1  2`\n\nなぜかNA,欠損値が含まれています。\n\n実は、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1] \"1\" \"2\" \"3\" \"4\" \"5\" \"4\" \"3\" \"2\" \"1\" \"O\" \"1\" \"2\"\n```\n:::\n:::\n\n\n\nの10番目の要素、0（ゼロ）に見えますが、アルファベットのO(オー)でした。\n\n型変換を行う場合に、数字に変換できないものが混ざっている場合に、警告メッセージが表示されるので、警告が出ないはずなのに、警告がでていると何らかの入力ミスが含まれている可能性があるのでご注意ください。\n\nこのような意図しない動作の対応方法については実際のデータ処理のセクションで後々解説します。\n\n今は、引き続き、ベクトルについて解説を続けていきます。\n\n次の動画では、ベクトル同士の計算方法について解説していきます。\n",
+    "supporting": [
+      "s02-015_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

@@ -1,0 +1,32 @@
+---
+title: イメージ(L44)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides046.jpg){group="slides"}
+
+![](slides/slides047.jpg){group="slides"}
+
+![](slides/slides048.jpg){group="slides"}
+
+![](slides/slides049.jpg){group="slides"}
+
+![](slides/slides050.jpg){group="slides"}
+
+![](slides/slides051.jpg){group="slides"}
+
+![](slides/slides052.jpg){group="slides"}
+
+![](slides/slides053.jpg){group="slides"}
+
+![](slides/slides054.jpg){group="slides"}
+
+![](slides/slides055.jpg){group="slides"}
+:::

@@ -1,0 +1,45 @@
+---
+title: 凡例の設定方法
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides074.jpg){group="slides"}
+
+![](slides/slides075.jpg){group="slides"}
+
+![](slides/slides076.jpg){group="slides"}
+
+![](slides/slides077.jpg){group="slides"}
+
+![](slides/slides078.jpg){group="slides"}
+
+![](slides/slides079.jpg){group="slides"}
+
+![](slides/slides080.jpg){group="slides"}
+
+![](slides/slides081.jpg){group="slides"}
+
+![](slides/slides082.jpg){group="slides"}
+
+![](slides/slides083.jpg){group="slides"}
+
+![](slides/slides084.jpg){group="slides"}
+
+![](slides/slides085.jpg){group="slides"}
+
+![](slides/slides086.jpg){group="slides"}
+
+![](slides/slides087.jpg){group="slides"}
+
+![](slides/slides088.jpg){group="slides"}
+
+![](slides/slides089.jpg){group="slides"}
+:::
+

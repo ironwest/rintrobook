@@ -1,0 +1,99 @@
+---
+title: テキストファイルのインポート(L49)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+長々とした解説、お疲れさまでした。
+ここからは、解説でお伝えしたことを、実際のRで実行していってみましょう。
+
+今回対象とするファイルは
+
+import_practice1.txt
+import_practice2.txt
+import_practice3.txt
+
+の3種類です。拡張子はヒントにならないようにあえて、txtのままにしてあります。
+
+まずは、この3つのファイルのデリミターを確認してみましょう
+
+import_practice1.txt　 -> [ tab ]
+import_practice2.txt　-> [ , ]
+import_practice3.txt　-> [ ; ]
+
+この3つです
+
+直接見る以外にも
+
+```{r}
+library(tidyverse)
+read_file("import_practice1.txt")
+read_file("import_practice2.txt")
+read_file("import_practice3.txt")
+```
+
+それぞれ文字化けしているように見えますが、
+
+import_practice1は \t
+import_practice1は ,
+import_practice1は ;
+
+でそれぞれ区切られていることがわかります。
+また、windowsでは、改行を表す記号が\r\nなので、その表示もされています。
+
+ここで、デリミターがわかったのでそれぞれ読み込んでみましょうテキストファイルをデリミターを指定して読み込む関数は、
+
+```{r}
+?readr::read_delim
+```
+
+です。Usageでデフォルトが設定されていないArgumentは
+fileとdelimの二種類です。
+
+```{r}
+read_delim("import_practice1.txt", "\t")
+read_delim("import_practice2.txt", "," )
+read_delim("import_practice3.txt", ";" )
+```
+
+うまく読み込めていますね？
+内容はすべて同じです。
+
+```{r,eval=FALSE}
+?readr::read_delim
+```
+
+ただ、今回はデリミターがわからないファイルに対してデリミターを指定する必要があったため、read_delim関数を用いましたが、ヘルプのUsageをみると、read_delim以外に
+
+read_csv
+read_csv2
+read_tsv()
+
+の3つの関数の記載がされています。
+
+Descriptionをみると、 
+
+ * read_csvは [,] をデリミターに
+ * read_tsvは [\t]をデリミターに
+ * read_csv2は　[;]をデリミターに小数点を[,]に
+
+デフォルトが設定されたread_delim関数であることが記載されており、もともと、デリミターがわかっている場合は、
+
+```{r}
+read_tsv("import_practice1.txt")
+read_csv("import_practice2.txt")
+read_csv2("import_practice3.txt")
+```
+
+このように、delim Argumentを記載せずに読み込むことができました。
+
+どうでしょうか?
+
+read_delimとその仲間のread_csv,tsv,csv2関数をどのように利用するかイメージがつきましたでしょうか?
+
+次は今回読み込んだデータがRで保存されているtibble形式について説明しておきます。

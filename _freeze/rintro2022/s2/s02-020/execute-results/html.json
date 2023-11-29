@@ -1,0 +1,14 @@
+{
+  "hash": "19ae48a94722b49ba572b3a70258b9f9",
+  "result": {
+    "markdown": "---\ntitle: データフレームについて(L25)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n![](slides/slides049.jpg)\n![](slides/slides050.jpg)\n![](slides/slides051.jpg)\n\n![](slides/slides052.jpg)",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

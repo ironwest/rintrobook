@@ -1,0 +1,194 @@
+---
+title: 食中毒データの加工2
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+library(readxl)
+
+dat_a <- read_excel("data/food_poisoning2020.xls",
+                    range = "A3:W36",
+                    col_names = FALSE,
+                    sheet="④病因物質別発生状況")
+
+dat_b <- read_excel("data/food_poisoning2020.xls",
+                    range = "A39:T72",
+                    col_names = FALSE,
+                    sheet="④病因物質別発生状況")
+
+row1 <- dat_a %>% slice(1) %>% as_vector()
+row2 <- dat_a %>% slice(2) %>% as_vector()
+
+col_a <- tibble(r1 = row1, r2 = row2) %>% 
+  fill(r1, r2) %>% 
+  replace_na(list(r2="")) %>% 
+  unite("col_a",r1, r2, sep="_")
+
+col_a$col_a[1] <- "cause_1"
+col_a$col_a[2] <- "cause_2"
+
+dat_a2 <- dat_a %>% 
+  setNames(col_a$col_a) %>% 
+  slice(-c(1:2)) %>% 
+  fill(cause_1) %>% 
+  filter(!is.na(cause_2)) %>% 
+  pivot_longer(
+    cols = !c(cause_1, cause_2),
+    names_to = c("month","type"),
+    values_to = "val",
+    names_sep = "_"
+  ) %>% 
+  filter(month != "総数")
+
+row1 <- dat_b %>% slice(1) %>% as_vector()
+row2 <- dat_b %>% slice(2) %>% as_vector()
+
+col_b <- tibble(r1 = row1, r2 = row2) %>% 
+  fill(r1, r2) %>% 
+  replace_na(list(r2="")) %>% 
+  unite("col_b",r1, r2, sep="_")
+
+col_b$col_b[1] <- "cause_1"
+col_b$col_b[2] <- "cause_2"
+
+dat_b2 <- dat_b %>% 
+  setNames(col_b$col_b) %>% 
+  slice(-c(1:2)) %>% 
+  fill(cause_1) %>% 
+  filter(!is.na(cause_2)) %>% 
+  pivot_longer(
+    cols = !c(cause_1, cause_2),
+    names_to = c("month","type"),
+    values_to = "val",
+    names_sep = "_"
+  ) %>% 
+  filter(month != "総数")
+```
+
+ひとつ前の動画で作成した二つのデータ、結合しましょう。
+
+ここでの結合は二つのデータの列同士を結合するやり方になり、join系の関数を利用しません。
+
+join系の関数は、
+
+A  <- A
+B  <- B
+C  <- C
+
+こうですが、
+ 
+ここで行いたい結合は、
+
+A
+B
+C
+A
+B
+C
+ 
+という縦方向の結合です。この結合を行うのは、
+
+```{r}
+test1 <- tibble(A = c(1:3), B = c(11:13))
+test2 <- tibble(A = c(4:6), B = c(14:16))
+
+test1
+test2
+bind_rows(test1, test2)
+```
+
+この、bind_rows関数です。
+
+ということで、
+
+```{r}
+dat_fin <- bind_rows(dat_a2, dat_b2)
+
+View(dat_fin)
+```
+
+くっつきました。
+
+後は、cause_1とcause_2の余分な空白、
+
+```{r}
+dat_fin$cause_1 %>% unique()
+dat_fin$cause_2 %>% unique()
+```
+
+を削除しておきましょう。
+
+```{r}
+str_view_all( unique(dat_fin$cause_1), "　")
+str_view_all( unique(dat_fin$cause_2), "　")
+
+dat_fin <- dat_fin %>% 
+  mutate(
+    cause_1 = str_remove_all(cause_1,"　"),
+    cause_2 = str_remove_all(cause_2,"　")
+  )
+```
+
+また、valは、「-」が欠損値として利用されているので置き換えておきましょう。
+
+```{r}
+dat_fin <- dat_fin %>% 
+  mutate(val = na_if(val,"-")) %>% 
+  mutate(val = as.numeric(val))
+
+View(dat_fin)
+```
+
+以上！キレイな形になりました。
+
+グラフ化してみましょう。
+
+```{r}
+gdat <- dat_fin %>% 
+  filter(cause_2 == "ノロウイルス") 
+
+ggplot(gdat) + 
+  geom_col(aes(x = month, y = val)) +
+  facet_wrap(~type)
+```
+
+monthの並びが10月、11月、12月、1月と並んでいるのでここの並びを整えましょう。
+
+因子型にすると並びを調整することが可能です。
+
+```{r}
+month_label <- c("1月","2月","3月","4月","5月","6月",
+                 "7月","8月","9月","10月","11月","12月")
+
+dat_fin <- dat_fin %>% 
+  mutate(month = factor(month,
+                        levels=month_label,
+                        labels=month_label))
+
+gdat <- dat_fin %>% 
+  filter(cause_2 == "ノロウイルス") 
+
+ggplot(gdat) + 
+  geom_col(aes(x = month, y = val)) +
+  facet_wrap(~type)
+```
+
+うまくならびましたね！
+
+以上、実際のデータをインポート、加工してグラフ化する一連の流れをみてみました。
+
+解説しながらなので、スクリプト量が多く感じるかもしれませんが、後から解説する「関数化」を利用すれば、同じ形のデータを1行で処理できたりするので、引き続きお付き合いください。
+
+おつかれさまでした。
+
+ここまでの加工ができるようになれば、思いどおりにデータの形を変形することができるようになっているはずです。データのインポート、可視化、データ加工の3つの手順をストレスなくできるようになれば、あなたが行いたいデータ分析はほぼ8割が終了しているという格言もあったりします。
+
+残りのセクションで、
+　
+* データの集計を行う方法
+* 分析結果を共有するときに有用なレポート作成
+
+の知識をお伝えいたします。

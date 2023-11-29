@@ -1,0 +1,122 @@
+---
+title: 全体集計の実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは解説していきます。まず、データを準備します
+
+```{r}
+id <- 1:15
+age <- c(30,40,65,34,86,43,64,26,87,45,76,24,97,45,34)
+gender <- c("m","m","f","f","f","m","m","f","f","m","f","f","m","m","m")
+isx <- c(F,T,F,F,T,T,T,F,T,F,T,F,F,F,T)
+```
+
+tibble関数を利用してベクトルを一つのテーブルとしてまとめます
+
+```{r}
+hyou <- tibble(id     = id, 
+               age    = age, 
+               gender = gender, 
+               isx    = isx   ) %>% 
+  
+  #サマライズを利用してデータを集計します
+  summarise(age_mean = mean(age),
+            gender_male_p  = sum(gender=="m")/n() ) 
+
+
+
+hyou <- hyou %>% 
+  mutate(
+    `年齢(平均)` = age_mean,
+    `性別:男性(%)`  = 100*gender_male_p
+  )
+
+hyou
+```
+
+ここでヨコ持ちのデータになっていますが、目的とする集計は終わっています。
+
+あとは、縦方向のデータに変換すればよいので、必要な列だけ残して、変換しましょう。
+
+```{r}
+hyou <- hyou %>% 
+  select(!c(age_mean, gender_male_p)) %>% 
+  pivot_longer(everything(),
+               names_to = " ",
+               values_to = "全体")
+
+hyou
+```
+
+完成です。
+
+```{r}
+hyou
+```
+
+いかがでしょうか？
+
+今回は1ステップずつわけて関数の処理を実行しましたが実際は 
+
+```{r}
+hyou <- tibble(id  = id, 
+               age = age, 
+               gender = gender,
+               isx    = isx   ) %>% 
+  
+  summarise(age_mean = mean(age),
+            gender_male_p  = 100*sum(gender=="m")/n() ) %>% 
+  mutate(
+    `年齢(平均)` = age_mean,
+    `性別:男性(%)`  = gender_male_p
+  ) %>%
+  select(!c(age_mean, gender_male_p)) %>% 
+  pivot_longer(everything(),
+               names_to = " ",
+               values_to = "全体") 
+  
+
+hyou
+```
+
+こんな感じで処理を書くと目的の集計ができあがりました！
+
+いかでしょうか?
+
+処理の内容理解できましたか?
+
+ここで上の内容を応用してもう少し複雑な集計をやってみましょう。
+
+```{r}
+dat <- tibble(id     = id, 
+              age    = age, 
+              gender = gender, 
+              isx    = isx   )
+
+dat
+```
+
+のデータを加工して、
+
+|                   |             |
+|:=================:|:===========:|
+|年齢:平均(最小-最大)| XX.XX(XX-XX)|
+|性別:男性 人数(%)   | XX(XX.X%)   |
+
+というような形に加工しましょう。
+
+もしご自身でできそうな場合は、とりくんでみてください。
+
+最小を求める関数は、min
+最大を求める関数は、max
+文字列を結合するには、stringr::str_c関数
+
+を利用します。
+

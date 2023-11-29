@@ -1,0 +1,14 @@
+{
+  "hash": "d90b094fa99e4dec61ea2a8a72616cc9",
+  "result": {
+    "markdown": "---\ntitle: 正規表現の記載方法についての補足\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n本来であれば\\dが正しい書き方なのですが、\\単独だとstr_関数の中ではうまく認識できないので、\\\\と書くと覚えておいてください。\n\n正規表現について調べていただくと、多くの場合は\\d等と、\\一個の書き方で説明されているはずですがRで正規表現を使うには\\\\と二つ必要です。\n\n尚、Rバージョン4.0.0以降では、Raw stringという、\\\\を使わなくてもよい書き方がありますのでここで紹介しておきます。\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

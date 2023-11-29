@@ -1,0 +1,28 @@
+---
+title: セクションの概要(L37)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides002.jpg){group="slides"}
+
+![](slides/slides003.jpg){group="slides"}
+
+![](slides/slides004.jpg){group="slides"}
+
+![](slides/slides005.jpg){group="slides"}
+
+![](slides/slides006.jpg){group="slides"}
+
+![](slides/slides007.jpg){group="slides"}
+
+![](slides/slides008.jpg){group="slides"}
+
+![](slides/slides009.jpg){group="slides"}
+:::

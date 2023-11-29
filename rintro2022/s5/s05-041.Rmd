@@ -1,0 +1,95 @@
+---
+title: 実践 str_trim
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+ここでは、少しこれまでの話と逆行しますが、正規表現に頼らない方が簡単に処理ができるケースを例示してみます。
+
+正規表現の練習問題2を改めてみてみましょう。次の文字列ベクトルから検査値を抜き出すことが課題でした。
+
+```{r}
+vec <- c("1HbA1c :4.9", "2HbA1c: 6.3", "3HbA1c : 3", "4HbA1c:5")
+vec
+```
+
+ここで、
+
+```{r}
+prac <- tibble(target = vec)
+prac
+```
+
+このTibbleを1つ前の動画のように検査名と値に分けてみましょう。正規表現をごりごり利用する場合は、解答にあったように
+
+```{r}
+prac %>% 
+  mutate(
+    value = str_extract(target,"(?<=:(\\s|))(\\d+\\.\\d+|\\d+)"),
+  
+  )
+```
+
+検査値の抽出だけでも、ぱっとみ分かりにくい正規表現になっています。ただ、ここで、次のようにすると、見通しがかなりよくなりませんか?
+
+```{r}
+prac %>% 
+  mutate(
+    left = str_extract(target,"^.+(?=:)"),　#コロンの前
+    right = str_extract(target,"(?<=:).+$"), #コロンの後
+    name = str_trim(left), #コロンの前の空白除去
+    value = str_trim(right) #コロンの後の空白除去
+  )
+```
+
+こんな感じでstr_trim関数を利用してあげると、前後のスペースが消えてくれるので、"(?<=:(\\s|))(\\d+\\.\\d+|\\d+)"この正規表現を書かなくても、処理することができました
+
+データクリーニングするさいには、そのデータを目的の形へ正確に効率よく変換できればOKなので、色々なやり方を試みてください。
+
+後、str_trimの設定について補足しておきます。
+
+str_trimは
+
+```{r}
+?str_trim
+```
+
+のUsageでsideというargumentがあります。
+
+これは、
+
+```{r}
+tgt <- "    S     P      A      C      E      !   "
+
+both <- str_trim(tgt, side = "both")
+left <- str_trim(tgt, side = "left")
+right <- str_trim(tgt, side = "right")
+
+str_view_all(c(tgt, both, left, right), "\\s")
+```
+
+このように、str_view_allで全部当たる結果をみることができるので見てみると、
+
+bothとした場合は両端のスペースleftで左、rightで右のスペースが削除されていることが確認できます。また、スライドでは紹介していませんが、
+
+```{r}
+?str_trim
+tgt
+str_squish(tgt)
+```
+
+中間の無駄なスペースを除去することができます
+
+以上、str_trimの解説でした。
+
+次の動画で、ここまでのstr_xxx系の関数を利用した練習問題を解いてみましょう!
+

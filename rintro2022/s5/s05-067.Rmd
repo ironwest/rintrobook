@@ -1,0 +1,38 @@
+---
+title: 解説1
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5d/slides036.jpg){group="slides"}
+
+![](slides/s5d/slides037.jpg){group="slides"}
+
+![](slides/s5d/slides038.jpg){group="slides"}
+
+![](slides/s5d/slides039.jpg){group="slides"}
+
+![](slides/s5d/slides040.jpg){group="slides"}
+
+![](slides/s5d/slides041.jpg){group="slides"}
+
+![](slides/s5d/slides042.jpg){group="slides"}
+
+![](slides/s5d/slides043.jpg){group="slides"}
+
+![](slides/s5d/slides044.jpg){group="slides"}
+
+![](slides/s5d/slides045.jpg){group="slides"}
+
+![](slides/s5d/slides046.jpg){group="slides"}
+
+![](slides/s5d/slides047.jpg){group="slides"}
+
+![](slides/s5d/slides048.jpg){group="slides"}
+:::

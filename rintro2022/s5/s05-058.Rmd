@@ -1,0 +1,99 @@
+---
+title: 解説 list 
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それではreplace_naの動作を確認していきましょう。ただ、そのまえに、Listについて少しだけ説明させてください。
+
+ベクトルは、このように名前をつけて実行すると
+
+```{r}
+vec1 <- c(name1 = 1, name2 = 2, name3 = 3)
+vec1
+```
+
+こうなりましたね?
+
+繰り返しになりますが、
+
+```{r}
+vec2 <- c(name1 = 1, name2 = "2", name3 = 3)
+vec2
+```
+
+全て同じ型でないと自動的に文字型に置き換わります
+
+ここで、cの代わりにListを用いてみます。
+
+```{r}
+l1 <- list(name1 = 1, name2 = "2", name3 = 3)
+
+l1
+```
+
+cと形が少し違いますがデータが入力した形で保存されています
+
+このlistで保存された値は、
+
+```{r}
+l1[[1]]
+l1[[2]]
+l1[[3]]
+
+l1$name1
+l1$name2
+l1$name3
+```
+
+[[]]か$でとりだすことができます。
+
+ここで注目していただきたいのが、
+
+```{r}
+l1$name1
+l1$name2
+l1$name3
+```
+
+がそれぞれ、型が違うというところです。
+
+ベクトルが「同じ要素」の集合を作るものであれば、リストは、「オブジェクト」の集合を作るもの
+
+となっており、Rのオブジェクトであれば何でも保存できます。
+
+例えば、
+
+```{r}
+char <- "これは文字列型の要素です"
+vect <- c(1:10)
+dat <- iris %>% head()
+gg <- ggplot(dat) + geom_point(aes(x = Sepal.Length, y = Sepal.Width, color = Species))
+
+list_test <- list(
+  single_character = char,
+  a_vector = vect,
+  data_frame = dat,
+  even_plot = gg
+)
+```
+
+としてあげると、
+
+```{r}
+list_test
+list_test$data_frame
+list_test$even_plot
+```
+
+こんな感じでこれまで学んだRのありとあらゆるオブジェクトを保存することが可能です。
+
+今回のreplace_na関数では、複数の列に対して置き換える要素の型が常に一緒とは限らないため、複数の要素を利用できるlistを用いて記載する形となっています。
+
+それでは、次の動画では、実際にこのlistを利用した、置き換えの指定方法を確認していきましょう。
+

@@ -1,0 +1,164 @@
+---
+title: group_byでの集計
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+id <- 1:15
+
+age <- c(30,40,65,34,86,
+         43,64,26,87,45,
+         76,24,97,45,34)
+
+gender <- c("f","m","f","f","f",
+            "m","m","f","f","m",
+            "f","f","m","m","m")
+
+isx <- c(F,T,F,F,T,
+         T,T,F,T,F,
+         T,F,F,F,T)
+
+dat <- tibble(id     = id    , age = age, 
+              gender = gender, isx = isx)
+```
+
+ひとつ前の動画での課題、やってみましたか？次のようなスクリプトができているば、こちらが意図していた通りとなります。
+
+```{r}
+dat %>% 
+  group_by(isx) %>% 
+  summarise(
+    age_mean = mean(age),
+    age_min  = min(age),
+    age_max  = max(age),
+    gender_m_n  = sum(gender=="m"),
+    gender_m_p  = 100*gender_m_n/n()
+  )
+```
+
+ところで、集団で「ない」集計のときに集計した結果を表示するスクリプトを再度記載してみます
+
+```{r}
+res <- tibble(id     = id, 
+              age    = age, 
+              gender = gender, 
+              isx    = isx   ) %>%
+  
+  summarise(age_mean = mean(age),
+            age_min = min(age),
+            age_max = max(age),
+            gender_male_n  = sum(gender=="m"),
+            gender_male_p  = 100*gender_male_n/n() ) %>% 
+  
+  mutate(across(everything(), ~{format(.,nsmall=1, digits=1)}))　%>% 
+  
+  mutate(
+    `年齢(最小-最大)` = str_c(age_mean,"(",age_min,"-",age_max,")"),
+    `性別:男性(%)`  = str_c(gender_male_n,"(",gender_male_p,")")
+  ) %>%
+  
+  select(matches("^年齢|^性別")) %>% 
+  
+  pivot_longer(everything(),
+               names_to = " ",
+               values_to = "全体")
+  
+res
+
+```
+
+これの、summariseの手前にgroup_by(isx)をいれて、select()以降を除去して実行してみましょう。また、across関数の部分では、isxはロジカル型のままで残しておきたい(文字列に変更する必要がない)ので、.colsで省いておきます
+
+```{r}
+res2 <- 
+tibble(id     = id, 
+       age    = age, 
+       gender = gender, 
+       isx    = isx   ) %>%
+  group_by(isx) %>%  #これを足した
+  summarise(age_mean = mean(age),
+            age_min = min(age),
+            age_max = max(age),
+            gender_male_n  = sum(gender=="m"),
+            gender_male_p  = 100*gender_male_n/n() ) %>% 
+  mutate(
+    across(
+      .cols=!isx, #isxは変換しない。
+      ~{format(.,nsmall=1, digits=1)}
+    )
+  )　%>% 
+  mutate(
+    `年齢(最小-最大)` = str_c(age_mean,"(",age_min,"-",age_max,")"),
+    `性別:男性(%)`  = str_c(gender_male_n,"(",gender_male_p,")")
+  ) 
+
+View(res2)
+```
+
+いかがでしょうか？isx毎に、最初に作った集計がうまくできていることが確認できますね？
+
+あとは、この結果をうまく最終的に表示したい
+
+|               | 購入あり | 購入なし|
+|:=============:|:========:|:=======:|
+|年齢(最小-最大)|  ~~~~~~  | ~~~~~~~ |
+|性別:男性(%)   |  ~~~~~~  | ~~~~~~~ |
+
+こんな形に持っていくことができたら最初の目標である、グループ集計の完成です。
+
+できますか?今表示されているこの結果から、この表の形になるように動画をとめて実行してみてください。pivot_longerとpivot_widerを1回ずつ使うとその形にできます
+
+やってみましょう。
+
+まず必要な列のみに絞り込んでおきます。
+
+```{r}
+res2 %>% 
+  select(isx, matches("^年齢|^性別"))
+```
+
+こんな感じですね。
+
+それで、pivot_longerで一度縦持ちデータに変換しましょう
+
+```{r}
+res2 %>% 
+  select(isx, matches("^年齢|^性別")) %>% 
+  pivot_longer(cols=!isx,names_to="name",values_to="value")
+```
+
+後は、このデータをisxを横方向に広げてあげるとよいので
+
+```{r}
+res2 %>% 
+  select(isx, matches("^年齢|^性別")) %>% 
+  pivot_longer(cols=!isx,names_to="name",values_to="value") %>% 
+  pivot_wider(id_cols=name, names_from=isx, values_from=value)
+```
+
+良い感じですね?
+
+後は、名前を変更しつつ並び替えてみましょう
+
+```{r}
+res2 %>% 
+  select(isx, matches("^年齢|^性別")) %>% 
+  pivot_longer(cols=!isx,names_to="name",values_to="value") %>% 
+  pivot_wider(id_cols=name, names_from=isx, values_from=value) %>% 
+  select(` ` = name, `購買あり`=`TRUE`, `購買なし`=`FALSE`)
+```
+
+できあがりました!
+
+お疲れさまでした。
+
+ここまでで、dplyrのみを使って集計して、表を作成することにとりくんできました。
+
+group_by関数やacross関数の使い方を解説するため、「めんどうな方法」をあえてここではお示ししています。
+
+次の動画からは、group_by関数の使い方を実例をご提示しながら解説していきます。
+

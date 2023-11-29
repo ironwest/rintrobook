@@ -1,0 +1,14 @@
+{
+  "hash": "a0f2f638841c2937781822d9a7fc5c7a",
+  "result": {
+    "markdown": "---\ntitle: 比較オペレーター\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n:::\n\n\n\n\n\n!= という記号は、「同じでない」を示します。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n450 != 90\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n\n```{.r .cell-code}\n340 != 340\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n\n```{.r .cell-code}\n\"ごはんが美味しい\" == \"味噌汁が美味しい\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n\n```{.r .cell-code}\n\"ごはんが美味しい\" != \"味噌汁が美味しい\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n:::\n\n\n\nここらへん、==オペレーターの動きが理解できていればそれほど難しくないですね?\n\n\n他、 > < >= <= も数学的な比較と同じ意味合いで利用できます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n34 < 34\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n\n```{.r .cell-code}\n34 <= 34\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n\n```{.r .cell-code}\n35 > 35\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n\n```{.r .cell-code}\n35 >= 35\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n:::\n\n\n\n変数に収納された数値の比較もそれほど問題なく理解できますね?\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na <- 10\n\na < 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n\n```{.r .cell-code}\nb <- 100\n\na < b\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n:::\n\n\n\n次は、ロジカル型と比較オペレーターがベクトルに対してどにょうな働きをするかのはなしです。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

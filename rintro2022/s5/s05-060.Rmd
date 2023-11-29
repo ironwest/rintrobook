@@ -1,0 +1,128 @@
+---
+title: 練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+ここでは、data/fill2.csvを利用します1つ前の練習問題で作成していない場合は、次のコードを実行してください。
+
+```{r}
+read_excel("data/fill.xlsx") %>% 
+  rename(`cause1` = `病因物質`,
+         `cause2` = `...2`) %>% 
+  mutate(
+    cause1 = str_replace_all(cause1,"\\s",""),
+    cause2 = str_replace_all(cause2,"\\s","")
+  ) %>% 
+  fill(cause1) %>% 
+  filter(!is.na(cause2)) %>% 
+  write_csv("data/fill2.csv")
+```
+
+練習問題1: 
+
+"data/fill2.csv"をインポートしてください。
+
+練習問題2: 
+
+cause1, cause2, 事件_1, 患者_1, 死者_1,を選択してください。
+
+練習問題3: 
+
+事件_1、患者_1、死者_1をそれぞれcase_1, pt_1, death_1へと名前を変換してください。
+
+練習問題4: 
+
+case_1, pt_1, death_1の値で「-」となっている値をNA、欠損値に置き換えてください
+
+練習問題5:
+
+表の欠損値を0に置き換えてください。
+
+練習問題6:
+
+case_1, pt_1, death_1 を数字に変換して、その値を利用してx軸をcause2, y軸をcase_1として棒グラフを描画してください。
+
+
+
+
+練習問題1: 
+
+"data/fill2.csv"をインポートしてください。
+
+```{r}
+dat1 <- read_csv("data/fill2.csv")
+```
+
+練習問題2:
+
+cause1, cause2, 事件_1, 患者_1, 死者_1,を選択してください。
+
+```{r}
+dat2 <- dat1 %>% 
+  select(cause1, cause2, ends_with("_1"))
+```
+
+練習問題3: 
+
+事件_1、患者_1、死者_1をそれぞれcase_1, pt_1, death_1へと名前を変換してください。
+
+```{r}
+dat3 <- dat2 %>% 
+  rename(case_1 = `事件_1`,
+         pt_1 = `患者_1`,
+         death_1 = `死者_1`)
+
+dat3
+```
+
+練習問題4: 
+
+case_1, pt_1, death_1の値で「-」となっている値をNA、欠損値に置き換えてください
+
+```{r}
+dat4 <- dat3 %>% 
+  mutate(
+    case_1  = na_if(case_1,"-"),
+    pt_1    = na_if(pt_1,"-"),
+    death_1 = na_if(death_1,"-")
+  )
+
+dat4
+```
+
+練習問題5:
+
+表の欠損値を0に置き換えてください。
+
+```{r}
+dat5 <- dat4 %>% 
+  mutate(
+    case_1  = as.numeric(case_1),
+    pt_1    = as.numeric(pt_1),
+    death_1 = as.numeric(death_1),
+  ) %>%
+  replace_na(list(case_1 = 0, pt_1 = 0, death_1 = 0))
+
+dat5
+```
+
+練習問題6: 
+
+case_1, pt_1, death_1 を数字に変換して、その値を利用してx軸をcause2, y軸をcase_1として棒グラフを描画してください。
+
+```{r}
+ggplot(dat5) + 
+  geom_col(aes(x = cause2, y = case_1)) +
+  scale_x_discrete(guide = guide_axis(n.dodge = 6))
+```
+
+お疲れさまでした!
+

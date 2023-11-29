@@ -1,0 +1,42 @@
+---
+title: (さらに知りたい人へ)(L46)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+日本語の場合は、ほとんどの場合、"cp932"あるいは"shift-jis"
+という文字コードをlocaleで指定してあげれば問題ないと思いますが
+日本語以外、英語以外の外国語のファイルを読み込みたい場合に、
+どんな文字コードを指定すればよいかわからないことも多々あります
+その場合は、guess_encoding関数を利用してみましょう
+
+例えば、
+
+```{r}
+read_file("ichiji/tekitou2.txt")
+```
+
+
+文字化けしている結果のときに、
+```{r}
+guess_encoding("ichiji/tekitou2.txt")
+```
+
+ある程度以上の長さのデータが含まれていると、どの文字コードかを推定して教えてくれますので、ここで指定されたものをとりあえず利用して読み込んでみてもよいかもしれません
+
+(今回はcp932のはずですが、Shift-jisと推定されています。この二つ、厳密には違いますがほとんど一緒なので読み込んでもエラーは起こらないですが、一部文字化けが残存する可能性もあります)
+
+```{r}
+read_file("ichiji/tekitou2.txt",locale(encoding="shift-jis"))
+read_file("ichiji/tekitou2.txt",locale(encoding="cp932"))
+```
+
+お疲れさまでした。以上で文字コードの話はおしまいです。
+
+次の動画からはファイルの形式について解説していきます。
+

@@ -1,0 +1,77 @@
+---
+title: 実践 case_when
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+if_elseはTRUE/FALSEをかえす2条件のみで結果を場合分けしますが、case_whenは複数条件で条件分岐ができます。
+
+スライドでお示ししたように、<ロジカルとなる式> ~ <返したい結果>を繰り返すことで好きな条件で結果を返せます。
+
+実験してみましょう。
+
+```{r}
+dat <- tibble(num = c(1:5))
+dat
+
+dat %>% 
+  mutate(kekka = case_when(
+    num == 1 ~ "one",
+    num == 2 ~ "two",
+    num == 3 ~ "three",
+    TRUE ~ ">3"
+  ))
+```
+
+この例では、num列が1であればone、2であればtwo、3であればthree、それ以外で>3という文字列を返す結果になっています
+
+case_whenで注意しておかないといけないことはif_elseと同様でcase_when関数が返す結果の型をそろえておくことです。
+
+```{r}
+dat %>% 
+  mutate(kekka = case_when(
+    num == 1 ~ "one",
+    num == 2 ~ "two",
+    num == 3 ~ 3,
+    TRUE ~ ">3"
+  ))
+```
+
+もう一つ、実行される順番に注意が必要です。case_when関数は上の条件が優先されます。
+
+```{r}
+dat %>% 
+  mutate(kekka = case_when(
+    num == 1 ~ "one",
+    num == 1 ~ "two",
+    num == 1 ~ "three",
+    TRUE ~ ">3"
+  ))
+```
+
+また、最後のTRUEという「必ず当たる」条件を書いておかないと、
+
+```{r}
+dat %>% 
+  mutate(kekka = case_when(
+    num == 1 ~ "one",
+    num == 2 ~ "two",
+    num == 3 ~ "three"
+  ))
+```
+
+欠損値が生じてしまいますので、注意が必要です。
+
+以上、case_whenの実践でした。
+
+それではif_elseとcase_whenの練習問題をやってみましょう
+

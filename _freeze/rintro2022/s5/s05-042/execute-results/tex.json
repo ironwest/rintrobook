@@ -1,0 +1,20 @@
+{
+  "hash": "d3bcc39471a85683234b3ab9af508188",
+  "result": {
+    "markdown": "---\ntitle: 練習問題\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n\n\nそれでは、ここまで学んだこと、理解できているか実践できるか、練習してみましょう。この動画では出題だけ行います。\n\nQ0: data/stringr.xlsxファイルのSheet1にあるデータをよみこみましょう。\n\nQ1-1 target1列のみに列を絞って、\"xxx100ml 1unit\"の、unitの前の数字をぬきだして新しい列、unitを作成してください\n\nQ1-2 Q1-1で作成した表で、target1列の\"xxx100ml 1unit\"の、ml前の数字をぬきだして、mlではなくてL単位に変換(100mlなら0.1L)してlitterという新しい列を追加してください。\n\nQ1-3 Q1-2で作成した表で、target1の\"xxx100ml 2unit\"の、xxx部分を抜き出して、nameという名前の新しい列を作成してください。尚前後に余分なスペースがあればname列から削除してください。\n\nQ1-4 Q1-3で作成した表で、target1列を削除して、name, litter, unitの順に列の順番を並べてください\n\nQ2-1 target2列のみに絞って、検査結果のみを抜き出して新しいValue列を作成してください\n\nQ2-2 Q2-1で作成した表に、target2列の単位を抜き出して新しい列、unitを作成してください。\n\nQ2-3 Q2-2で作成した表に、target2列の検査名を抜き出して、新しい列、nameを作成してください。\n\nQ2-4 Q2-3で作成した表の、target2列を削除して、name,value,unitの順番に列を並び替えてください\n\nQ3-1 target3列のみに列を絞って、手術名(op:XX)を抜き出して新しい列nameを作成してください\n\nQ3-2 Q3-1で作成した表の、 target3列のの出血量をぬきだして新しい列、blood_lostを作成してください。今までと同じ方法ではうまくいきませんがなぜでしょうか？元のデータは触らずに、本来入力したかったであろう数値に置き換えてください。\n\nQ3-3 Q3-2で作成した表の、target3列のhr前の時間を抜き出して新しい列、time_hrを作成してください。\n\nQ3-4 Q3-3で作成した表の、target3列を削除して、name, blood_lost, time_hrの順番に並び替えてください。\n\n",
+    "supporting": [
+      "s05-042_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

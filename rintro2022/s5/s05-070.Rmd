@@ -1,0 +1,91 @@
+---
+title: left_joinでの多対多の結合
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+多対多の動作、確認しておきましょう。
+
+```{r}
+ta_left <- tribble(
+  ~id, ~x,
+  1  , 11,
+  2  , 12,
+  3  , 13,
+  2  , 14,
+  1  , 15
+)
+
+ta_right <- tribble(
+  ~id, ~y,
+  1  , "a",
+  2  , "b1",
+  2  , "b2",
+  3  , "c"
+)
+
+ta_left
+ta_right
+
+ta_ta <- ta_left %>% 
+  left_join(ta_right, by="id")
+
+ta_ta
+```
+
+いかがでしょうか?
+
+結合後の表、もともとのta_leftの行数が
+
+```{r}
+nrow(ta_left)
+```
+
+であるのに対して、
+
+```{r}
+nrow(ta_ta)
+```
+
+へと増加しており、行が水増しされたことが確認できます。
+
+このように、結合前のデータと結合後のデータをnrow関数で行数の確認をして、不一致であれば、他対他の結合がおこなわれてしまっていることがわかります。
+
+もし、結合するまえに他対他になるかを調べたい場合は、count関数やdistinct関数を利用しても良いかもしれません。
+
+特に、右側、結合する方の表のIDが複数存在する場合は他対他になってしまうので、
+
+```{r}
+ta_right %>% count(id)
+ta_right %>% count(id) %>% filter(n > 1)
+```
+
+としてあげて、nが1より大きいものがないかを確認しましょう。今回は一目瞭然ですが、何全行もあったりするとこれで重複しているものを発見できます。
+
+実例をみのであれば、
+
+```{r}
+test <- tibble(
+  id = sample(1:300, 300, replace=TRUE),
+  val = rnorm(300, 100, 20)  
+)
+```
+
+こんな300行のデータに対して重複しているidを調べたい場合、
+
+```{r}
+test %>% count(id) %>% filter(n > 1)
+```
+で重複しているIDと、その重複回数、nを瞬時に調べることができました。(尚、sampleやrnorm関数はランダムに数字がでてくるので、実行結果は皆さんのものと違います。)
+
+以上、多対多の結合でした。
+

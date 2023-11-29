@@ -1,0 +1,91 @@
+---
+title: パイプ関数(演習)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+練習:パイプ関数をキーボードショートカットを利用して10回入力してください。
+
+windows:ctrl + shift + m
+mac:    cmd  + shift + m
+
+このショートカット、無意識で入力できるようになるくらい、習熟しておいてください。
+
+質問:次の処理をパイプ関数を利用してかいてみてください　。
+
+```{r}
+library(tidyverse)
+```
+
+1
+
+```{r}
+summary(iris)
+```
+
+2
+
+```{r}
+summary(iris$Species)
+```
+
+3
+
+```{r}
+as.character(sum(c(1,2,3,4,5)))
+```
+
+できましたか？
+
+1
+
+```{r}
+summary(iris)
+
+iris %>% summary()
+```
+
+2
+
+```{r}
+summary(iris$Species)
+
+iris$Species %>% summary() #これとか、
+
+iris %>% .$Species %>% summary()　
+　　#こんな風にも書けます
+　　#
+iris %>% {.$Species} %>% summary() 
+    #{}でくくると見やすくてよいかもしれません。
+```
+
+3
+
+```{r}
+as.character(sum(c(1,2,3,4,5)))
+
+c(1,2,3,4,5) %>% 
+  sum(.) %>% 
+  as.character(.)
+　　#基本の書き方はこうです。
+```
+
+ただし、実はアーギュメントが1個だけの場合、(.)を省いても動くので、
+
+```{r}
+c(1,2,3,4,5) %>% sum %>% as.character
+```
+
+でもOKです。ついでに、c(1,2,3,4,5)は1:5と書いてもOKなので、
+
+```{r}
+c(1,2,3,4,5)
+1:5
+
+1:5 %>% sum %>% as.character
+```
+
+とものすごく短くもできます。
+

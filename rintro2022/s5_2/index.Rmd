@@ -1,0 +1,8 @@
+---
+title: 現実のデータのTidy化
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+セクション5 パート2 現実のデータのtidy化演習

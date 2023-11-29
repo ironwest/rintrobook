@@ -1,0 +1,8 @@
+---
+title: ベクトル操作のまとめ(L24)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+![](slides/slides031.jpg)

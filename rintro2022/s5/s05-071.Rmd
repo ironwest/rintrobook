@@ -1,0 +1,110 @@
+---
+title: 色々なjoin関数
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+ここまで、left_joinの話ばかりでしたが、色々なjoin関数が用意されています。
+
+原則、left_joinがわかれば、たいてい何とかなるのですが、ここで、他の関数を紹介しておきます。
+
+```{r}
+dat1 <- tribble(
+  ~id, ~val1,
+  1  , 11,
+  2  , 12,
+  2  , 12,
+  4  , 14,
+  1  , 15,
+  5  , 16
+)
+
+dat2 <- tribble(
+  ~id, ~val2,
+  1  , 21,
+  2  , 22,
+  3  , 23,
+  4  , 24,
+  5  , 25
+)
+```
+
+まず、これまでのleft_joinはこれです。これは、左側にあるIDを残すというイメージです
+
+```{r}
+left_join(dat1, dat2, by="id")
+```
+
+leftではなく,right_joinというのもあって
+
+```{r}
+right_join(dat2, dat1, by="id")
+```
+
+left_joinの左向けの結合ではなく、右向けの結合になります。
+
+```{r}
+right_join(dat1, dat2, by="id")
+```
+
+idはdat2が1から5まで一個ずつ、dat1が1が2つ、2が2つ、3が0こで、4，5が1個ずつなので、dat2の1と2が水増しされてるのと、3が「あたらない」ので、NAで表示されています。right_joinは、右側にあるIDが残るという風なイメージでもよいと思います。
+
+後は、
+
+```{r}
+dat3 <- tribble(
+  ~id, ~val3,
+  1  ,  "a",
+  3  ,  "b",
+  4  ,  "c"
+)
+
+dat4 <- tribble(
+  ~id, ~val4,
+  3  , "A",
+  5  , "B",
+  6  , "C"
+)
+```
+
+というデータがあったとして、
+
+左のIDが残る、
+
+```{r}
+left_join(dat3 , dat4, by="id")
+```
+
+右のIDが残る、
+
+```{r}
+right_join(dat3, dat4, by="id")
+```
+
+
+
+両方にあるIDだけ残る、
+
+```{r}
+inner_join(dat3, dat4, by="id")
+```
+
+どちらか片方にあるIDだけ残る、
+
+```{r}
+full_join(dat3, dat4, by="id")
+```
+
+という関数もあります。
+
+他にも、filtering joinと呼ばれる、抽出するためのsemi_join関数やanti_join関数もありますが、とりあえず、現時点では、結合のためのjoinを理解できるとよいと思います。
+

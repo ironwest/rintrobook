@@ -1,0 +1,20 @@
+{
+  "hash": "07ff466e882e2d8d0e9e1d30d6728657",
+  "result": {
+    "markdown": "---\ntitle: シンプルな書き方での演算(attach)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n\ndat <- tibble(\n  num = 1:10,\n  fac2 = rep(c(\"a\",\"b\"), 5),\n  fac3 = rep(c(\"A\",\"B\",\"C\"), 4)[1:10]\n)\n```\n:::\n\n\n\n前の動画では、基本である、個数、和、平均の関数について説明しました。\n \nただ、一般的にtibbleなどからベクトルを取り出す$記号を利用したスクリプトは、\n\n* 書くのにタイプ量が増える、\n* tibbleの名前が長いと可読性が落ちる\n\nというところで、個人的にはお勧めできません。\n\nですので、この動画では$サインをなるべく使わずに書く方法についてご説明いたします。\n\n方法1：`attach`を利用する方法\n\n一つ前の動画では、平均を求めるのに、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsum(dat$num)/length(dat$num)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n:::\n\n\n\nと記載していました。\n\nただ、dat$と何回も打つのは面倒なので、できれば、次のようにnumとだけ打つことでベクトルを呼び出せると便利です。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsum(num)/length(num) #エラーですね\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in sum(num): invalid 'type' (closure) of argument\n```\n:::\n:::\n\n\n\nEnvironmentペーンの内容を少し覚えておいてください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nattach(dat) #とすると、ここ以降、dat$とかかなくてもOK\n\nsum(num)/length(num)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n\n```{.r .cell-code}\nnum\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  1  2  3  4  5  6  7  8  9 10\n```\n:::\n\n```{.r .cell-code}\nfac2\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1] \"a\" \"b\" \"a\" \"b\" \"a\" \"b\" \"a\" \"b\" \"a\" \"b\"\n```\n:::\n\n```{.r .cell-code}\nfac3\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1] \"A\" \"B\" \"C\" \"A\" \"B\" \"C\" \"A\" \"B\" \"C\" \"A\"\n```\n:::\n\n```{.r .cell-code}\ndetach(dat) #これでattach効果が消える\nsum(dat$num)/length(dat$num)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n\n```{.r .cell-code}\nsum(num)/length(num)　#エラー！\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in sum(num): invalid 'type' (closure) of argument\n```\n:::\n:::\n\n\n\n簡単ですね？\n\nただ、detachを忘れたりするとエラーの原因になったり思わぬ動作を引き起こすケースがあります。具体的には。。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nnum <- 1000 #numという変数を使いたいので作成\n```\n:::\n\n\n\n100行くらいのスクリプト\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nattach(dat) #fac2を利用したい\n```\n\n::: {.cell-output .cell-output-stderr}\n```\nThe following object is masked _by_ .GlobalEnv:\n\n    num\n```\n:::\n\n```{.r .cell-code}\nmean(num) #dat$numの平均を求めたつもり\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1000\n```\n:::\n:::\n\n\n\n本当に求めたかったのは\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nmean(dat$num)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n\n```{.r .cell-code}\ndetach(dat)\n```\n:::\n\n\n\nいかがでしょうか？\n\nこのようなエラーが生じる可能性があるため、できればattach、detachは使わないようにしています\n\nただし、ネットで検索した場合によく使われる関数でもあるのでここで紹介しました。\n\n次の動画では、attach, detachを使わないで計算する方法を解説いたします。",
+    "supporting": [
+      "s06-006_1_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

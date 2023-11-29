@@ -1,0 +1,59 @@
+---
+title: 関数の作り方(演習問題と解答)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+では、function関数を利用して関数を作成する演習を行います。
+
+例題1:
+
+数値を二つ受け取って、その数値を足し合わせて返す関数を作成してみましょう。関数の名前はtasizanとしてください。
+
+例題1の解答:
+
+```{r}
+tasizan <- function(num1,num2){
+  return(num1 + num2)
+}
+```
+
+ひとつ前の動画と同じですね。アーギュメントの数はここでは二つにしてあります。
+
+それでは、同じように、hikizan, kakezan関数を作成してみてください。動画をとめてどうぞ。
+
+できましたか?
+
+```{r}
+hikizan <- function(num1,num2){
+  return(num1 - num2)
+}
+
+hikizan(100,30)
+
+kakezan <- function(num1, num2){
+  return(num1 * num2)
+}
+
+kakezan(3,5)
+```
+
+それほど複雑ではありませんね?
+
+あと、書き方としては、1行で終わるような単純な関数の場合は、
+
+```{r}
+tasu <- function(n1,n2) n1 + n2
+
+tasu(1,2)
+```
+
+と
+
+<名前> <- function(<アーギュメント>)　<処理>
+
+という風に書いても大丈夫です。
+
+以上、関数作成の基礎の基礎でした。
+次はこのセクションでtidyデータに次いで大切な概念である、パイプ関数について解説を行います。

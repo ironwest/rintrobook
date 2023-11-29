@@ -1,0 +1,26 @@
+---
+title: デリミター(L48)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides069.jpg){group="slide"}
+
+![](slides/slides070.jpg){group="slide"}
+
+![](slides/slides071.jpg){group="slide"}
+
+![](slides/slides072.jpg){group="slide"}
+
+![](slides/slides073.jpg){group="slide"}
+
+![](slides/slides074.jpg){group="slide"}
+:::
+
+

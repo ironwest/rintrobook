@@ -1,0 +1,5 @@
+"0","default.stringsAsFactors()"
+"2","Error:  'default.stringsAsFactors' は廃止されました。 
+ '`stringsAsFactors = FALSE`' を代わりに使って下さい 
+ help(""Defunct"") を見て下さい 
+"

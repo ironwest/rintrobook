@@ -1,0 +1,83 @@
+---
+title: 数字を日付・時刻型へ(sld97)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+as_date(100)
+as_datetime(100)
+```
+ 
+で、起点となる日付や時刻からに日数や秒数で時刻・日付を作成することはすでに解説しました。
+
+ただ、例えば、
+
+```{r}
+dat <- tibble(
+  yr = 1901:1910,
+  mn = 1:10,
+  dy = 1:10,
+  hr = 1:10,
+  min = 1:10,
+  sec = 1:10
+)
+
+dat
+```
+
+のように、数字で年月日 時間分秒が与えられた場合に、どのように時刻型や日付型に変換すればよいでしょうか?
+
+文字列型に文字列をくっつけてやる方法はあります。
+
+```{r}
+str_c(1900,"-",10,"-",11," ",12,":",15,":",20) %>% 
+  as_datetime()
+```
+
+という方法ですが、これはなかなか煩雑です。
+
+実は、
+
+```{r}
+lubridate::make_date(year=1900,month=12,day=20)
+lubridate::make_datetime(year=1900, month=11, day=20, hour=12, min=20,sec=30)
+```
+
+という感じで、make_ という関数を利用すれば数字で指定することができるので、
+
+```{r}
+make_date(1900,12,10)
+make_datetime(1900,12,10,23,12,45)
+```
+
+こんな感じで、数字の羅列で時刻・日付を作成することができます
+
+ということで、
+
+```{r}
+dat2 <- dat %>% 
+  mutate(
+    d = make_date(yr,mn,dy),
+    t = make_datetime(yr,mn,dy,hr,min,sec)
+  ) 
+
+dat2$d
+dat2$t
+```
+
+こんな感じで数字から日付、時刻型を作成してとりだすことができます!
+
+さて、ここまででだいぶ日付や時刻を作成することができるようになってきたと思います。次は、ここまであえて触れてこなかった
+
+[10] "1910-10-10 10:10:10 UTC"
+
+のUTCという部分について触れておきます。
+

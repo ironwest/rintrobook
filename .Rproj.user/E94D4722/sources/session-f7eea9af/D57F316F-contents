@@ -1,0 +1,222 @@
+---
+title: Rmarkdownでレポートを作成してみる―課題1
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+課題1:
+
+kadai/dataフォルダに含まれる、data.csvファイルにはある会社の健康診断の（架空の）データが含まれています。この架空データ、列が６個あり、
+ 　
+* wpid: 職場ID
+* id  :個人のID
+* yr  :健康診断の年度
+* bmi :BMI
+* sbp :収縮期血圧
+* dbp :拡張期血圧
+
+です。ここで、個人を特定するにはwpidとidを組み合わせて行う形なっています。なので、id=1の人はwpid毎に一人ずついるので注意してください。
+ 　
+このデータを利用して、Rmrkdownを書いて、会社全体のレポートを上司に向けて作成してみてください。レポートの内容は、上司はパワーポイントでの発表を好むので、
+ 　
+* スライド1：タイトル
+* スライド2：全体を集計した表
+* スライド3~：職場別に集計した表
+
+としましょう。どのような集計方法とするかは、皆さんにお任せします。なお、会社の標準的なプレゼン資料のテンプレートは、kadai/bunseki_co_template.pptxの内容であるので、それを反映してください。
+
+それでははじめていきましょう。
+
+まずは、実際にRMarkdownを書く前にどんな表とグラフを表示するか、をここで考えておきます。
+
+```{r}
+library(tidyverse)
+
+dat <- read_csv("kadai/data/data.csv")
+```
+
+全体を集計した表:
+
+tidyverseだけを利用するなら、
+
+```{r}
+hyou1tidyv <- dat %>% 
+  group_by(yr) %>% 
+  summarise(
+    across(c(bmi,sbp,dbp),
+           .fn = list(mn = ~{mean(.)},
+                      q25 = ~{quantile(.,0.25)},
+                      q75 = ~{quantile(.,0.75)}),
+           .names = "{.col}_{.fn}")
+  ) %>% 
+  mutate(across(!yr, ~{signif(.,3)})) %>% 
+  mutate(
+    bmi_res = str_glue("{bmi_mn}({bmi_q25}-{bmi_q75})"),
+    sbp_res = str_glue("{sbp_mn}({sbp_q25}-{sbp_q75})"),
+    dbp_res = str_glue("{dbp_mn}({dbp_q25}-{dbp_q75})")
+  ) %>% 
+  select(`年度`=yr,
+         `BMI` = bmi_res,
+         `収縮期血圧` = sbp_res,
+         `拡張期血圧` = dbp_res)
+
+```
+
+こんな感じで表を作成してあげます。
+
+across等を駆使して短めに書いてはいますが、ちょっと面倒です
+
+ここで利用している、
+　
+* signifはという有効数字に丸める関数です。
+* str_glueは"{列名}"とすると、その部分を置き換えた文字に置き換えてくれる便利な関数です。
+
+ちょっと難しいかもしれません
+
+ただ、とりあえず、このような形の表を作成できれば、knitr::kableという関数に与えてあげると、自動的にmarkdown形式に変換してくれます。
+
+```{r}
+hyou1tidyv
+
+knitr::kable(hyou1tidyv)  
+```
+
+これを利用してもよいですし、
+
+
+gtsummaryというパッケージを利用するともっと簡単に集計表を作成できて、
+
+```{r}
+tbl <- gtsummary::tbl_summary(dat,by="yr",include = c("bmi","sbp","dbp"))
+tbl
+```
+
+こんな感じです。英語表記なので、日本語に直す手間は少しかかりますが、こちらの方が、処理の内容としてはだいぶ楽だと思います。
+
+```{r}
+library(gtsummary)
+tbl2 <- tbl_summary(
+  data = dat,
+  by="yr",
+  include = c("bmi","sbp","dbp"),
+  label = list(bmi ~ "BMI", 
+               sbp ~ "収縮期血圧",
+               dbp ~ "拡張期血圧") 
+) %>% 
+  modify_header(list(label~"**検査値**")) %>%  
+  　　　# 検査値を足しています
+  
+  modify_spanning_header( #この関数で「年度」を足しています
+    list(
+      stat_1 ~ "**年度**",
+      stat_2 ~ "**年度**",
+      stat_3 ~ "**年度**"
+    )
+  ) %>% 
+  
+  modify_footnote( # この関数でフットノートを日本語にしています
+    list(
+      stat_1 ~ "中央値(IQR)",
+      stat_2 ~ "中央値(IQR)",
+      stat_3 ~ "中央値(IQR)"
+    )
+  )
+
+tbl2
+```
+
+modify~という関数で設定を色々変えています。
+
+stat_1など、表の列名をしらべるには、
+
+```{r}
+gtsummary::show_header_names(tbl)
+```
+
+としてあげます。gtsummaryの詳しい使い方は本コースの対象範囲からはずれるので、ここでは上のようなパッケージや関数を使うと表が作れるんだというくらいの認識でよいと思います。
+
+今回は、この表を利用しましょう。
+
+尚、職場別に集計した結果は、このgtsummary::tbl_summaryに与えるデータをfilterを利用して職場単位に絞り込めばOKです。なので、
+
+```{r}
+dat %>% count(wpid)
+```
+
+このように、wpidが１から５まで、５つあるので、５回、処理を繰り返す必要があります。
+
+```{r}
+dat %>% 
+  filter(wpid==1) %>% 
+tbl_summary(
+  data = .,
+  by="yr",
+  include = c("bmi","sbp","dbp"),
+  label = list(bmi ~ "BMI", 
+               sbp ~ "収縮期血圧",
+               dbp ~ "拡張期血圧") 
+) %>% 
+  modify_header(list(label~"**検査値**")) %>%  
+  # 検査値を足しています
+  
+  modify_spanning_header( #この関数で「年度」を足しています
+    list(
+      stat_1 ~ "**年度**",
+      stat_2 ~ "**年度**",
+      stat_3 ~ "**年度**"
+    )
+  ) %>% 
+  
+  modify_footnote( # この関数でフットノートを日本語にしています
+    list(
+      stat_1 ~ "中央値(IQR)",
+      stat_2 ~ "中央値(IQR)",
+      stat_3 ~ "中央値(IQR)"
+    )
+  )
+
+```
+
+さすがに面倒なので、関数化しておきましょう。
+
+```{r}
+
+make_hyou <- function(.data){
+  .data %>% 
+    tbl_summary(
+      data = .,
+      by="yr",
+      include = c("bmi","sbp","dbp"),
+      label = list(bmi ~ "BMI", 
+                   sbp ~ "収縮期血圧",
+                   dbp ~ "拡張期血圧") 
+    ) %>% 
+    modify_header(list(label~"**検査値**")) %>%  
+    # 検査値を足しています
+    
+    modify_spanning_header( #この関数で「年度」を足しています
+      list(
+        stat_1 ~ "**年度**",
+        stat_2 ~ "**年度**",
+        stat_3 ~ "**年度**"
+      )
+    ) %>% 
+    
+    modify_footnote( # この関数でフットノートを日本語にしています
+      list(
+        stat_1 ~ "中央値(IQR)",
+        stat_2 ~ "中央値(IQR)",
+        stat_3 ~ "中央値(IQR)"
+      )
+    )
+}
+
+```
+.data を与えてあげて、表ができあがります。
+
+```{r}
+dat %>% filter(wpid==2) %>% make_hyou()
+```
+
+この関数を用いて、kadai/kadai1_1.Rmdでレポートが出力できるか見ていきましょう。

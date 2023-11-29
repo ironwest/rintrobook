@@ -1,0 +1,65 @@
+---
+title: arrange()の実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは、arrange関数の動作を実際のRで確認していきましょう。
+
+```{r}
+dat <- tibble(
+  a = c(1,3,2,4,3,5,3,2,5,1),
+  b = c(5,2,3,4,5,2,1,2,1,4),
+  c = c(1,2,3,4,5,6,7,8,9,10)
+)
+```
+
+まずは、1列指定のarrangeですが、
+
+```{r}
+dat %>% arrange(a)
+dat %>% arrange(b)
+```
+
+c列が元の並び順に番号を振ってあるので、arrange関数が確かにデータを並び替えてくれているのがわかると思います。
+
+descending order、（降順）にならべるdescも利用してみましょう
+
+```{r}
+dat %>% arrange(desc(a))
+dat %>% arrange(desc(b))
+```
+
+たしかに、降順に並んでいますね?複数していする場合
+
+```{r}
+dat %>% arrange(a)
+dat %>% arrange(a,b)
+```
+
+を比べてみてください。arrange(a)だと、b列の最初の2行は5，4とならんでいますが
+
+arrange(a,b)とすると、b列の最初の二行は4，5とならんでいます。
+
+descは複数列を指定しても有効なので、a列、b列の並び替え方の組み合わせは、
+
+```{r}
+dat %>% arrange(a      ,     b )
+dat %>% arrange(a      ,desc(b))
+dat %>% arrange(desc(a),     b )
+dat %>% arrange(desc(a),desc(b))
+```
+
+全部で4通りです。
+
+以上arrangeの実践でした。次は練習問題を解いておきましょう。
+

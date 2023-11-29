@@ -1,0 +1,23 @@
+---
+title: themeの解説
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides089.jpg){group="slides"}
+
+![](slides/slides090.jpg){group="slides"}
+
+![](slides/slides091.jpg){group="slides"}
+
+![](slides/slides092.jpg){group="slides"}
+
+![](slides/slides093.jpg){group="slides"}
+:::
+

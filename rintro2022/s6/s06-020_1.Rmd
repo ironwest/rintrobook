@@ -1,0 +1,99 @@
+---
+title: 差の計算のRでの実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは、ここからは、lag、leadなどの関数の動作をRで見ていきましょう。
+
+まずは、スライドで紹介した関数のベクトルに対する動作を改めて確認しておきます。
+
+```{r}
+vec <- c(1,2,3,4,5)
+
+dplyr::lag(vec)
+dplyr::lead(vec)
+dplyr::first(vec)
+dplyr::last(vec)
+dplyr::nth(vec,3)
+```
+
+これらの関数の動作、イメージ通りでしょうか。lagが後ろにずらし、leadが前にずらしfirstが一番目の要素lastが最後の要素nthがn番目の要素を取り出すという関数になっています。
+
+tibbleの列に対しても実行してみましょう
+
+```{r}
+dat <- tibble(
+  a = c(1,2,3,4,5)
+)
+
+dat %>% 
+  mutate(
+    a_lag=lag(a),
+    a_lead = lead(a),
+    a_first = first(a),
+    a_last = last(a),
+    a_third = nth(a,3)
+  )
+```
+
+いかがでしょうか?
+
+スライドでの説明通りに動いていますね?
+
+group_byを入れてあげる場合も
+
+```{r}
+dat <- tibble(
+  id = c(1 ,1 ,1 ,1 ,2 ,2 ,2 ,2 ,3 ,3 ,3 ,3),
+  v  = c(11,12,13,14,21,22,23,24,31,32,33,34) 
+)
+
+dat %>% 
+  mutate(
+    v_lag=lag(v),
+    v_lead = lead(v),
+    v_first = first(v),
+    v_last = last(v)
+  )
+```
+
+こんな感じの結果が、
+
+```{r}
+dat %>%
+  group_by(id) %>% 
+  mutate(
+    v_lag=lag(v),
+    v_lead = lead(v),
+    v_first = first(v),
+    v_last = last(v)
+  )
+```
+
+mutateだとこうなって、
+
+summariseだと、
+
+```{r}
+dat %>%
+  group_by(id) %>% 
+  summarise(
+    v_first = first(v),
+    v_last = last(v),
+    v_second = nth(v,2)
+  )
+```
+
+こうなりました。
+
+いかがでしょうか?
+
+ここでご紹介した関数を利用すれば、縦方向に時系列で保存されているデータから、差や比等を抽出することできそうですね?
+
+次の動画では、これらの関数を利用した課題をお出しいたします。

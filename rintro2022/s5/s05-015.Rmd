@@ -1,0 +1,28 @@
+---
+title: select()の解説
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5b/slides030.jpg){group="slides"}
+
+![](slides/s5b/slides031.jpg){group="slides"}
+
+![](slides/s5b/slides032.jpg){group="slides"}
+
+![](slides/s5b/slides033.jpg){group="slides"}
+
+![](slides/s5b/slides034.jpg){group="slides"}
+
+![](slides/s5b/slides035.jpg){group="slides"}
+
+![](slides/s5b/slides036.jpg){group="slides"}
+
+![](slides/s5b/slides037.jpg){group="slides"}
+:::

@@ -1,0 +1,14 @@
+{
+  "hash": "39e83ee423b8603b779cbf0436c03338",
+  "result": {
+    "markdown": "---\ntitle: 課題\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nそれでは復習しておきましょう。\n\n課題1:次のベクトル(vec)を因子型に変換して、適当な名前の名前の変数を作成してください\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec <- c(\"大阪\",\"京都\",\"大阪\",\"兵庫\",\"京都\")\n```\n:::\n\n\n\n課題2:課題1で作成した因子型の変数のレベルを確認してください\n\n課題3:課題1で作成した因子型の変数のレベルを大阪府、京都府、兵庫県のように、府県を付けた形に直してください。\n\n課題4:課題3で修正した因子型ベクトルのレベルに、奈良県、和歌山県、滋賀県を追加してください。\n\n課題5:次のvec2ベクトルを\n\na: 大阪府\nb: 京都府\nc: 兵庫県\nd: 和歌山県\ne: 奈良県\nf: 滋賀県\n\nとなるように、factor関数を利用して、因子型\nベクトルを作成してください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec2 <- c(\"a\",\"b\",\"d\",\"a\",\"b\",\"e\",\"c\")\n```\n:::\n\n\n\n動画を止めて、解答を作成してみてください。\n\nパソコンを開いていないという方は、頭のなかでどのようなスクリプトを書くか、考えてみてください。\n\nできましたか？\n\n課題1:次のベクトル(vec)を因子型に変換して、適当な名前の名前の変数を作成してください\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec <- c(\"大阪\",\"京都\",\"大阪\",\"兵庫\",\"京都\")\n\nfac <- as.factor(vec)\n```\n:::\n\n\n\n課題2:課題1で作成した因子型の変数のレベルを確認してください\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlevels(fac)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"京都\" \"大阪\" \"兵庫\"\n```\n:::\n:::\n\n\n\n課題3:課題1で作成した因子型の変数のレベルを大阪府、京都府、兵庫県のように、府県を付けた形に直してください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlevels(fac) <- c(\"京都府\",\"大阪府\",\"兵庫県\")\nlevels(fac)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"京都府\" \"大阪府\" \"兵庫県\"\n```\n:::\n\n```{.r .cell-code}\nfac\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 大阪府 京都府 大阪府 兵庫県 京都府\nLevels: 京都府 大阪府 兵庫県\n```\n:::\n:::\n\n\n\n課題4:課題3で修正した因子型ベクトルのレベルに、奈良県、和歌山県、滋賀県を追加してください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlevels(fac) <- c(levels(fac), \"奈良県\",\"和歌山県\",\"滋賀県\")\nlevels(fac)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"京都府\"   \"大阪府\"   \"兵庫県\"   \"奈良県\"   \"和歌山県\" \"滋賀県\"  \n```\n:::\n\n```{.r .cell-code}\nfac\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 大阪府 京都府 大阪府 兵庫県 京都府\nLevels: 京都府 大阪府 兵庫県 奈良県 和歌山県 滋賀県\n```\n:::\n:::\n\n\n\n課題5:次のvec2ベクトルを\n\na: 大阪府\nb: 京都府\nc: 兵庫県\nd: 和歌山県\ne: 奈良県\nf: 滋賀県\n\nとなるように、factor関数を利用して、因子型ベクトルを作成してください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec2 <- c(\"a\",\"b\",\"d\",\"a\",\"b\",\"e\",\"c\")\nfactor(\n  vec2,\n  levels=c(\"a\",\"b\",\"c\",\"d\",\"e\",\"f\"),\n  labels=c(\"大阪府\",\"京都府\",\"兵庫県\",\n           \"和歌山県\",\"奈良県\",\"滋賀県\")\n)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 大阪府   京都府   和歌山県 大阪府   京都府   奈良県   兵庫県  \nLevels: 大阪府 京都府 兵庫県 和歌山県 奈良県 滋賀県\n```\n:::\n:::\n\n\n\n以上です！\n\nそれでは次からグラフの作成に入っていきましょう。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

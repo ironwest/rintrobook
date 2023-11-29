@@ -1,0 +1,9 @@
+---
+title: セクション3:インポート
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+このセクションではRにデータを入れるための方法について解説していきます。
+

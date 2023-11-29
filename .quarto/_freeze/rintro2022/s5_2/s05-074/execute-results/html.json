@@ -1,0 +1,14 @@
+{
+  "hash": "00491150aadcba166e99a3a93676ff6a",
+  "result": {
+    "markdown": "---\ntitle: パート2の概要\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n Lec: パート2の概要----------\n\nここからは、\n\n1. 私が作成した看護記録もどき.xlsxの加工\n2. 厚生労働省のオープンデータ:人口動態統計のtidy化\n3. 厚生労働省のオープンデータ:食中毒統計データのtidy化\n\nを行いながら、汚いデータをキレイにする工程を一緒に経験していきましょう。\n\nそれでは、よろしくお願い申し上げます。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

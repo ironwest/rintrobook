@@ -1,0 +1,86 @@
+---
+title: 人口動態統計データの加工1
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+ここからは、data/mc360000.csvファイルのデータを加工していきます。
+
+セクション5で解説した関数以外も少し登場します。
+
+このデータは、
+
+https://www.e-stat.go.jp/stat-search/files?page=1&layout=datalist&toukei=00450011&tstat=000001028897&cycle=7&year=20190&month=0&tclass1=000001053058&tclass2=000001053061&tclass3=000001053065&stat_infid=000031982775&result_back=1&tclass4val=0
+
+政府統計の総合窓口、
+
+自殺による死因（三桁基本分類）別にみた性・年次別死亡数及び百分率
+
+をダウンロードしたそのままのものです。
+
+一切エクセル等でデータの加工をすることなく、RのみでTidyにしていきましょう!
+
+まずはインポート!
+
+の前にデータを眺めましょう。
+
+RStudioでCSVファイルを開くと中身をテキストファイルとして見れます。
+
+まず、普通にひらくと文字化けしているので、File Reopenwith Encodingでshift-jisを選びましょうそうすると、最初の3行は注意書きになっており、これをインポートしてしまうとまずいです。
+
+ということで、文字コードはshift-jisで、最初の3行を飛ばしてインポートしましょう。また、列名はあってないようなものなので、列名はつけない設定にしましょう
+
+```{r}
+dat <- read_csv(
+  file = "data/mc360000.csv", 
+  locale=locale(encoding="shift-jis"),
+  skip = 3, 
+  col_names = FALSE
+)
+
+View(dat)
+```
+
+X2列に総数が一番上にきていて、これは、ファイルの4行目の総数と一致しており、狙った行からインポートできています。
+
+ここで、ちょっと補足なのですが、skipの値はcol_namesで列名をTRUEとした場合とFALSEとした場合で同じ値を指定していても違う結果になります。
+
+例として、
+
+```{r}
+use_shiftjis <- locale(encoding="shift-jis")
+
+read_csv("data/skip.csv", locale=use_shiftjis)
+read_csv("data/skip.csv", locale=use_shiftjis, skip=3)
+read_csv("data/skip.csv", locale=use_shiftjis, skip=3, col_name=FALSE)
+```
+
+行1 |
+行2 | skip=3 で行1から3までが飛ばされる
+行3 |
+行4  <- col_name=TRUEだとここが列名に
+行5  <- データはここからはじまる。
+行6
+
+行1 |
+行2 | skip=3 で行1から3までが飛ばされる
+行3 |
+行4  <- col_name=FALSEだとデータはここからはじまる
+行5  
+行6
+
+こんな感じです。
+
+さて、次の動画では、
+
+```{r}
+dat
+```
+
+の加工をつづけていきましょう。
+

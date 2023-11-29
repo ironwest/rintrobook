@@ -1,0 +1,33 @@
+---
+title: tibble形式の確認と変換(さらに知りたい人のために)(L51)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+Rの変数に保存されているデータがtibbleか、data.frameなのかを確認する方法は印字してみたら明らかですが、
+
+```{r}
+class(df1)
+class(tib1)
+```
+
+このようにbase::class関数を用いても確認できます。
+
+
+data.frameは"data.frame"だけですが、tibbleは、"tbl_df" "tbl" "data.frame"と3つほどクラスという属性がついています。
+
+このdata.frame、tibbleに変換することは簡単で、
+
+```{r}
+as_tibble(df1)
+```
+
+としてあげることで、tibble形式に変換できますので、data.frameに将来遭遇した時に利用してみてください
+
+それでは、次の動画からはParseという概念の説明を行っていきます。
+

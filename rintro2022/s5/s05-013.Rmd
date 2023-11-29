@@ -1,0 +1,129 @@
+---
+title: mutate()の練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+課題1:
+
+配布したフォルダに含まれる、"data/practive1.csv"をインポートして利用してください。(インポートするところからが練習問題です)
+
+インポートすると、id,height(身長[cm]),weight(体重[kg])という列名を持つ表となっているはずです。
+
+課題2
+
+身長をcm単位のデータからm単位のデータにして、height_mという列名に入れてください。。(例えば、121[cm]であれば、100でわると、1.21[m]と、メートル単位になります。Rでは割り算は 121/100のように表します。)
+ 
+課題3
+
+height_mを二乗して、hm_squaredという名前の列を作成してください。
+ 
+課題4
+
+weightとhm_squaredからBMI(body mass index)を計算して、bmi1という列名に保存しください。BMIの計算式は、体重[kg] ÷ (身長[m] * 身長[m])です。
+
+課題5
+
+weightとheightからBMIを計算して、bmi2という列名に保存してください。
+
+それでは、動画をとめてどうぞ:
+
+
+できましたか?
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+課題1:解答
+
+"data/practice1.csv"をインポートする
+
+```{r}
+dat <- read_csv("data/practice1.csv")
+dat
+```
+
+課題2
+
+身長をcm単位のデータからm単位のデータにして、height_mという列名に入れてください。
+
+```{r}
+dat2 <- dat %>% 
+  mutate(height_m = height/100)
+dat2
+```
+
+課題3
+
+height_mを二乗して、hm_squaredという名前の列を作成してください。
+
+```{r}
+dat3 <- dat2 %>% 
+  mutate(hm_squared = height_m * height_m)
+
+dat3
+```
+
+あるいは、
+
+```{r}
+dat3 <- dat2 %>% 
+  mutate(hm_squared = height_m^2)
+
+dat3
+```
+
+A^xでAのx乗という意味になります。
+
+課題4
+
+weightとhm_squaredからBMI(body mass index)を計算して、bmi1という列名に保存しください。
+
+```{r}
+dat4 <- dat3 %>% 
+  mutate(bmi1 = weight/hm_squared)
+dat4
+```
+
+課題5
+
+weightとheightからBMIを計算して、bmi2という列名に保存してください。
+
+```{r}
+dat5 <- dat4 %>% 
+  mutate(bmi2 = weight/((height/100)^2))
+
+dat5
+```
+
+一致していましたか？
+
+bmi1の手順、mutate関数1個で書くのであれば、
+
+```{r}
+dat
+dat %>% 
+  mutate(
+    height_m = height/100,
+    hm_squared = height_m^2,
+    bmi1 = weight/hm_squared
+  )
+```
+
+と書くこともできますし、パイプをつなげて書くのであれば、
+
+```{r}
+dat %>% 
+  mutate(height_m = height/100) %>% 
+  mutate(hm_squared = height_m^2) %>% 
+  mutate(bmi1 = weight/hm_squared)
+```
+
+と書いてもOKです。
+
+(個人的にはmutate関数毎の変数作成する癖がありますが、これは好き好きでよいと思います。)
+
+以上、mutate関数の説明でした。次は変数名を操作する関数をご紹介していきます
+

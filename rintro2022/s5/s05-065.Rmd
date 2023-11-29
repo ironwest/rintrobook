@@ -1,0 +1,90 @@
+---
+title: 実践 pivot_longerで複数列を同時に作成する
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+ここからは、pivot_longerの話です。1つ前の動画で作成したデータですが、
+
+```{r}
+dat <- tibble(
+  age = c("<20","20-30","30-40",">40","<20","20-30","30-40",">40"),
+  grp = c("A","B","A","B","A","B","A","B"),
+  sex = c("m","m","m","m","f","f","f","f"),
+  val = c(1:8)
+)
+
+yoko <- dat %>% 
+  pivot_wider(
+    id_cols = grp,
+    names_from = c(age, sex),
+    values_from = val,
+    values_fill = 0
+  )
+
+yoko
+```
+
+このデータを縦方向に並べてみましょう解説した方法だけだと、
+
+```{r}
+tate1 <- yoko %>% 
+  pivot_longer(
+    cols = !grp,
+    names_to = "name",
+    values_to = "value"
+  )
+
+tate1
+```
+
+こんな形になるので、
+
+```{r}
+tate1 %>% 
+  separate(name,c("age","sex"), sep="_")
+```
+
+separate関数や、
+
+```{r}
+tate1 %>% 
+  extract(name,c("age","sex"), regex="(.+)_(.+)")
+```
+
+extract関数を利用してさらに分割してあげる必要があります
+
+実は、pivot_longer関数に列の分割まで含めていっきにやってくれるargumentが備えられており、
+
+```{r}
+yoko %>% 
+  pivot_longer(
+    cols = !grp,
+    names_to = c("age","sex"),
+    values_to = "value",
+    names_sep = "_"
+  )
+```
+names_toに最終的な変数の名前と、names_sepで分割するための正規表現を与えてあげることで、separate関数をnames_to列に実行したような結果を1つの関数で実施可能です。
+
+extract関数と同じ働きも備えられており、
+
+```{r}
+yoko %>% 
+  pivot_longer(
+    cols = !grp,
+    names_to = c("age","sex"),
+    values_to = "value",
+    names_pattern = "(.+)_(.+)"
+  )
+```
+
+names_toに目的とする最終的な列名、names_patternにextract関数でいうところのregrexを与えてあげると分割することができました。
+
+この機能、複雑な列名がついた横持ちデータには非常に有効ですので、覚えておいてください(もちろん、pivot_longerとextract等を組み合わせるような使い方でも問題ありません！)
+

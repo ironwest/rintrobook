@@ -1,0 +1,216 @@
+---
+title: 練習問題の解答
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+できましたか?
+
+これまでの知識も利用しながら実施する問題なので少し難しかったかもしれません。
+
+Q0: data/stringr.xlsxファイルのSheet1にあるデータをよみこみましょう。
+
+```{r}
+library(tidyverse)
+library(readxl)
+dat <- read_excel("data/stringr.xlsx")
+dat
+```
+これは、特に問題ありませんね。これまで通りです。
+
+
+Q1-1 target1列のみに列を絞って、"xxx100ml 1unit"の、unitの前の数字をぬきだして新しい列、unitを作成してください
+
+```{r}
+dat1 <- dat %>% 
+  select(target1) %>% 
+  mutate(unit = str_extract(target1, "\\d+(?=unit)"))
+
+dat1
+```
+
+これも、基本的なextract関数の使い方で、正規表現そのものもそれほど複雑ではないですね？
+
+Q1-2 Q1-1で作成した表で、target1列の"xxx100ml 1unit"の、ml前の数字をぬきだして、mlではなくてL単位に変換(100mlなら0.1L)してlitterという新しい列を追加してください。
+
+```{r}
+dat1 <- dat1 %>% 
+  mutate(ml = str_extract(target1,"\\d+(?=ml)"))
+
+dat1 <- dat1 %>% 
+  mutate(litter = as.numeric(ml)/1000)
+
+dat1
+```
+
+すこし込み入ってきました。as.numericで文字列を数字型に変換してあげれば計算することができます。
+
+Q1-3 Q1-2で作成した表で、target1の"xxx100ml 2unit"の、xxx部分を抜き出して、nameという名前の新しい列を作成してください。尚前後に余分なスペースがあればname列から削除してください。
+
+最初の正規表現的な難問です。
+
+```{r}
+dat1 <- dat1 %>% 
+  mutate(name = str_extract(target1,"^.+(?=(:| ))"))
+
+dat1
+```
+
+このように、Look Aroundでスペースかコロンを指定しても、後ろのスペースのところまでを.+が拾ってしまいます。
+
+こういう場合は、正規表現のところで解説した.+?という+のマッチする範囲を最小に絞るという表記を利用しましょう。
+
+```{r}
+dat1 <- dat1 %>% 
+  mutate(name = str_extract(target1,"^.+?(?=(:| ))"))
+
+dat1
+```
+
+できました!
+
+Q1-4 Q1-3で作成した表で、target1列を削除して、name, litter, unitの順に列の順番を並べてください
+
+```{r}
+dat1
+colnames(dat1)
+```
+
+から、必要なものだけを選べばよいので、問題文通りにするのであれば、
+
+```{r}
+dat1 %>% 
+  select(!c(target1, ml)) %>% 
+  select(name, litter, unit)
+```
+
+ですが、selectはそもそもそれ以外削除するので、
+
+```{r}
+dat1 %>% select(name,litter,unit)
+```
+
+でOKです。
+
+Q2-1 target2列のみに絞って、検査結果のみを抜き出して新しいValue列を作成してください
+
+```{r}
+dat2 <- dat %>% select(target2)
+dat2
+
+dat2 <- dat2 %>% 
+  mutate(value = str_extract(target2,"(?<=\\s)(\\d+\\.\\d+|\\d+)"))
+```
+
+Q2-2 Q2-1で作成した表に、target2列の単位を抜き出して新しい列、unitを作成してください。
+
+正規表現で直接抜き出すのは難しいのでstr_replaceを使いましょう
+
+```{r}
+dat2 <- dat2 %>% 
+  mutate(num_unit = str_extract(target2, "(?<=\\s).+$")) %>% 
+  mutate(unit = str_replace(num_unit,"\\d+\\.\\d+|\\d+",""))
+dat2
+```
+
+なぜか1行目のIUの最後にカンマがありますね(これは本気で私が消し忘れていたカンマです。ついでにこれをけしておきましょう。)
+
+```{r}
+dat2 <- dat2 %>% 
+  mutate(unit = str_replace(unit,",$",""))
+dat2
+```
+Q2-3 Q2-2で作成した表に、target2列の検査名を抜き出して、新しい列、nameを作成してください。
+
+```{r}
+dat2 <- dat2 %>% 
+  mutate(name = str_extract(target2,".+?(?=(:|\\s))"))
+dat2
+```
+
+これも.+?とつけないと、:を省いて抜き出すことができませんね
+
+Q2-4 Q2-3で作成した表の、target2列を削除して、name,value,unitの順番に列を並び替えてください
+
+```{r}
+dat2 %>% select(name, value, unit)
+```
+
+Q3-1 target3列のみに列を絞って、手術名(op:XX)を抜き出して新しい列nameを作成してください
+
+```{r}
+dat3 <- dat %>% 
+  select(target3) %>% 
+  mutate(name = str_extract(target3,"(?<=ope:).+?(?= \\d)"))
+```
+
+Q3-2 Q3-1で作成した表の、 target3列のの出血量をぬきだして新しい列、blood_lostを作成してください。今までと同じ方法ではうまくいきませんがなぜでしょうか？元のデータは触らずに、本来入力したかったであろう数値に置き換えてください。
+
+これではうまくいきません
+
+```{r}
+dat3 %>% 
+  mutate(blood_lost = str_extract(target3,"\\d+(?=ml)"))
+```
+
+実は
+
+```{r}
+dat3$target3 %>% 
+  str_view("O") #大文字のオー
+```
+
+という風に、一部のゼロが大文字のオーに置き換わっています。\ということで、
+
+```{r}
+dat3 %>% 
+  mutate(blood_lost = str_extract(target3,"(?<=hr\\s).+(?=ml)")) %>% 
+  mutate(blood_lost = str_replace(blood_lost,"O","0"))
+```
+
+抜き出してから大文字のオーを、数字のゼロに置き換えます。ただし、オーが二つあるデータもあるので、一回だけでは全部置き換えられません。
+
+```{r}
+dat3 %>% 
+  mutate(blood_lost = str_extract(target3,"(?<=hr\\s).+(?=ml)")) %>% 
+  mutate(blood_lost = str_replace(blood_lost,"O","0")) %>% 
+  mutate(blood_lost = str_replace(blood_lost,"O","0"))
+```
+
+このように、2回置き換えてもよいですが、それだと何回置き換えてよいかわからないケースも多いので、全部置き換えるstr_replace_allを利用しましょう。
+
+```{r}
+dat3 <- dat3 %>% 
+  mutate(blood_lost = str_extract(target3,"(?<=hr\\s).+(?=ml)")) %>% 
+  mutate(blood_lost = str_replace_all(blood_lost,"O","0"))
+  
+dat3
+```
+
+この_allが作関数他にもあって  
+
+```{r}
+str_view_all(dat3$target3,"O")
+str_extract_all(c("abc","aba","abcba"), "a")
+```
+
+こんな感じでviewやextractにもあります。extractの結果はListというもので、まだ解説していませんので、わからなくて結構です。
+
+また、置き換えるときに、複数個置き換えたいばあいは、str_replace_allを利用すると便利です。
+
+Q3-3 Q3-2で作成した表の、target3列のhr前の時間を抜き出して新しい列、time_hrを作成してください。
+
+```{r}
+dat3 <- dat3 %>% 
+  mutate(time_hr = str_extract(target3,"(?<=\\s)(\\d+\\.\\d+|\\d+)(?=hr)"))
+```
+
+Q3-4 Q3-3で作成した表の、target3列を削除して、name, blood_lost, time_hrの順番に並び替えてください。
+
+```{r}
+dat3 %>% 
+  select(name, blood_lost, time_hr)
+```
+
+以上でstringrの練習問題の解説終了です！

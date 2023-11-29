@@ -1,0 +1,23 @@
+---
+title: セクションの導入
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s7/slides001.jpg){group="slides"}
+
+![](slides/s7/slides002.jpg){group="slides"}
+
+![](slides/s7/slides003.jpg){group="slides"}
+
+![](slides/s7/slides004.jpg){group="slides"}
+
+![](slides/s7/slides005.jpg){group="slides"}
+:::
+

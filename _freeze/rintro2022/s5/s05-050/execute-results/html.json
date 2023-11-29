@@ -1,0 +1,14 @@
+{
+  "hash": "31dc94fbc08b84461fefde03e134bbbc",
+  "result": {
+    "markdown": "---\ntitle: separate() 解説\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5d/slides008.jpg){group=\"slides\"}\n\n![](slides/s5d/slides009.jpg){group=\"slides\"}\n\n![](slides/s5d/slides010.jpg){group=\"slides\"}\n\n![](slides/s5d/slides011.jpg){group=\"slides\"}\n:::\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

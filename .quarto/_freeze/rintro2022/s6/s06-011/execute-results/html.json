@@ -1,0 +1,14 @@
+{
+  "hash": "9a36ccb8b61f0f1581441b70c625191e",
+  "result": {
+    "markdown": "---\ntitle: 全体集計の実践2(tidyverse)\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/slides029.jpg){group=\"slides\"}\n\n![](slides/slides030.jpg){group=\"slides\"}\n\n![](slides/slides031.jpg){group=\"slides\"}\n\n![](slides/slides032.jpg){group=\"slides\"}\n\n![](slides/slides033.jpg){group=\"slides\"}\n\n![](slides/slides034.jpg){group=\"slides\"}\n\n![](slides/slides035.jpg){group=\"slides\"}\n\n![](slides/slides036.jpg){group=\"slides\"}\n\n![](slides/slides037.jpg){group=\"slides\"}\n\n![](slides/slides038.jpg){group=\"slides\"}\n\n![](slides/slides039.jpg){group=\"slides\"}\n\n![](slides/slides040.jpg){group=\"slides\"}\n\n![](slides/slides041.jpg){group=\"slides\"}\n\n![](slides/slides042.jpg){group=\"slides\"}\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

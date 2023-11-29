@@ -1,0 +1,64 @@
+---
+title: 実践 replace_na 
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+```{r}
+dat <- tibble(
+  x = c(1,2,NA,4,5),
+  y = c("a",NA,"c",NA,NA),
+  z = c("A",NA,NA,"B","C")
+)
+
+dat
+```
+
+この欠損値を置き換えていきます。
+
+まずは、xを0、yをmiss、zをMISSで置き換えてみます。ひとつ前の動画で学んだListをさっそく使ってみましょう
+
+```{r}
+dat %>% 
+  replace_na(list(x = 0, y = "miss", z = "MISS"))
+```
+
+簡単ですね?
+
+あと実は、ベクトルの置き換えも可能なので、
+
+```{r}
+dat2 <- dat %>% 
+  mutate(x = replace_na(x, 0),
+         y = replace_na(y,"miss"),
+         z = replace_na(z,"MISS"))
+dat2
+```
+
+長くなりますが、mutateの中で利用することも可能です。
+
+いかがでしょうか?
+
+実は、replace_naの逆を行う関数もありますのでここで一緒に解説しておきます。
+
+```{r}
+dat2 %>% 
+  mutate(y = na_if(y,"miss"))
+```
+
+このように、replace_naと逆の動きをするna_if関数を利用すれば、必要のない値をNAに変換するということも可能です。
+
+na_ifの使い方は、
+
+na_if(列名,NAにしたい値)
+
+でOKです。
+
+以上、NAの置き換えの話題でした。
+

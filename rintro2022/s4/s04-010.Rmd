@@ -1,0 +1,29 @@
+---
+title: geom関数群
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides033.jpg){group="slides"}
+
+![](slides/slides034.jpg){group="slides"}
+
+![](slides/slides035.jpg){group="slides"}
+
+![](slides/slides036.jpg){group="slides"}
+
+![](slides/slides037.jpg){group="slides"}
+
+![](slides/slides038.jpg){group="slides"}
+
+![](slides/slides039.jpg){group="slides"}
+
+![](slides/slides040.jpg){group="slides"}
+:::
+

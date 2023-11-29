@@ -1,0 +1,26 @@
+---
+title: セクションの全体像
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides001.jpg){group="slides"}
+
+![](slides/slides002.jpg){group="slides"}
+
+![](slides/slides003.jpg){group="slides"}
+
+![](slides/slides004.jpg){group="slides"}
+
+![](slides/slides005.jpg){group="slides"}
+
+![](slides/slides006.jpg){group="slides"}
+
+![](slides/slides007.jpg){group="slides"}
+:::

@@ -1,0 +1,35 @@
+---
+title: group_byと差の計算
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides082.jpg){group="slides"}
+
+![](slides/slides083.jpg){group="slides"}
+
+![](slides/slides084.jpg){group="slides"}
+
+![](slides/slides085.jpg){group="slides"}
+
+![](slides/slides086.jpg){group="slides"}
+
+![](slides/slides087.jpg){group="slides"}
+
+![](slides/slides088.jpg){group="slides"}
+
+![](slides/slides089.jpg){group="slides"}
+
+![](slides/slides090.jpg){group="slides"}
+
+![](slides/slides091.jpg){group="slides"}
+
+![](slides/slides092.jpg){group="slides"}
+:::
+

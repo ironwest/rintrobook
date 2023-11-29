@@ -1,0 +1,14 @@
+{
+  "hash": "2c85e87899b7b1e7e51affa013b8eac6",
+  "result": {
+    "markdown": "---\ntitle: 解説 replace_na \npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5d/slides017.jpg){group=\"slides\"}\n\n![](slides/s5d/slides018.jpg){group=\"slides\"}\n\n![](slides/s5d/slides019.jpg){group=\"slides\"}\n\n![](slides/s5d/slides020.jpg){group=\"slides\"}\n:::\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

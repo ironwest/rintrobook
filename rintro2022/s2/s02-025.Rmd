@@ -1,0 +1,102 @@
+---
+title: パッケージ(パッケージのインストールと呼び出し)(L30)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+それでは、スライドで解説した事項を実践していきましょう。
+
+この動画での目標は、tidyverseパッケージを皆さんのパソコンにインストールして、呼び出して、その動作を確認するところまでです。
+
+tidyverseが使えるようになれば、Rでのデータ分析に必要な機能をRに追加することができます。
+
+お手元のパソコンがインターネットに繋がっていることを確認して、下記を実行してください。
+
+```r
+install.packages("tidyverse")
+```
+
+少し時間がかかったかもしれませんが、エラーメッセージが出ずに終了していれば成功です！
+
+エラーメッセージが出て、うまくインストールができない場合は、次の動画で対処法を解説していますので、そちらに進んでください。
+
+インストールが終わっているのであれば、パッケージペーンでtidyverseが標示されているはずです。
+
+では呼び出していきますが、その前に、EnvironmentペーンのGlobal Environmentを確認しておきましょう。ここに、現在読み込まれているパッケージが標示されています内容なんとなく記憶しておいていただいて、
+
+```{r}
+library(tidyverse)
+```
+
+で呼び出してあげると、
+
+PackagesペーンのTidyverseにチェックが入り、また、Environmentペーンの読み込まれているパッケージのリストも増えている状態です。
+
+この状態で、パッケージに含まれる関数を呼び出すことができるよう
+になりました。
+
+これらのパッケージの使い方は、次のセクションから解説を行っていきます。ここでは、tidyverseに含まれる関数群を利用して、デモ的なものをお示しいたします。
+
+まずは、データを作りましょう
+
+```{r}
+vec_id <- c(1:7)
+vec_namae <- c("A","B","C","D","E","F","G")
+vec_by <- c(1987, 1930, 1940, 1972, 1954, 1987, 1930)
+vec_gender <- c("男","女","男","男","男","女","男")
+vec_admission <- c("2018-1-23", "2018-1-27", 
+                   "2018-2-4","2018-3-2","2018-3-10",
+                   "2018-3-12","2018-3-15")
+vec_discharge <- c("2018-1-30", "2018-2-1", 
+                   "2018-2-9","2018-3-3","2018-3-13",
+                   "2018-3-13","2018-4-1")
+vec_is_dead <- c(0,0,0,0,0,1,0)
+
+hyou <- data.frame(
+  id = vec_id,
+  name = vec_namae,
+  seinen = vec_by,
+  seibetu = vec_gender,
+  admission_date = vec_admission,
+  discharge_date= vec_discharge,
+  is_dead = vec_is_dead
+)
+```
+
+実例1：男女別の入院時年齢を箱ひげ図にしてみる。
+
+```{r}
+library(tidyverse)
+library(lubridate)
+
+hyou <- hyou %>%
+  mutate(
+    age_admission = 
+      year(as.Date(admission_date)) - 
+      as.numeric(seinen))
+
+ggplot(data = hyou,
+       mapping = aes(x = seibetu, 
+                     y = age_admission)) +
+  geom_boxplot()
+```
+
+実例2：入院期間のヒストグラムを書いてみる。
+
+```{r}
+hyou <- hyou %>%
+  mutate(nyuin_duration = 
+           as.Date(discharge_date) - 
+           as.Date(admission_date)) %>% 
+  mutate(nyuin_duration = as.numeric(nyuin_duration))
+
+ggplot(data = hyou,
+       mapping = aes(x = nyuin_duration)) +
+  geom_histogram(aes(fill = seibetu), binwidth = 1) +
+  theme_classic()
+```
+
+どうでしょうか？
+
+複雑に見えるかもしれませんが、本コースの受講後は簡単に思えているはずです。

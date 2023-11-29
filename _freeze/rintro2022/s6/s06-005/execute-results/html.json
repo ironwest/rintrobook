@@ -1,0 +1,14 @@
+{
+  "hash": "ea9a05db49f5b08e2075481ba9b6d89b",
+  "result": {
+    "markdown": "---\ntitle: 数値の集計\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n\ndat <- tibble(\n  num = 1:10,\n  fac2 = rep(c(\"a\",\"b\"), 5),\n  fac3 = rep(c(\"A\",\"B\",\"C\"), 4)[1:10]\n)\n```\n:::\n\n\n\nここでは、ベクトルを与えると、集計した数値を返してくれる関数をご紹介いたします。\n\nまずは　「ベクトルに含まれる要素の個数」です。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat$num %>% length()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 10\n```\n:::\n:::\n\n\n\nこれは簡単ですね。ベクトルの要素の個数が帰ってきています。\n\n「和」\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat$num %>% sum()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 55\n```\n:::\n:::\n\n\n\nはい。これも単純に全部足し合わせただけです\n\n「算術平均」は\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat$num %>% mean()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n:::\n\n\n\nで計算できます。\n\nmean()をつかわないで計算するなら\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsum(dat$num)/length(dat$num)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5.5\n```\n:::\n:::\n\n\n\nと書いても計算可能です。\n\nここまでかいてきて、毎回dat$と書くのが面倒に感じませんか？\n\n次の動画ではよりシンプルにこれらの演算をできる書き方について解説していきます。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

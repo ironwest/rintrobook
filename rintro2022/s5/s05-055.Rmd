@@ -1,0 +1,68 @@
+---
+title: 実践 fill
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それではfill関数の動作、確認していきましょう。
+
+とはいってもスライドで解説したとおり、
+
+```{r}
+dat <- tibble(
+  dai = c("A",NA,NA,NA,NA,NA,NA,NA,NA),
+  tyu = c("1",NA,NA,"2",NA,NA,NA,NA,NA),
+  syo = c("a","b","c","a","b","c","d","e","f"),
+  nam = c("い","ろ","は","に","ほ","へ","と","ち","り")
+)
+
+dat
+```
+
+このようあデータがある場合に、
+
+```{r}
+dat %>% fill(dai,tyu)
+```
+
+埋めたい列を指定してあげるだけです
+
+Argumentとしては、.directionというものがあります。ここで、downとupで方向を指定してうめることができます。
+
+```{r}
+dat %>% fill(dai,tyu, .direction="down")
+dat %>% fill(dai,tyu, .direction="up")
+```
+
+また、もし欠損値でなくて、別の文字で空白が表されている場合、
+
+```{r}
+dat <- tibble(
+  dai = c("A","","","","","","","",""),
+  tyu = c("1","","","2","","","","",""),
+  syo = c("a","b","c","a","b","c","d","e","f"),
+  nam = c("い","ろ","は","に","ほ","へ","と","ち","り")
+)
+
+dat
+```
+
+if_elseとfillを組み合わせてあげると埋めることができます。
+
+```{r}
+dat %>% 
+  mutate(
+    dai = if_else(dai == "", NA_character_, dai),
+    tyu = if_else(tyu == "", NA_character_, tyu)
+  ) %>% 
+  fill(dai, tyu)
+```
+
+以上、簡単ですが使い方でした。
+少し練習しておきましょう。
+

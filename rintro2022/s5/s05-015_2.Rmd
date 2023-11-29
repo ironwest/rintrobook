@@ -1,0 +1,160 @@
+---
+title: selectの実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+それでは、select関数を実際に使っていきましょう。
+
+```{r}
+dat <- tibble(a=1,b=1,c=1,d=1,e=1,f=1,g=1)
+
+dat
+```
+
+練習のために、まずは簡単な例から確認していきます。
+
+基本的なselectでの選択は、
+
+```{r}
+dat %>% select(a)
+```
+
+で1列だけを選択する他、
+
+```{r}
+dat %>% select(a,c,f)
+```
+
+の様に、複数列を選択することも可能でした。
+
+ !を使うことで、除外選択も可能で、
+
+```{r}
+dat %>% select(!a)
+```
+
+で、a列だけを除外することもできます。
+
+複数列を同時に除外したい場合は、
+
+```{r}
+dat %>% select(!c(a,c,d,g))
+```
+
+のように、c()でくくってあげて、その対象全体を!で除外するというような書き方になります
+
+everything():
+
+everything()は全部選択できました。この関数、単独でつかうと
+
+```{r}
+dat %>% select(everything())
+```
+
+まったく同じ結果になるので、あんまり存在意義を感じないかもしれませんが、列を並び替えたい時に便利です。例えば、今、aからgまでの順番で列が並んでいますが、これをg,a,b,c,d,e,fという順番で並び替えたいときに、
+
+```{r}
+dat %>% select(g,a,b,c,d,e,f)
+```
+
+と書くのではなく、
+
+```{r}
+dat %>% select(g, everything())
+```
+
+と描くことで目的達成です。今の例だと、列名自体は短いのでそれほど手間ではないかもしれませんが、everythingが該当する列名が、id, gender, age, school, income, health_status,q1, q2, .....というようなアンケートデータであったり、列数が100個あるとかの場合は、それをいちいち書くことなく、並び替えることができます。
+
+everything,matches,starts_with, ends_withはselection helperと呼ばれる関数群です。
+
+```{r}
+dat <- tibble(
+  qA1=1,
+  qA2=1,
+  qA3=1,
+  qA4a1=1,
+  qA4a2=1,
+  qA4b1=1,
+  qA4b2=1,
+  qA1_supp = 1,
+  qA2_supp = 1,
+  qB1=1,
+  qB2=1,
+  qB3=1,
+  qB4a1=1,
+  qB4a2=1,
+  qB4b1=1,
+  qB4b2=1,
+  qB1_supp = 1,
+  qB2_supp = 2
+)
+
+dat
+```
+
+仮に、こんな列名を持つアンケートデータがあったとしましょう。
+
+データからqAで始まる列だけを取り出したい場合、
+
+```{r}
+dat %>% select(starts_with("qa"))
+```
+
+とこんな感じで、まとめて取り出すことが可能です。
+
+他にも、
+
+```{r}
+dat %>% select(starts_with("qA4"))
+dat %>% select(starts_with("qB4"))
+```
+
+こんなことができます。基本的には大文字、小文字の区別はしてくれません。後ほど解説するLogical型というものを勉強した後でHelpファイルを見ていただくと、区別する方法がわかりますので、興味があれば見てみてください。
+
+ends_withを使うと、
+
+```{r}
+dat %>% select(ends_with("_supp"))
+```
+
+と、このように末尾の文字列に対してまとめてselectができるので便利です。
+
+このまとめて、選択できる関数、!c()と同じように、
+
+```{r}
+dat %>% select(!ends_with("_supp"))
+```
+
+まとめて除外するようなことも可能です。
+
+部分一致で選択をしたい場合は、
+
+```{r}
+dat %>% select(matches("A1"))
+```
+
+とすると選択できました。
+
+selection helper、若干ややこしいかもしれないので、最初のうちは迷いそうであれば、地道に打ち出すでもよいと思います（私も、selection helperをそれなりに使うようになったの、学びはじめてだいぶたってからでした。最初から知ってたら結構楽できる場面も多いので、ちょっと難しいですがここで取り上げた次第です。)
+
+```{r}
+dat %>% select(matches("A1"))
+dat %>% select(qA1, qA4a1, qA1_supp, qB4a1)
+```
+
+最後に、実はrename関数と同じ書き方をすることで選択しながら、列名を変更することも可能ですのでお示ししておきましょう
+
+```{r}
+dat %>% select(question_A1 = qA1,
+               question_A4a1 = qA4a1)
+```
+
+おつかれさまでした!
+次の動画でselectの練習問題を解いておきましょう。
+

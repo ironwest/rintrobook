@@ -1,0 +1,20 @@
+{
+  "hash": "7e49d36277e4d46d0b0bb61cfacbc342",
+  "result": {
+    "markdown": "---\ntitle: group_byの効果の確認(sld70)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n:::\n\n\n\nひとつ前と二つ前の動画ではgroup_by関数についての イメージを作るための解説を実施してきました。\n\nここからは、group_by関数のR上での動きについてその動作を確認していきましょう。\n\nまず、改めて、スライドで解説したデータを生成します\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nid <- 1:15\n\nage <- c(30,40,65,34,86,\n         43,64,26,87,45,\n         76,24,97,45,34)\n\ngender <- c(\"f\",\"m\",\"f\",\"f\",\"f\",\n            \"m\",\"m\",\"f\",\"f\",\"m\",\n            \"f\",\"f\",\"m\",\"m\",\"m\")\n\nisx <- c(F,T,F,F,T,\n         T,T,F,T,F,\n         T,F,F,F,T)\n\ndat <- tibble(id     = id    , age = age, \n              gender = gender, isx = isx)\n```\n:::\n\n\n\nこのデータを利用して、まずは、グループに分ける処理を行います。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat %>% \n  group_by(isx)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 15 x 4\n# Groups:   isx [2]\n      id   age gender isx  \n   <int> <dbl> <chr>  <lgl>\n 1     1    30 f      FALSE\n 2     2    40 m      TRUE \n 3     3    65 f      FALSE\n 4     4    34 f      FALSE\n 5     5    86 f      TRUE \n 6     6    43 m      TRUE \n 7     7    64 m      TRUE \n 8     8    26 f      FALSE\n 9     9    87 f      TRUE \n10    10    45 m      FALSE\n11    11    76 f      TRUE \n12    12    24 f      FALSE\n13    13    97 m      FALSE\n14    14    45 m      FALSE\n15    15    34 m      TRUE \n```\n:::\n:::\n\n\n\n実行結果は特に普段と変わらなさそうですが、\n\nGroups:　isx[2]\n\nという表記がコンソール画面にでていることに気づきましたか？\n\ntible形式では、グループ化されたデータを印字するとこのように、どのようなグループ分け(スライドでいう赤い線)が引かれているかを明記してくれます。\n\nでは、group_by関数が本当に働いているのか、ちょっと実験してみましょう。次の二つのスクリプトの実行結果がどのように変わるか、予測できますか？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndat %>% \n  mutate(new = length(isx))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 15 x 5\n      id   age gender isx     new\n   <int> <dbl> <chr>  <lgl> <int>\n 1     1    30 f      FALSE    15\n 2     2    40 m      TRUE     15\n 3     3    65 f      FALSE    15\n 4     4    34 f      FALSE    15\n 5     5    86 f      TRUE     15\n 6     6    43 m      TRUE     15\n 7     7    64 m      TRUE     15\n 8     8    26 f      FALSE    15\n 9     9    87 f      TRUE     15\n10    10    45 m      FALSE    15\n11    11    76 f      TRUE     15\n12    12    24 f      FALSE    15\n13    13    97 m      FALSE    15\n14    14    45 m      FALSE    15\n15    15    34 m      TRUE     15\n```\n:::\n\n```{.r .cell-code}\ndat %>% \n  group_by(isx) %>% \n  mutate(new = length(isx))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n# A tibble: 15 x 5\n# Groups:   isx [2]\n      id   age gender isx     new\n   <int> <dbl> <chr>  <lgl> <int>\n 1     1    30 f      FALSE     8\n 2     2    40 m      TRUE      7\n 3     3    65 f      FALSE     8\n 4     4    34 f      FALSE     8\n 5     5    86 f      TRUE      7\n 6     6    43 m      TRUE      7\n 7     7    64 m      TRUE      7\n 8     8    26 f      FALSE     8\n 9     9    87 f      TRUE      7\n10    10    45 m      FALSE     8\n11    11    76 f      TRUE      7\n12    12    24 f      FALSE     8\n13    13    97 m      FALSE     8\n14    14    45 m      FALSE     8\n15    15    34 m      TRUE      7\n```\n:::\n:::\n\n\n\ngroup_byを挟まない場合は、length(isx)は15個なので、\n\nnewという新しい変数の中には15という数字が入っています。\n\nところが、group_byを間にかませると、newは、isxの値がTRUEだと7、FALSEだと8  という数字になっています\n\nこのように、group_byを入れることで仮想の赤い線/データが仮に区切られている\n\nという状況が作り出されたことが確認できました。\n\nそれでは、次の動画に進む前に、年齢、性別をisx毎に\n\n * 年齢は平均、最小、最大、\n * 性別は男性の数と全体に占める割合\n\nを計算するスクリプトを書いてみてください。\n\n",
+    "supporting": [
+      "s06-015_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

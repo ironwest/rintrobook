@@ -1,0 +1,88 @@
+---
+title: 全体集計の課題(tidyverse)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+
+まずは、スライドで表示していたデータを作成しましょう
+
+```{r}
+id <- 1:15
+age <- c(30,40,65,34,86,43,64,26,87,45,76,24,97,45,34)
+gender <- c("m","m","f","f","f","m","m","f","f","m","f","f","m","m","m")
+isx <- c(F,T,F,F,T,T,T,F,T,F,T,F,F,F,T)
+
+dat <- tibble(id     = id, 
+              age    = age, 
+              gender = gender, 
+              isx    = isx   )
+```
+
+こんな感じのデータでしたね?
+
+```{r}
+dat
+```
+
+では、プチ課題ですが、
+
+* 年齢の平均値
+* 性別(m)の割合
+
+をsummarise関数を利用して作成してみてください。
+
+できましたか?男性の割合が少しむずかしいかもしれません。
+
+```{r}
+dat2 <- dat %>% 
+  summarise(age_mean = mean(age),
+            gender_male_p  = sum(gender=="m")/n() )
+```
+
+いかがでしょうか？年齢の平均、性別の個数と割合の計算をここでは行っていますが、スクリプトの動作、イメージできますか？
+
+```{r}
+dat2
+```
+
+このdat2をスライドでお示しした形に変換してみましよう。
+
+この処理は、Section5のpivot_xxx関数を利用すればできますビデオをとめてやってみてください。
+
+できましたか?
+
+pivot_longerだけを利用するのであれば、
+
+```{r}
+dat2 %>% 
+  pivot_longer(everything())
+```
+
+これだけでもOKです。ただ、スライドのように日本語で書くのであれば
+
+```{r}
+dat2 %>% 
+  
+  mutate(
+    `年齢(平均)` = age_mean,
+    `性別:男性(%)` = 100*gender_male_p
+  ) %>%
+  
+  select(!c(age_mean, gender_male_p)) %>% 
+  
+  pivot_longer(everything(),
+               names_to = " ",
+               values_to = "全体")
+```
+
+どうでしょうか？集計できましたね？
+
+次以降の動画では、この変換について1行ずつ解説していきます。
+

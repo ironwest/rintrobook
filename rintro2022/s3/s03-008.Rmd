@@ -1,0 +1,70 @@
+---
+title: 課題:テキストファイルの読み込み(L43)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE, include = TRUE)
+```
+
+それではミニ課題です。このセクションからは所々に、コードを自分で書いてみる課題を出していきます。電車の中で見ていただいている等、すぐにRに触れない環境にいらっしゃる場合は、少なくとも、どのようにコードを書くかを思い浮かべる等をしておくと定着がはやくなると思いますので、やってみてください。Rは書けば書くほど上達します。
+
+尚、条件としては、何もパッケージが読み込まれていない状況を想定して回答を作ってみてください。
+
+課題1：”ichiji/tekitou.txt”を読み込んで好きな名前の変数の中に保存してみてください
+
+課題2：新しく、一時フォルダ内にsuuji.txtというファイルを作成し、その中に100という数字を書いてから読み込んで、変数に保存して、4倍の値を計算してみてください。
+
+動画をとめて実際にやってみるか、どうするか考えてみてください
+
+答えです
+課題1：”ichiji/tekitou.txt”を読み込んで好きな名前の変数の中に保存してみてください
+　　　　
+これは、動画の内容そのままですね？
+
+
+```{r}
+hensu <- readr::read_file("ichiji/tekitou.txt")
+
+library(readr)
+hensu <- read_file("ichiji/tekitou.txt")
+
+library(tidyverse)
+file_path <- "ichiji/tekitou.txt"
+hensu <- read_file(file_path)
+```
+
+これら、全部正解です。
+
+課題2：新しく、一時フォルダ内にsuuji.txtというファイルを作成して、その中に100という数字を書いて、読み込んで、変数に保存して、4倍の値を計算してみてください。
+
+これはちょっと今の時点では難しいかもしれません。
+
+```{r}
+library(tidyverse)
+suuji <- read_file("ichiji/suuji.txt")
+suuji
+```
+
+単純に
+
+```{r,error=TRUE}
+suuji * 4
+```
+
+とすると、
+
+```{r, error=TRUE}
+str(suuji) #で文字列型で読み込まれているため、計算できずにエラーになります。
+
+as.numeric(suuji) * 4
+```
+
+としてあげるとOKです。
+
+課題、どうでしたか？as.numericは今後も、長い付き合いになる関数ですので、覚えておいてください。
+
+おつかれさまでした。以上でパス、ディレクトリの話はおしまいです。次からは、ファイルの読み込みについて考えていきます
+

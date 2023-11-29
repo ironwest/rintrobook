@@ -1,0 +1,81 @@
+---
+title: 関数(ヘルプファイルの読み方1)(L33)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+スライドでは、関数に与えるものとして
+
+`美容院("髪の長さ:20cm",paama=TRUE,color="gold",length=2)`
+
+として、"髪の長さ:20cm"を入力、paama=TRUE,color="gold",length=2をオプションと呼んでいましたが、実はこのような呼び方は本来しません。
+
+入力やオプションの区別をつけず、すべて、
+
+* 引数(ひきすう)　や
+* Argument
+
+と呼びます。
+
+Argumentという言葉が使われていることを確認するために、関数のヘルプファイルを見てみましょう。
+
+ヘルプファイルは関数の使い方を解説してくれている文書で、新しい関数を使うときには、まず真っ先に見るものとなります
+
+ヘルプファイルの見かたは簡単で、例えば与えた数字を全部足してくれる、sum関数のヘルプファイルを見る場合は、
+
+```{r}
+?sum
+```
+
+?をつけて、カッコなしの関数を記載して実行するだけです。英語の文書となりますが、がんばって読みましょう。なれれば、楽に読めるようになります。
+
+
+ヘルプファイルの項目として
+
+* Description
+* Usage 
+* Arguments
+* Details
+* Examples
+　
+の4つは最低限目を通しておくと関数の働きがわかりやすくなります
+
+### Description
+
+その関数が何をする関数なのかの説明があります
+
+`sum` returns the sum of all the values present in its arguments.
+
+とあるので、
+
+sumのargumentにあるものの全ての和を返す
+
+と記載されています。
+
+### Usage
+
+どのように利用するかの記載があります
+
+`sum(..., na.rm = FALSE)`
+
+という使い方で、
+
+### Arguments
+
+Usageでしめされている、sum関数の中身についてそれぞれ記載されています。
+
+* ...	 :  numeric or complex or logical vectors.
+* na.rm:	logical. Should missing values (including NaN) be removed?
+
+### Details
+
+より詳しくArgumentsの内容や注意が書かれています。読み飛ばしたりなんとなくの理解で構わないと思います。
+
+### Examples
+
+最後になりましたが、一番大切なのがExamplesだと個人的には思っています。
+
+ここに書いてあるスクリプトはそのまま実行すると、関数がどのような動作をするか、なんとなくイメージできるようになります。
+
+次の動画で、このExamplesの動作を確認しながら、sum関数がどのような挙動を示すのか、Argumentsに与えられたものが何を示すのか、解説していきます。

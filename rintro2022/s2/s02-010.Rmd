@@ -1,0 +1,11 @@
+---
+title: 変数(説明)(L15)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+![](slides/slides029.jpg)
+
+![](slides/slides029.jpg)

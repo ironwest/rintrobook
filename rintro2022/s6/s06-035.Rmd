@@ -1,0 +1,247 @@
+---
+title: :時間の集計 補足
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+
+dat <- read_csv("data/time.csv")
+
+dat_n1 <- dat %>% 
+  arrange(id,med,start) %>% 
+  mutate(interv = interval(start, end)) %>% 
+  group_by(id, med) %>% 
+  mutate(
+    prev_overlap = int_overlaps(interv, lag(interv)),
+    prev_nextday = int_overlaps(interv, int_shift(lag(interv),days(1))),
+  ) %>%
+  mutate(prev_oa = prev_overlap | prev_nextday) %>% 
+  replace_na(list(prev_oa = FALSE)) %>% 
+  mutate(presc_id = cumsum(!prev_oa)) %>%
+  group_by(id, med, presc_id) %>% 
+  summarise(start = min(start), end = max(end)) %>% 
+  ungroup() %>% 
+  select(id, med, start, end)  
+
+dat_n2 <- dat_n1 %>% 
+  arrange(id,med,start) %>% 
+  mutate(interv = interval(start, end)) %>% 
+  group_by(id, med) %>% 
+  mutate(
+    prev_overlap = int_overlaps(interv, lag(interv)),
+    prev_nextday = int_overlaps(interv, int_shift(lag(interv),days(1))),
+  ) %>%
+  mutate(prev_oa = prev_overlap | prev_nextday) %>% 
+  replace_na(list(prev_oa = FALSE)) %>% 
+  mutate(presc_id = cumsum(!prev_oa)) %>%
+  group_by(id, med, presc_id) %>% 
+  summarise(start = min(start), end = max(end)) %>% 
+  ungroup() %>% 
+  select(id, med, start, end)  
+
+dat_n3 <- dat_n2 %>% 
+  arrange(id,med,start) %>% 
+  mutate(interv = interval(start, end)) %>% 
+  group_by(id, med) %>% 
+  mutate(
+    prev_overlap = int_overlaps(interv, lag(interv)),
+    prev_nextday = int_overlaps(interv, int_shift(lag(interv),days(1))),
+  ) %>%
+  mutate(prev_oa = prev_overlap | prev_nextday) %>% 
+  replace_na(list(prev_oa = FALSE)) %>% 
+  mutate(presc_id = cumsum(!prev_oa)) %>%
+  group_by(id, med, presc_id) %>% 
+  summarise(start = min(start), end = max(end)) %>% 
+  ungroup() %>% 
+  select(id, med, start, end)  
+```
+
+ここまでの動画で紹介した処理、
+intervalを利用する方法ですが、結構時間がかかってしまっていますR（といいますかプログラミング全般）では、課題の解決に発想を変えると色々簡単になったり、はやくなったりすることも多いので、違うやり方をここでは説明してみます。
+
+解説の都合上、intervalを使って処理するという縛りを自分にかしていたため、この補足動画では、intervalを全く利用せずに、繰り返し処理を利用しない方法を考えてみます。
+
+この方法、本コースで扱う処理の範囲外となるので、学んでいくとこんな処理も可能なんだ！というくらいの気持ちでみていただけると幸いです。
+
+処理の基本的な考え方、
+
+日付を利用するまえに数字で確認しておきましょう。
+
+```{r}
+d <- tribble(
+  ~id,~m,~s,~e,
+  1,1,1,12,
+  1,1,3,5,
+  1,1,7,14,
+  1,1,16,18,
+  1,1,19,20
+)
+
+d
+```
+このようなデータがあるとして、idは個々の人、mは薬のid、sは開始日、eは終了日だとします。
+
+このとき、
+
+| id | m | s  | e  |
+|  1 | 1 | 1  | 14 |
+|  1 | 1 | 16 | 20 |
+
+こうなってほしいはずです。
+
+これ、期間の前後比較をするのではなく、処方された日をまず抽出してから期間を考えるというアプローチをとります。
+
+まず、全ての処方された日を含むベクトルを作成します
+
+これ、例えば１行目なら１から１２、２行目なら３から５といった具合です。
+
+```{r}
+v <- c(1:12,3:5,7:14,16:18,19:20)
+v
+```
+
+このベクトルに含まれる数字が処方された日なので、uniqueで重複を消してからorderで並び替えます
+
+```{r}
+v2 <- v  %>% unique() %>% {.[order(.)]}
+v2
+```
+
+このベクトルv2に含まれるのが全ての処方日なので、このベクトルの連続した数字の最初と最後を抜き出すと目的の値となります。なので、後は最初のやり方と同じ発想で
+
+```{r}
+tibble(x = v2) %>%
+  mutate(diff = x - lag(x)) %>%
+  replace_na(list(diff=1)) %>%
+  mutate(prescid = cumsum(diff > 1)) %>%
+  group_by(prescid) %>%
+  summarise(s = min(x), e = max(x))
+```
+
+目的とする形にできました。
+
+この方法の利点は、全ての範囲をまとめてから範囲の計算をするため、複数回の実行が必要ないところです。
+
+デメリットとしては、ネストしたデータフレームという最初に学ぶ時点では少し難易度が高いデータ構造を取り扱う点です。
+
+ネストしたデータフレームの詳細については、本コースの対象外です。たいていの表データの処理は、本コースで解説した関数を利用すれば大きな問題なくできるはずなので、まずは本コースの内容にある程度習熟してから、次のような書き方を学んでみてください。
+
+それでは、処理を簡単に解説しながら行っていきます。
+
+データの読み込み
+```{r}
+dat <- read_csv("data/time.csv")
+```
+
+ネストしたデータの作成
+
+```{r}
+dat2 <- dat %>%
+  group_by(id,med) %>%
+  nest()
+
+dat2
+```
+
+このnestしたデータですが、data列が見慣れないものになっていると思います
+
+これ、リスト列と呼ばれるもので、１行に１個のtibbleを入れたり、１行に１個のグラフを入れたり、tibbleのセルの中にオブジェクトを入れることができるという形です。こうすることで、dplyrやtidyrを駆使した複雑な処理を、group_byではできない形で１個ずつの「表」に適応することが可能となります
+
+一つの表に対する処理の関数
+
+```{r}
+proc_row <- function(adata){
+  v <- map(1:nrow(adata), ~{
+    d <- slice(adata,.)
+    c(d$start:d$end)
+  }) %>% 
+    unlist() %>%
+    unique()
+  
+  r <- tibble(x = v) %>%
+    arrange(x) %>%
+    mutate(diff = x - lag(x)) %>%
+    replace_na(list(diff=1)) %>%
+    mutate(prescid = cumsum(diff > 1)) %>%
+    group_by(prescid) %>%
+    summarise(s = min(x), e = max(x))
+  
+  return(r)
+  
+}
+```
+
+この関数、何をするかというと、
+
+先ほどのデータ列の１つのセルの中身がこんな表だとして、
+
+```{r}
+dat2$data[[13]]
+```
+
+関数を適応するとこうなります
+
+```{r}
+proc_row(dat2$data[[13]])
+```
+
+数字になってしまっていますが、日付型に変えると、うまく変換されているはずです
+
+で、この関数をdata列の各行一つ一つに適応していきます。
+
+普通にmutateしてもうまくいかないので、map関数という関数を利用します。
+
+```{r}
+dat3 <- dat2 %>%
+  mutate(res = map(data,proc_row))
+
+dat3
+```
+
+これで、新しく作成されたres列には、data列に含まれていた各表に対して、proc_row関数を適応した結果が挿入されています
+
+あとは、このres列をリストではなく、普通の表として取り出してもとのid,medにくっつけてあげるて、数字ではなく日付型に戻しておきます
+
+```{r}
+alternate <- dat3 %>%
+  select(id, med, res) %>%
+  unnest(res) %>%
+  select(!prescid) %>%
+  ungroup() %>% 
+  mutate(across(c(s,e),as_date))
+
+alternate
+```
+
+この、別の方法をとって作成したalternateと、ひとつ前の動画までのやり方で作成したdat_n3の集計結果が一致するかを確認しておきましょう
+
+```{r}
+dat_n3 %>% 
+  group_by(med) %>% 
+  summarise(
+    min_kikan = min(end-start),
+    max_kikan = max(end-start),
+    avg_kikan = mean(end-start)
+  )
+  
+alternate %>% 
+  group_by(med) %>% 
+  summarise(
+    min_kikan = min (e-s),
+    max_kikan = max (e-s),
+    avg_kikan = mean(e-s)
+  )
+```
+
+いかがでしょうか？
+
+集計結果は一致していますね？
+
+なれると、複雑な加工は、nestしたデータに対して、処理を行う形をすると、すっきりと書くことができるので、必要があればこの書き方を試していただいてもよいと思います。
+
+それでは、最後のセクション、レポートの作成に進んでいきましょう

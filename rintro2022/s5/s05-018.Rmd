@@ -1,0 +1,95 @@
+---
+title: 導入
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+
+それでは、ロジカル型の動作や特徴を少し細かくみていきましょうまず、ロジカル型は
+
+```{r}
+TRUE
+FALSE
+
+str(TRUE)
+str(FALSE)
+```
+
+TRUE FALSEと書くことでRにとっては特に指定したり関数で変換したりすることが必要なく、ロジカル型として認識されています。
+
+短縮して、
+
+```{r}
+T
+F
+```
+
+と書くこともできます。逆に、TやFに何か値を代入するのは厳禁です。
+
+このTRUE,FALSE,型変換をしてみると、
+
+```{r}
+as.numeric(TRUE)
+as.character(TRUE)
+```
+
+こんな感じでas.numericで変換するとTRUEは1as.characterで変換するとTRUEは"TRUE"になります。
+
+この動作、因子型をおもいだしませんか?
+
+```{r}
+v <- as.factor(c("dog","cat","dog"))
+as.numeric(v)
+as.character(v)
+```
+
+ただ、因子型と違うのは、
+
+```{r}
+v + v
+```
+
+はエラーが起こりますが、
+
+```{r}
+c(TRUE, TRUE, FALSE) + c(FALSE, TRUE, TRUE)
+```
+
+Logical型はこのように計算ができてしまいます。
+
+```{r}
+TRUE + TRUE
+TRUE + FALSE
+FALSE + FALSE
+```
+
+ということでTRUEの正体は「1」で、FALSEの正体は「0」になります
+
+Logical型への変換は、
+
+```{r}
+as.logical("FALSE")
+as.logical("TRUE")
+as.logical(0)
+as.logical(1)
+```
+
+でそれぞれFALSE、TRUEに変換できます。
+
+尚、
+
+```{r}
+as.logical("dog")
+as.logical(0.1)
+as.logical(2)
+as.logical(-5)
+as.logical(-3.2)
+```
+
+文字列型の場合はTRUEやFALSE以外のものをロジカル型に変換しようとすると欠損、NA、が返されますが、数字を与えると、0以外がすべてTRUEと帰ってくるので「プログラム」を描く場合に注意しておく必要があります。
+

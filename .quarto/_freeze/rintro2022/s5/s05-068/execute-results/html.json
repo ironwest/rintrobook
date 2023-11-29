@@ -1,0 +1,14 @@
+{
+  "hash": "a39a683c81b156c44ab9f00592f24fd1",
+  "result": {
+    "markdown": "---\ntitle: 解説2\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5d/slides049.jpg){group=\"slides\"}\n\n![](slides/s5d/slides050.jpg){group=\"slides\"}\n\n![](slides/s5d/slides051.jpg){group=\"slides\"}\n\n![](slides/s5d/slides052.jpg){group=\"slides\"}\n\n![](slides/s5d/slides053.jpg){group=\"slides\"}\n\n![](slides/s5d/slides054.jpg){group=\"slides\"}\n\n![](slides/s5d/slides055.jpg){group=\"slides\"}\n\n![](slides/s5d/slides056.jpg){group=\"slides\"}\n\n![](slides/s5d/slides057.jpg){group=\"slides\"}\n\n![](slides/s5d/slides058.jpg){group=\"slides\"}\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

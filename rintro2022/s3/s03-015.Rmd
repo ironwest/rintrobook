@@ -1,0 +1,154 @@
+---
+title: tibble形式について(L50)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+セクション2では、Rの中に保存されている表形式のデータはdata.frameという形式であると説明しました。
+ 
+例えば、
+
+```{r}
+df1 <- data.frame(a = 1:5, b = c("1","2","3","4","5"))
+
+df1
+```
+
+こんな感じです。
+
+このdata.frame、実はいくつかデメリットがあって、表の行が長いと、
+
+```{r}
+df2 <- data.frame(a = 1:100, b= 1:100)
+
+df2
+```
+
+こんな感じで全部表示してしまうため、
+画面に収まってくれません。
+
+また、表の列が長いと、
+
+```{r}
+df3 <- data.frame(a_long_name=1:10,b_long_name=1:10,
+                  c_long_name=1:10,d_long_name=1:10,
+                  e_long_name=1:10,f_long_name=1:10,
+                  g_long_name=1:10,h_long_name=1:10,
+                  i_long_name=1:10,j_long_name=1:10,
+                  k_long_name=1:10,l_long_name=1:10)
+
+df3
+```
+
+やはり全部表示しようとするためおさまりが悪いですし、
+それなり大きなデータの分析をしている場合に、
+
+```{r}
+df4 <- data.frame(a_long_name=1:1000,b_long_name=1:1000,
+                  c_long_name=1:1000,d_long_name=1:1000,
+                  e_long_name=1:1000,f_long_name=1:1000,
+                  g_long_name=1:1000,h_long_name=1:1000,
+                  i_long_name=1:1000,j_long_name=1:1000,
+                  k_long_name=1:1000,l_long_name=1:1000,
+                  long_name_1=1:1000,long_name_2=1:1000,
+                  long_name_3=1:1000,long_name_4=1:1000,
+                  long_name_5=1:1000,long_name_6=1:1000,
+                  long_name_7=1:1000,long_name_8=1:1000,
+                  long_name_9=1:1000,long_name_10=1:1000,
+                  long_name_11=1:1000,long_name_12=1:1000)
+
+df4
+```
+
+一回呼び出すと、まあまあ面倒なことになりますとくに、直前の結果を見たいときに、大きなdata.frameを呼び出してしまうと相当上にスクロールしないといけないので面倒です。
+
+今ご説明したデメリットをすべて解決した、data.frame形式をより便利にした形式というのが実はあって、
+
+それが、
+
+tibble形式
+
+と呼ばれているものです。tibble形式で表を作るには、
+
+```{r}
+?tibble::tibble
+```
+
+を使います。
+
+tibbleパッケージも、tidyverseパッケージ群に含まれますので、実際の分析時には単純にtibbleとするだけで呼び出しが可能です。
+
+実際に先ほどのdf1からdf4までをtibbleを使って書いてみると
+
+```{r}
+tib1 <- tibble(a = 1:5, b = c("1","2","3","4","5"))
+tib2 <- tibble(a = 1:100, b= 1:100)
+tib3 <- tibble(a_long_name=1:10,b_long_name=1:10,
+               c_long_name=1:10,d_long_name=1:10,
+               e_long_name=1:10,f_long_name=1:10,
+               g_long_name=1:10,h_long_name=1:10,
+               i_long_name=1:10,j_long_name=1:10,
+               k_long_name=1:10,l_long_name=1:10)
+tib4 <- tibble(a_long_name=1:1000,b_long_name=1:1000,
+               c_long_name=1:1000,d_long_name=1:1000,
+               e_long_name=1:1000,f_long_name=1:1000,
+               g_long_name=1:1000,h_long_name=1:1000,
+               i_long_name=1:1000,j_long_name=1:1000,
+               k_long_name=1:1000,l_long_name=1:1000,
+               long_name_1=1:1000,long_name_2=1:1000,
+               long_name_3=1:1000,long_name_4=1:1000,
+               long_name_5=1:1000,long_name_6=1:1000,
+               long_name_7=1:1000,long_name_8=1:1000,
+               long_name_9=1:1000,long_name_10=1:1000,
+               long_name_11=1:1000,long_name_12=1:1000)
+```
+
+data.frameを作成する場合とまったく同じ書き方ができて
+
+かつ、コンソール画面の印字は、
+
+```{r}
+df1
+tib1
+```
+
+こんな感じでdata.frameはただ内容が印字されるだけでしたが、tibbleだと、列名の下に、<int> <chr>等、「型」も記載してくれています。
+
+```{r}
+df2
+tib2
+```
+
+行方向に長くても、tibbleは適度な長さに
+加工してくれて表示してくれますし
+
+```{r}
+df3
+tib3
+```
+
+列方向に長いデータも、コンソール画面でdata.frameのように折り返して表示することはなく、収まらない場合はコラム名 <int>という表記でどんな名前の列があるかを教えてくれます
+
+```{r}
+print("この表示を後から見たい")
+df4
+
+print("この表示を後から見たい")
+tib4
+```
+
+大きな表を表示したときに、その違いは顕著ですね？
+
+data.frame/tibbleの前に、あとから見たい結果が印字されていたときに、tibbleの方がはるかに確認しやすいです。
+
+他にも、tibbleはデータ分析を行う上でdata.frameの弱点とされてきたものを多数克服しています。
+
+readrパッケージにある関数でデータを読み込んだ場合、基本的にはtibble形式でRにとりこまれるためそういう意味でも、readrにある関数を利用してインポートを行うことをお勧めします。
+
+次の動画では、データがtibble形式かを確認する方法と、そうでなかった場合の変換方法について解説しておきます。飛ばしていただいても結構です
+

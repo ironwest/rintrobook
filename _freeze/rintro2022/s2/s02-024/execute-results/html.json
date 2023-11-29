@@ -1,0 +1,14 @@
+{
+  "hash": "f02f85119cfc85bf7ceeb19c24b59780",
+  "result": {
+    "markdown": "---\ntitle: パッケージ(パッケージについて)(L29)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n![](slides/slides055.jpg)\n![](slides/slides056.jpg)\n![](slides/slides057.jpg)\n![](slides/slides058.jpg)\n![](slides/slides059.jpg)\n![](slides/slides060.jpg)\n![](slides/slides061.jpg)\n![](slides/slides062.jpg)\n![](slides/slides063.jpg)\n![](slides/slides064.jpg)\n![](slides/slides065.jpg)\n![](slides/slides066.jpg)\n![](slides/slides067.jpg)\n![](slides/slides068.jpg)\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

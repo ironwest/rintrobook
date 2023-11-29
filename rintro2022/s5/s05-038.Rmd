@@ -1,0 +1,33 @@
+---
+title: 説明
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5c/slides001.jpg){group="slides"}
+
+![](slides/s5c/slides002.jpg){group="slides"}
+
+![](slides/s5c/slides003.jpg){group="slides"}
+
+![](slides/s5c/slides004.jpg){group="slides"}
+
+![](slides/s5c/slides005.jpg){group="slides"}
+
+![](slides/s5c/slides006.jpg){group="slides"}
+
+![](slides/s5c/slides007.jpg){group="slides"}
+
+![](slides/s5c/slides008.jpg){group="slides"}
+
+![](slides/s5c/slides009.jpg){group="slides"}
+
+![](slides/s5c/slides010.jpg){group="slides"}
+:::
+

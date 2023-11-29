@@ -1,0 +1,14 @@
+{
+  "hash": "63bfa839ba062d423584555c04fff4ee",
+  "result": {
+    "markdown": "---\ntitle: 関数の作り方\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5b/slides008.jpg){group=\"slides\"}\n\n![](slides/s5b/slides009.jpg){group=\"slides\"}\n:::\n\nここまでで関数の使い方についての解説をたくさん行ってきましたが、関数の作り方については解説していませんでした。\n\n慣れてきて、自作関数等をつくれるようになれば、Rの世界が広がるのですが、ここでは、次に説明するパイプ関数の働きを理解するために基礎の基礎だけ解説させていただきます。\n\n\n関数をつくるためには、function関数という関数そのものの名前がついた関数を利用します。\n\nたとえば、kansu1という名前の関数を作成したくて、その機能が数値を一つ受け取って10倍するというものであれば、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu1 <- function(num){\n  return(num*10)\n}\n```\n:::\n\n\n\nkansu1への代入を実行すると、Environmentにkansu1が表示されてfunctionsであるとでています。\n\n環境中にすでにあるので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu1(3)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 30\n```\n:::\n\n```{.r .cell-code}\nkansu1(3.45)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 34.5\n```\n:::\n:::\n\n\n\nと、こんな感じで実行されました。\n\nちゃんと与えた数字が10倍になった結果が帰ってきていますね？\n\nまた、例えば100倍にした文字列型を返すという場合であれば、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu2 <- function(korewo100bai){\n  temp <- korewo100bai * 100\n  temp <- as.character(temp)\n  return( temp )\n}\n\n\nkansu2(234.32)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"23432\"\n```\n:::\n\n```{.r .cell-code}\nkansu2(1.23)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"123\"\n```\n:::\n:::\n\n\n\nちゃんと100倍して文字列型に変換されています。\n\nこんな感じで、\n\n<関数名> <- function(<アーギュメント>){\n　　＜処理＞\n　　return(<処理した結果>)\n}\n\nとしてあげれば関数の作成ができます。return()は、その関数が返す結果を明示してくれるものになります。returnがなくても、最後の実行結果が返ってくるのですが、他の人が関数を見たときに何が返ってくるか、わかりやすくするためにもreturnは記載するように癖付けておきましょう。\n\nまた、アーギュメントには初期値を設定することも可能です。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu3 <- function(num,baisu=100){\n  temp <- num * baisu\n  temp <- as.character(temp)\n  return(temp)\n}\n```\n:::\n\n\n\nこのkansu3は、アーギュメントを二つ受け取ります。baisuアーギュメントには初期値100が設定されているため、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu3(4)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"400\"\n```\n:::\n:::\n\n\n\n一個だけ数字を与えると、自動的にnum=4, bisu=100として100倍された文字列型が返ってきます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nkansu3(1.2, 12)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"14.4\"\n```\n:::\n\n```{.r .cell-code}\nkansu3(num = 1.2, baisu=12)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"14.4\"\n```\n:::\n:::\n\n\n\nこんな感じでアーギュメントの設定された順番でnum=やbaisu=を指定しない場合は実行されること、感覚的に理解しておいてください。\n\nそれでは、次の動画で演習問題を行いましょう。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

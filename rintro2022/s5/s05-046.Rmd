@@ -1,0 +1,154 @@
+---
+title: 実践 if_else
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+まずはif_elseの簡単なケースを見ていきましょう。if_else関数はスライドでの説明があった通り、与えたロジカルベクトルに対してTRUEの場合、FALSEの場合にそれぞれ違う要素を返してくれる関数です。
+
+```{r}
+if_else(TRUE, "trueです", "falseです")
+if_else(FALSE, "trueです", "falseです")
+
+if_else(c(T,F,T), "trueです","falseです")
+```
+
+このように、TとFの場合でそれぞれ違う結果が与えた長さだけ返ってきていることがわかりますか?
+
+これとmutateを組み合わせると、
+
+```{r}
+dat <- tibble(num = 1:10)
+dat
+
+dat %>% 
+  mutate(kekka = num > 4)
+
+dat %>% 
+  mutate(kekka = if_else(num > 4, "4より大きい","4以下"))
+```
+
+こんな感じである列の状況に応じた、新しい列をつくることが可能です。
+
+条件にはロジカルベクトルであればなんでもよいので、正規表現で学んだような、
+
+```{r}
+dat <- tibble(
+  mixed = c("1","l","5","S","O","0")
+)
+
+dat
+
+dat %>% 
+  mutate(
+    is_num = if_else(str_detect(mixed,"\\d+"),"NUM","ELSE"))
+```
+
+のような形で数字のみの文字列とそうでない場合で別々の記載をすることが可能です。
+
+ここまでの例では、TRUE、FALSEの場合、それぞれ単一の結果を返していますが、ここは入力されるロジカルベクトルと同じ長さのベクトルでもよいです。
+
+```{r}
+dat <- tibble(
+  num = 1:10,
+  alpha = letters[1:10],
+  ALPHA = LETTERS[1:10]
+)
+
+dat
+```
+
+こんな表があったとして、numが5以上の場合はalpha列の結果を返したくて、numが5未満の場合はALPHAの結果を返したい場合
+
+```{r}
+dat %>% mutate(kekka = if_else(num>=5, alpha, ALPHA))
+```
+
+numの値に応じて、kekka列の値が入力されていますね?
+
+if_else関数を利用していて、生じるエラーで代表的なものが型の不一致です。
+
+ベクトルは
+
+```{r}
+c(1,2,"a",3)
+```
+
+複数の型が混在することができないという話覚えていますか？if_else関数は、もし結果のベクトルに複数の型が入っていた場合に、明確にエラーを返します。
+
+```{r}
+dat <- tibble(
+  num = 1:10, 
+  cond1 = letters[1:10],
+  cond2 = 1:10
+)
+dat
+```
+
+こういうデータがあるとして、
+
+```{r}
+dat %>% 
+  mutate(result = if_else(num >= 5, cond1, cond2))
+```
+
+エラーメッセージで、falseはcharacterベクトルでないといけませんと怒られました。なので、
+
+```{r}
+dat %>% 
+  mutate(result = if_else(num >= 5, cond1, as.character(cond2)))
+```
+
+の様に、明確に同じ型にそろえてあげる必要があります。自動変換してくれてもよさそうに感じるかもしれませんが、自動変換のせいでデータが勝手に欠損したりする可能性もあるため、この動作の方が正解です。
+
+この同じ型ルールで、生じる問題でもう一つ代表的なものが欠損値が生じた場合の取り扱いです。
+
+```{r}
+dat <- tibble(num=c(1,2,3,4))
+dat
+```
+
+例えば、このデータでnum列が1以外の時は欠損させたい場合、
+
+```{r}
+dat %>% mutate(kekka = if_else(num==1,1,NA))
+```
+
+と書くと、エラーが生じます。
+
+これは、
+
+```{r}
+class(NA)
+```
+
+がロジカルなため、if_elseの条件で数値型のTrueの場合と型が合致しなかったから生じているエラーです。
+
+これを回避する方法、簡単なのですが、知らないとてこづります。実は、NAには文字列型のNA,数値型のNAなどと、型に対応するNAが用意されているので、それを利用すれば解決です。具体的には、
+
+```{r}
+class(NA_character_)
+class(NA_complex_)
+class(NA_integer_)
+class(NA_real_)
+```
+
+を利用してあげればOKです。
+
+```{r}
+dat %>% mutate(kekka = if_else(num==1,1,NA_real_))
+```
+
+うまくいきましたね?
+
+以上,if_elseの基本的な使い方でした。
+

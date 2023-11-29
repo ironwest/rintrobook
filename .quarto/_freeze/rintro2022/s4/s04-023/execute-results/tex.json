@@ -1,0 +1,20 @@
+{
+  "hash": "f4ddfaea662205aa8cb9ad268bfff99e",
+  "result": {
+    "markdown": "---\ntitle: theme!:凡例の位置を変える\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nこの動画では、themeを直接操作して凡例の位置を変更していきます\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n\n::: {.cell-output .cell-output-stderr}\n```\n-- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --\nv dplyr     1.1.2     v readr     2.1.4\nv forcats   1.0.0     v stringr   1.5.0\nv ggplot2   3.4.2     v tibble    3.2.1\nv lubridate 1.9.2     v tidyr     1.3.0\nv purrr     1.0.1     \n-- Conflicts ------------------------------------------ tidyverse_conflicts() --\nx dplyr::filter() masks stats::filter()\nx dplyr::lag()    masks stats::lag()\ni Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors\n```\n:::\n\n```{.r .cell-code}\ngg <- ggplot(msleep)+\n  geom_point(aes(x=log(bodywt),y=sleep_total,color=vore))\n\ngg\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-1-1.pdf){fig-pos='H'}\n:::\n:::\n\n\n\n凡例、デフォルトではグラフの右側に表示されていますが、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngg + theme(legend.position = \"bottom\")\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-2-1.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = \"right\")\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-2-2.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = \"top\")\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-2-3.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = \"left\")\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-2-4.pdf){fig-pos='H'}\n:::\n:::\n\n\n\nとすることで、下、左、上に表示する場所を変更できます。また、要素が2個の数字を与えてあげると\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngg + theme(legend.position = c(1,1))\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-3-1.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = c(0.5,0.5))\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-3-2.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = c(0,0))\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-3-3.pdf){fig-pos='H'}\n:::\n\n```{.r .cell-code}\ngg + theme(legend.position = c(0.8,0.5))\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-3-4.pdf){fig-pos='H'}\n:::\n:::\n\n\n\nと、こんな感じで好きな位置に凡例を動かすことが可能です。グラフの余ったスペースに凡例を入れ込むようなことも簡単にできるので、必要そうであれば試してみてください。\n\n尚、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngg + \n  theme(legend.position=\"left\") + \n  theme_bw()\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-4-1.pdf){fig-pos='H'}\n:::\n:::\n\n\n\n等、theme_xxを後に足すと、せっかく足した設定が上書きされてしまうので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ngg + \n  theme_bw() +\n  theme(legend.position=\"left\")\n```\n\n::: {.cell-output-display}\n![](s04-023_files/figure-pdf/unnamed-chunk-5-1.pdf){fig-pos='H'}\n:::\n:::\n\n\n\nこんな感じで、themeは最後につけてあげるのがコツです。\n\n",
+    "supporting": [
+      "s04-023_files\\figure-pdf"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

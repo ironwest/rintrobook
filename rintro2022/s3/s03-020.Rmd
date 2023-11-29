@@ -1,0 +1,39 @@
+---
+title: 他の統計ソフトのデータの取り込み(L55)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+本セクションの最後の動画となります。
+
+ここではSTATA、SAS、SPSS等のデータファイルを取り込む関数をご紹介いたします。
+
+```{r}
+install.packages("haven")
+```
+
+をインストールしておいてください。
+
+```{r}
+library(haven)
+```
+
+haven::read_stata
+haven::read_sas
+haven::read_spss
+
+のこれらの関数が、それぞれ対応した統計ソフトのデータを読み込んでくれます。
+
+統計ソフトのバージョンや保存されている形式毎の解説はこれまでのread_csvやread_excelと重複する内容も多いため本動画では個々の説明は行いません。皆さんの環境に合わせて、ご自身で取り込んでみてください
+
+尚、つまった、わからない等ありましたらご質問いただけましたら、お答えさせていただきます(ただし、私自身にSTATAの操作経験しかないため、SAS、SPSS関連のご質問については調べながらという形になろうかと思います。)
+ 
+お疲れさまでした以上でインポートセクションの内容はすべて終了です。
+ 
+次のセクションでは、Rの操作で一番派手？なグラフの作成を行っていきます。
+

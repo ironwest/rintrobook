@@ -1,0 +1,77 @@
+---
+title: 実践 pivot_widerで複数列を横にする
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+続けて、pivot_widerで複数列に対応する場合を考えてみましょう。
+
+例えば、
+
+```{r}
+dat <- tibble(
+  age = c("<20","20-30","30-40",">40","<20","20-30","30-40",">40"),
+  grp = c("A","B","A","B","A","B","A","B"),
+  sex = c("m","m","m","m","f","f","f","f"),
+  val = c(1:8)
+)
+
+dat
+```
+
+このデータ、横持ちにしたときに、列名の部分を<sex_年齢>という形にしたいばあい、実は、pivot_widerのnames_fromに複数変数を与えてあげると自動的に処理をしてくれます。なので、
+
+```{r}
+dat %>% 
+  pivot_wider(
+    id_cols = grp, 
+    names_from = age,
+    values_from = val
+  )
+```
+
+重複するデータがあるのでListが作られていますが、
+
+```{r}
+dat %>% 
+  pivot_wider(
+    id_cols = grp,
+    names_from = c(age, sex),
+    values_from = val
+  )
+```
+
+names_fromに複数変数を与えてあげると問題が起こりません。
+
+尚、変数名の間は、初期設定では_が挿入されていますが、
+
+```{r}
+dat %>% 
+  pivot_wider(
+    id_cols = grp,
+    names_from = c(age, sex),
+    values_from = val,
+    names_sep = "@@"
+  )
+```
+
+で変更可能です。
+
+```{r}
+dat %>% 
+  pivot_wider(
+    id_cols = grp,
+    names_from = c(age, sex),
+    values_from = val,
+    names_sep = "―――",
+    values_fill = 0
+  )
+```
+
+後は、値がNAでなくて、何か別の値で埋めたい場合はvalues_fillに値を与えてあげると自動的に埋めてくれます。
+

@@ -1,0 +1,105 @@
+---
+title: 練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+この練習問題では、厚生労働省の令和2年、2020年の食中毒の発生状況一覧のデータから、病因物質別月別食中毒発生状況のデータを私がこの問題のために加工したデータを用います。
+
+尚、オリジナルデータは、
+
+[https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/shokuhin/syokuchu/04.html#j4-2](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/shokuhin/syokuchu/04.html#j4-2)
+
+に2021年4月12日時点でアクセスできます。
+
+問題1: 
+
+data/fill.xlsxファイルをインポートしてください。
+
+問題2: 
+
+datの病因物質という名前の列をcause1,　...2という名前の付いた列をcause2という名前に変更してください。
+
+問題3: 
+
+cause1、cause2列とも、余分なスペースがはいっているためそれをすべて取り除いてください。
+
+問題4: 
+
+cause1を埋めてください。また、cause1で、埋める前に値が入っている行は、集計された結果であるため、集計結果は表から削除してください。
+
+問題5: 
+
+問題4で作成した表をdataフォルダの中に、fill2.csvという名前で保存してください。そのCSVは次の練習問題で利用します。
+
+
+
+
+
+問題1: 
+
+data/fill.xlsxファイルをインポートしてください。
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+dat <- read_excel("data/fill.xlsx")
+```
+
+すこしエクセルファイルを開いて眺めていただきたいのですが、Rで結合されているデータを読み込むと、結合が解除されて、一番左上の位置にあるデータとして扱われます。
+
+ここでは、病因物質のA1、A2にかけてマージされていたセルが解除されて、1列目の名前が病因物質、2列目の名前が空白だったため、自動的に、...2という名前に変更されています。
+
+```{r}
+View(dat)
+```
+
+問題2: 
+
+datの病因物質という名前の列をcause1,　...2という名前の付いた列をcause2という名前に変更してください。
+
+```{r}
+dat2 <- dat %>% 
+  rename(`cause1` = `病因物質`,
+         `cause2` = `...2`)
+```
+
+問題3: 
+
+cause1、cause2列とも、余分なスペースがはいっているためそれをすべて取り除いてください。
+
+```{r}
+dat3 <- dat2 %>% 
+  mutate(
+    cause1 = str_replace_all(cause1,"\\s",""),
+    cause2 = str_replace_all(cause2,"\\s","")
+  )
+
+dat3
+```
+
+問題4: 
+
+cause1を埋めてください。また、cause1で、埋める前に値が入っている行は、集計された結果であるため、集計結果は表から削除してください。
+
+```{r}
+dat4 <- dat3 %>% 
+  fill(cause1) %>% 
+  filter(!is.na(cause2))
+dat4
+```
+
+問題5: 
+
+問題4で作成した表をdataフォルダの中に、fill2.csvという名前で保存してください。そのCSVは次の練習問題で利用します。
+
+```{r}
+write_csv(dat4, "data/fill2.csv")
+```
+
+いかがですか?
+
+fill、それ単体では活躍しませんが、データ加工の途中で地味に役立ちそうに思いませんか?
+

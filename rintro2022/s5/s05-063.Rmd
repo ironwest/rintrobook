@@ -1,0 +1,111 @@
+---
+title: 実践 pivot_wider よくある警告
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+この変換を行う場合のよくあるエラーを確認しておきましょう。
+
+よくある警告
+
+```{r}
+yoko_error <- 
+  tibble(
+    city = c(rep("札幌",4)),
+    hiduke = c("2018-04-01","2018-04-02","2018-04-03","2018-04-01"),
+    tenki = c("晴れ","雨","雨","雨")
+)
+
+yoko_error
+```
+
+注目していただきたいのはcity列をid_colとした場合に、hidukeが重複して、2018-04-01が存在しているということです。このような場合は、
+
+```{r}
+dat <- 
+  yoko_error %>% 
+  pivot_wider(id_cols=city,names_from=hiduke,values_from=tenki)
+  
+
+dat
+```
+
+これまで見たことのない表示になっていると思います。
+
+これ、列の型を見てほしいのですが、listとなっております。
+
+```{r}
+View(dat)
+```
+
+でいると明白ですが、札幌の2018-4-1のデータ、もともとの縦持ちデータでは2か所あり、それぞれ晴れと雨で全く別別の値でした。
+
+なので、その場所に二つのデータを押し込めるために、列がこれまで扱っていたベクトルでなくてリストになってしまったという形です。(リストであれば、一か所にベクトルを入れられるので、同じ位置に二つ以上のデータを入れるようなことも可能ですね?)
+
+このような事象が生じた場合は、そもそも、なんで重複するデータが発生しているのか次第で対策方法が変わってくるためここでは踏み込みませんが、
+
+ 警告メッセージ: 
+   Values are not uniquely identified; output will contain list-cols.
+ * Use `values_fn = list` to suppress this warning.
+ * Use `values_fn = length` to identify where the duplicates arise
+ * Use `values_fn = {summary_fun}` to summarise duplicates 
+
+にもあるように、
+
+```{r}
+yoko_error %>% 
+  pivot_wider(
+    id_cols=city,
+    names_from=hiduke,
+    values_from=tenki,
+    values_fn = length
+  )
+```
+
+とすることで、各「マス目」に、何個のデータが含まれるかを表示することもできます。また、データが数字データであった場合、例えば、
+
+```{r}
+test <- tibble(
+  col1 = c("A","A","A","B","B","B","A"),
+  col2 = c("a","b","c","a","b","c","a"),
+  val = c(1,2,3,4,5,6,7)
+)
+
+test
+
+test %>% 
+  pivot_wider(
+    id_cols = col1,
+    names_from = col2, 
+    values_from = val,
+    values_fn = sum
+  )
+```
+
+Aのaに該当する部分、縦持ちデータでは1と7があるのですが、values_fnにsum関数の括弧なしを与えてあげると、足し算をしてくれました。他にも平均を調べたければ、
+
+```{r}
+test %>% 
+  pivot_wider(
+    id_cols = col1,
+    names_from = col2, 
+    values_from = val,
+    values_fn = mean
+  )
+```
+
+等を利用してそのまま計算することも可能です。
+
+いかがでしょうか?
+
+結構便利に使えそうですね?
+

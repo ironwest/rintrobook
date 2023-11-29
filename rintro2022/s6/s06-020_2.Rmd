@@ -1,0 +1,114 @@
+---
+title: 差の計算の課題と解答
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+```{r}
+{
+  set.seed(123456)
+  dat <-  tibble(
+    id = 1:30,
+    tx = sample(c("E","F"),30,replace=TRUE),
+    base = runif(30,12,40)
+  ) %>% 
+    mutate(val = map2(base,tx,~{
+      init <- .
+      diff <- if(.y=="E"){-2}else{1}
+      end <- init + rnorm(1,diff,3)
+      
+      seq(init,end,length.out=10) +
+        c(0,rnorm(8,0,1),0)
+    }))
+  
+  dat <- dat %>% unnest(c(val)) %>% 
+    select(id,tx,val)
+  
+  write_excel_csv(dat,"data/laglead.csv")
+}#データ生成の関数
+```
+
+それでは、出題します。
+
+1) data/laglead.csvというデータを読み込んでください。
+
+2) 読み込んだデータは、idが個々人を表す数値で、valには、10回測定したBMIの数値が含まれています。この、測定から測定間の差を計算してください
+
+3) 各々のid毎に、最終測定結果　-　初回測定結果の値をもとめてください。
+
+4) Txという変数は、その人たちに運動(Exercise)か食事(Food)のどちらにとりくんだかの変数です。EとF、おのおのについて初回と最後の測定の体重の変化量を
+
+利用して
+
+* p_weight: 体重が減少した人数の割合
+* mean_weight: 体重の変化の平均値
+
+という変数でもとめてみてください。
+
+
+それでは、動画をとめて、とりくんでみてください。
+
+やってみましたか?
+
+答え合わせをしてみましょう。
+
+1) data/laglead.csvというデータを読み込んでください。
+
+```{r}
+library(tidyverse)
+dat <- read_csv("data/laglead.csv")
+```
+2)読み込んだデータは、idが
+個々人を表す数値で、valには、
+10回測定したBMIの数値が含まれています。
+この、測定から測定間の差を計算してください
+```{r}
+dat %>% 
+  group_by(id) %>% 
+  mutate(prev_val = lag(val)) %>% 
+  mutate(diff_val = val - prev_val)
+```
+
+これで、diff_valには前回から今回にかけて変化した量が保存されます。
+
+2) 各々のid毎に、最終測定結果　-　初回測定結果の値をもとめてください。
+
+```{r}
+dat %>% 
+  group_by(id) %>% 
+  summarise(init = first(val),
+            last = last(val)) %>% 
+  mutate(l_f = last - init)
+```
+3) Txという変数は、その人たちに運動(Exercise)か食事(Food)のどちらにとりくんだかの変数です。EとF、おのおのについて初回と最後の測定の体重の変化量を
+
+利用して
+
+* p_weight: 体重が減少した人数の割合
+* mean_weight: 体重の変化の平均値
+
+という変数でもとめてみてください。
+
+```{r}
+dat %>% 
+  group_by(tx,id) %>% 
+  summarise(diff = last(val)- first(val)) %>% 
+  summarise(
+    p_weight = sum(diff < 0)/n(),
+    mean_weight = mean(diff)
+  )
+```
+
+ということで、txがEの方がBMIが減っている人の割合も大きいし、数値の変化も平均的に2.29減っているということがわかりました。(このデータは、架空のものです）
+
+いかがでしょうか?
+
+集計を利用してこのように、データの変数を加工すること、なんとなくイメージがついたでしょうか?
+
+次の動画では、ここで紹介した方法と組み合わせることが多い、時間のデータを取り扱う方法について簡単に説明してセクションを締めくくろうと思います。
+

@@ -1,0 +1,23 @@
+---
+title: セクションの概要
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5d/slides001.jpg){group="slides"}
+
+![](slides/s5d/slides002.jpg){group="slides"}
+
+![](slides/s5d/slides003.jpg){group="slides"}
+
+![](slides/s5d/slides004.jpg){group="slides"}
+
+![](slides/s5d/slides005.jpg){group="slides"}
+:::
+

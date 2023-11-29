@@ -1,0 +1,97 @@
+---
+title: 日付・時刻の計算(sld99)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+さて、ここまでで日付・時刻の基本的な知識はすべて解説したので、ここからは計算について解説していきます。
+　
+まず、ポイントとなるのは、日付・時刻同士は「引き算しかできない」となります。
+
+```{r}
+d1 <- as_date(10)
+d2 <- as_date(2000)
+
+d1
+d2
+```
+
+本当に引き算以外ができないか、確認してみましょう。
+
+(時刻と時刻を足す、時刻と時刻をかける、時刻と時刻をわるという行為そのものの意味もよくわかりませんが、実験をするのは大事です)
+
+```{r, error=TRUE}
+d1 + d2
+d1 * d2
+d1 / d2
+```
+
+できませんね?
+
+で、日付の引き算をしてみましょう。
+
+```{r}
+d2 - d1　#うまくいきました。
+minus <- d2-d1 #minusという変数にいれて
+class(minus)　#classを調べます。
+```
+
+「Time difference of 10 days」
+
+クラスは、difftimeというものになっています。
+
+数字や文字に返還してみましょう。
+
+```{r}
+as.numeric(minus)
+as.character(minus)
+```
+
+このように日数を表していますね。
+
+このdifftime単純な日数差を計算するだけならこれでOKです
+
+ただ時刻型では、
+
+```{r}
+t1 <- as_datetime(0)
+t2 <- as_datetime(1)
+t3 <- as_datetime(65)
+t4 <- as_datetime(3605)
+t5 <- as_datetime((3600*24)+5)
+t6 <- as_datetime(366*((3600*24))+5)
+
+min21 <- t2-t1
+min31 <- t3-t1
+min41 <- t4-t1
+min51 <- t5-t1
+min61 <- t6-t1
+
+min21
+min31
+min41
+min51
+min61
+```
+
+difftimeというclassであることには変わりないのですが、表示される単位が最小で秒から最大で日まで代わり、数字に戻すと、
+
+```{r}
+as.numeric(min21)
+as.numeric(min31)
+as.numeric(min41)
+as.numeric(min51)
+as.numeric(min61)
+```
+
+単位が違うままで印字されてしまいます。
+
+これ、計算するときにものすごく困るので、次の動画では時間同士の引き算をより正確に計算する方法について解説していきます。
+

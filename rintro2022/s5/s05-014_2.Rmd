@@ -1,0 +1,53 @@
+---
+title: rename()の実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+library(tidyverse)
+hyou <- tibble(
+  col1=c(1,2,3,4), 
+  col2=c(10,20,30,40)
+)
+```
+
+それでは、実際にrename関数を利用してみましょう使い方は、
+
+<表> %>% 
+  rename(<新しい名前> = <対象となる列の名前>)
+
+でしたね?  
+
+```{r}
+hyou
+hyou <- hyou %>% 
+  rename(new = col2)
+hyou
+```
+
+はい。このように、列名が変わっています。
+
+また、日本語でデータを扱う場合は、
+
+```{r}
+hyou2 <- tibble(`日本語の列名` = 1:3)
+hyou2
+
+hyou2 %>% 
+  rename(change = 日本語の列名)
+```
+
+とそのまま書いても問題ありませんが、お勧めなのは、``バッククオートで囲んでおくという方法です。
+
+```{r}
+hyou2 %>% 
+  rename(change = `日本語の列名`)
+```
+
+日本語の列名、半角の文字などが混ざっているとうまく処理されないことがあるので、このようなバッククオートをつけるように意識付けしておくことで無用なエラーを回避できますのでおすすめです。

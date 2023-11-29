@@ -1,0 +1,20 @@
+---
+title: ggplot2の導入
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r}
+library(ggplot2)
+library(tidyverse)
+ggplot(mpg)+geom_point(aes(x=cty,y=hwy))
+
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x=cty, y=hwy, color=as.factor(cyl))) +
+  labs(title = "自動車の燃費", x = "街乗り[マイル/ガロン]", y = "高速") +
+  scale_color_discrete(name="シリンダー数") +  
+  theme_minimal() +
+  theme(legend.box.margin = margin(0,-50,0,0))
+```
+

@@ -1,0 +1,14 @@
+{
+  "hash": "99a4d805f3321aae39471ab7d05cae01",
+  "result": {
+    "markdown": "---\ntitle: 説明 縦から横の変換 pivot_wider\npage-layout: full\ntitle-block-banner: true\ncomments: false\nfilters:\n  - lightbox\nlightbox:\n  match: auto\n---\n\n\n\n::: {layout-ncol=3}\n![](slides/s5d/slides031.jpg){group=\"slides\"}\n\n![](slides/s5d/slides032.jpg){group=\"slides\"}\n\n![](slides/s5d/slides033.jpg){group=\"slides\"}\n\n![](slides/s5d/slides034.jpg){group=\"slides\"}\n\n![](slides/s5d/slides035.jpg){group=\"slides\"}\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

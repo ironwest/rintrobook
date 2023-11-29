@@ -1,0 +1,59 @@
+---
+title: Wordへの出力
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+ここまでは、RmdファイルをHTMLファイルへ出力してきました。
+ 
+ここからは、RmdファイルをWordファイルとPowerpointファイルへ出力する方法をご説明いたします。
+
+```{filename="example4.Rmd"}
+---
+title: "Example"
+author: "Nishida Norimitsu"
+date: "2021/5/20"
+output:
+  word_document: default
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+```
+
+
+## 色々な形への出力
+
+* さて、ここでは、色々な形に分析結果を出力したい場合の方法を考えましょう。
+* ここでは、比確的よく利用されると想定されるpowerpointとwordファイルへの出力をご説明します。
+* 尚、powerpointはスライドの区切りが##となつておりますので注意してください。
+* また、全体のチャンクの設定でR関係のものを表示しないようにしてあります。
+
+<!--では、上のKnitからknit to wordをまず実行してみてください。いかがでしょうか?実行した場合にYAMLの設定が自動的に書き換わっていることも確認しておいてください。outputで上に書いてあるものが単純にKnitを押したときに優先して出力される形式になるので、入れ替えてKnitボタンをおして動作を確認いただいてもよいかもしれません。
+
+次は、見た目を変える方法を解説します。-->
+
+## 画像を含む区分
+
+```{r}
+ggplot(cars) +
+  geom_point(aes(x=speed,y=dist))+
+  theme_classic()
+```
+
+## 表を含む区分
+
+```{r}
+gtsummary::as_flex_table(gtsummary::tbl_summary(cars))
+```
+
+```

@@ -1,0 +1,14 @@
+{
+  "hash": "b5f6067b962b7e465a5378cfaf347fd2",
+  "result": {
+    "markdown": "---\ntitle: 型の基本(L18)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nhako1からhako5まで5つの変数を作成します。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako1 <- 3\nhako2 <- 4\nhako3 <- 5\nhako4 <- 6\nhako5 <- 7\n```\n:::\n\n\n\n5つの変数をつくってみました。\n変数同士で計算することができるので、全部の箱の値を足して、新しい変数にその結果を代入したい場合は、次のように書きます。\n\nhako_dai <- hako1 + hako2 + hako3 + hako4 + hako5\nhako_dai\n```\n\nできましたか？\n\n::: {.cell}\n\n```{.r .cell-code}\nrm(list=ls())\n```\n:::\n\n今度は文字列をいれてみましょう\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako1 <- \"hello\"\nhako2 <- \"world\"\n```\n:::\n\n\n\n文字列が入った箱同士を足すことが可能でしょうか？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako1 + hako2\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in hako1 + hako2: non-numeric argument to binary operator\n```\n:::\n:::\n\n\n\nはい、だめですね。数値でないと怒られました。\n\n文字列型はそのままでは計算できません。なので、例え、数字っぽく見えようと、計算できません。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhako <- \"5\"\n\nhako + hako \n```\n\n::: {.cell-output .cell-output-error}\n```\nError in hako + hako: non-numeric argument to binary operator\n```\n:::\n:::\n\n\n\nこれもだめです。\n\n\n変数の中身が、「数字のつもり」なのに、「文字列型になってしまっている」ケースが今後、実際に分析を行う中で多々発生します。\n\nそういうケースでは型を変換する関数を利用します。\n\n今回の場合は、文字列型を数字型に変換したいので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nas.numeric(\"5\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 5\n```\n:::\n:::\n\n\n\nこんな風に、as.numeric関数を利用しましょう。\n\n文字列が数字と解釈できる場合は、数字に変換してくれます。\n\nただし、人間が見たら明らかに数字と思われるものでも、as.numericは柔軟に対応することはできません。\n\nas.numeric(\"5.12\")\nas.numeric(\"5000\")\nas.numeric(\"5,000\")\nas.numeric(\"1/2\")\n```\n\n5,000は余分なカンマが入っているのでダメですし、\n1/2は0.5と人ならわかりますがコンピューターにとっては１スラッシュ２という文字列なので数字への変換はできません。\n\n\n変換できない場合は、NA（Not Available、欠損値）へと変換されます。\n\n後は、数字を文字列型に変換する場合に使う関数は、\n\nas.character(1000)\n```\n\nas.character関数です。\n\n以上、Rの基本としての変数と型変換の話でした。\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

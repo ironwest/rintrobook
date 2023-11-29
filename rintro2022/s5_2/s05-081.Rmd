@@ -1,0 +1,187 @@
+---
+title: 食中毒データの加工1
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+library(readxl)
+```
+
+ここでは、data/food_poisoning2020.xlsの、④病因物質別発生状況
+
+シートからデータをインポートしてtidyデータにしていきます。
+
+もし可能そうであれば一度解説を見る前に取り組んでみてください。なお、総数等の集計されたデータはすべて破棄する形で進めましょう。
+
+それではいきます!
+
+まずはデータを眺めてみます。
+
+3-36行目に1-6月のデータ(A3:W36)
+
+39-72行目に7-12月のデータ(A39:T72)
+
+が含まれています。
+
+read_excel関数のヘルプファイルを見ると、rangeアーギュメントがあり、範囲指定でデータを取得することができます。
+
+なので、
+
+```{r}
+dat_a <- read_excel("data/food_poisoning2020.xls",
+                    range = "A3:W36",
+                    col_names = FALSE,
+                    sheet="④病因物質別発生状況")
+
+dat_b <- read_excel("data/food_poisoning2020.xls",
+                    range = "A39:T72",
+                    col_names = FALSE,
+                    sheet="④病因物質別発生状況")
+
+View(dat_a)
+View(dat_b)
+```
+
+まずdat_aから処理しましょう。
+
+1行目と2行目に列名となりうる行です。
+
+人口動態データの処理にならって列名を作成しましょう。
+
+```{r}
+row1 <- dat_a %>% slice(1) %>% as_vector()
+row2 <- dat_a %>% slice(2) %>% as_vector()
+
+col_a <- tibble(r1 = row1, r2 = row2) %>% 
+  fill(r1, r2) %>% 
+  replace_na(list(r2="")) %>% 
+  unite("col_a",r1, r2, sep="_")
+```
+
+ここでcol_aの列名が1行目と2行目で同じ値です。
+
+データを確認すると、1行目と2行目はそれぞれ、分類1、分類2という形で分かれているとみなせるので、それを反映しておきましょう。
+
+```{r}
+col_a$col_a[1] <- "cause_1"
+col_a$col_a[2] <- "cause_2"
+
+col_a
+
+dat_a2 <- dat_a %>% 
+  setNames(col_a$col_a) %>% 
+  slice(-c(1:2))
+
+View(dat_a2)
+```
+
+cause_1をまずは埋めましょう。ついで、総数を表すことになるので、cause_2が欠損している行は削除します。
+
+```{r}
+dat_a3 <- dat_a2 %>% 
+  fill(cause_1) %>% 
+  filter(!is.na(cause_2))
+```
+
+縦持ちに変換します。
+
+```{r}
+dat_a4 <- dat_a3 %>% 
+  pivot_longer(
+    cols = !c(cause_1, cause_2),
+    names_to = c("month","type"),
+    values_to = "val",
+    names_sep = "_"
+  )
+
+View(dat_a4)
+```
+
+総数を削除します
+
+```{r}
+dat_a5 <- dat_a4 %>% 
+  filter(month != "総数")
+
+View(dat_a5)
+```
+
+縦持ちデータに変換できました!
+
+ここで、同じ変換を
+
+```{r}
+dat_b
+```
+
+にも適応しましょう。
+
+練習がてら、dat_bにも適応してみてください。
+
+dat_aの処理は、中間の変数を削除して記載すると、
+
+```{r}
+row1 <- dat_a %>% slice(1) %>% as_vector()
+row2 <- dat_a %>% slice(2) %>% as_vector()
+
+col_a <- tibble(r1 = row1, r2 = row2) %>% 
+  fill(r1, r2) %>% 
+  replace_na(list(r2="")) %>% 
+  unite("col_a",r1, r2, sep="_")
+
+col_a$col_a[1] <- "cause_1"
+col_a$col_a[2] <- "cause_2"
+
+dat_a2 <- dat_a %>% 
+  setNames(col_a$col_a) %>% 
+  slice(-c(1:2)) %>% 
+  fill(cause_1) %>% 
+  filter(!is.na(cause_2)) %>% 
+  pivot_longer(
+    cols = !c(cause_1, cause_2),
+    names_to = c("month","type"),
+    values_to = "val",
+    names_sep = "_"
+  ) %>% 
+  filter(month != "総数")
+```
+
+こんな感じです。
+
+これを参考にして、dat_bに適応すると、
+
+```{r}
+row1 <- dat_b %>% slice(1) %>% as_vector()
+row2 <- dat_b %>% slice(2) %>% as_vector()
+
+col_b <- tibble(r1 = row1, r2 = row2) %>% 
+  fill(r1, r2) %>% 
+  replace_na(list(r2="")) %>% 
+  unite("col_b",r1, r2, sep="_")
+
+col_b$col_b[1] <- "cause_1"
+col_b$col_b[2] <- "cause_2"
+
+dat_b2 <- dat_b %>% 
+  setNames(col_b$col_b) %>% 
+  slice(-c(1:2)) %>% 
+  fill(cause_1) %>% 
+  filter(!is.na(cause_2)) %>% 
+  pivot_longer(
+    cols = !c(cause_1, cause_2),
+    names_to = c("month","type"),
+    values_to = "val",
+    names_sep = "_"
+  ) %>% 
+  filter(month != "総数")
+
+dat_a2
+dat_b2
+```
+
+できあがりました。
+次の動画でデータを結合しましょう。
+

@@ -1,0 +1,53 @@
+---
+title: 集計方法を指定して描画する～statオプション~
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+```{r}
+dat <- tibble(
+  age_group　= c("~20","21~40","41~60","61~80","81~100"),
+  pop = c(13,20,32,55,20)
+)
+```
+
+こんな感じの、集計済みデータあるとしましょう。age_groupは集団の属する年齢、popは人数だとしますそれで、
+
+```{r}
+dat
+
+ggplot(dat) + geom_bar(aes(x = age_group))
+```
+
+とすると、x軸のage_groupを集計して表示するため、それぞれの年齢は1件ずつとなり、y軸の値は集計された1件となります
+
+ここで、geom_barに集計をさせない方法を考えてみます。y軸の値を与えてあげて、それを描画する方法です。単純に、y軸の設定をしても
+
+```{r,error=TRUE}
+ggplot(dat) + 
+  geom_bar(aes(x = age_group, y = pop))
+```
+
+xかy、どちらかしか設定できませんとおこられますが、
+
+```{r}
+ggplot(dat) + 
+  geom_bar(aes(x = age_group, y = pop),
+           stat="identity")
+```
+
+と、stat_identityとすると、集計をせずに描画してくれます。
+
+これは、
+
+```{r}
+ggplot(dat)+geom_col(aes(age_group,pop))
+```
+
+geom_colとまったく同じ挙動なのであんまり役に立たないかもしれないですけどね。
+

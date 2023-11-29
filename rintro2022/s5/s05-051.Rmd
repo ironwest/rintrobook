@@ -1,0 +1,180 @@
+---
+title: 実践 separate()
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r}
+library(tidyverse)
+```
+
+それでは、separate関数の動きを見ていきましょう。
+
+```{r, eval=FALSE}
+?separate
+```
+
+ヘルプをみると、col、into、sepだけでなく他にも色々なargumentがあります。簡単に動きを見ていきましょう
+
+まずは、slideで解説したものからいきます。
+
+```{r}
+dat <- tibble(tgt = c("glu:102 mg/dl","AST:41 IU/L",
+                      "ALT:32 IU/L","GGT:33 IU/L"))
+
+dat
+```
+
+正規表現であれば
+
+```{r}
+dat %>% 
+  mutate(
+    name  = str_extract(tgt,"^.+(?=:)"),
+    value = str_extract(tgt,"(?<=:)\\d+"),
+    unit  = str_extract(tgt,"(?<=\\s).+$"),
+  )
+```
+
+こんな感じで抜き出せましたね?
+
+separateで書くと、
+
+```{r}
+dat %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s")
+```
+
+こんな感じです。
+
+str_extractと比べてだいぶ楽ではありませんか?
+
+argumentの設定も見ていきましょう。
+
+remove=FALSEに変更することで、
+
+```{r}
+dat %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s")
+
+dat %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE)
+```
+
+元の列を残したまま処理することが可能です。
+
+convert=TRUEとすると、
+
+```{r}
+dat %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s")
+
+dat %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE)
+```
+
+分けた後の型変換(数値型等)も自動的にしてくれます。
+
+extraは要素が多い時の動作を指定します。
+
+```{r}
+dat2 <- tibble(
+  tgt = c("glu:102 mg/dl 注意:食後",
+          "AST:41 IU/L",
+          "ALT:32 IU/L",
+          "GGT:33 IU/L")
+)
+
+dat2 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE)
+```
+
+1行目の要素が多すぎるデータをseparateしてみると、このように、警告（warning)してくれます。この動作、extraのargumentでコントロールできて、デフォルトは、warnです。
+
+warnだと警告とともに、余分な要素は無視されます。
+
+```{r}
+dat2 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, extra="warn")
+```
+
+dropにしておくと、警告はなくて、余分な要素が無視されます
+
+```{r}
+dat2 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, extra="drop")
+```
+
+fillは、intoで指定した列に「分割することをやめて」収めてくれます。
+
+```{r}
+dat2 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, extra="merge")
+```
+
+fillは要素が少ない場合の動作を指定します
+
+```{r}
+dat3 <- tibble(
+  tgt = c("glu:-",
+          "AST:41 IU/L",
+          "ALT:32 IU/L",
+          "GGT:未")
+)
+```
+
+fillに与えられるのは、warn right leftの3種類でデフォルトはwarnです。
+
+```{r}
+dat3 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, fill="warn")
+
+dat3 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, fill="right")
+
+dat3 %>% 
+  separate(tgt, into=c("name","value","unit"),sep=":|\\s",
+           remove=FALSE, convert=TRUE, fill="left")
+```
+
+ここの設定、要素が不足しているときに右に詰めるか左に詰めるかを指定するだけです。
+
+sepですが、正規表現(文字列)だけでなく、数字で区切る位置を指定することも可能です。
+
+例えば、検査名検査結果1回目2回目3回目を、
+ken000100020003
+
+の様に記載されたデータがあった場合に、正規表現で区切り位置を示すのは難しいので、
+ken000100020003
+123456789012345678
+  |   |   |   
+  3   7   11
+
+3,7,11文字目で区切ることにしましょう(検査名は必ずアルファベット3文字で表されるように、データの種類、文字列の位置で固定されているデータとします。)
+
+```{r}
+  
+dat4 <- tibble(
+  tgt = c("glu010000890095",
+          "ast003000400050",
+          "alt002000300040")
+)
+
+dat4 %>% 
+  separate(col=tgt,into=c("name","v1","v2","v3"),sep=c(3,7,11))
+```
+
+いかがでしょうか?
+文字列の位置でも簡単に切り分けることができました。
+
+このseparate関数、かなり便利な関数ですので是非使い方をマスターしておいてください。
+

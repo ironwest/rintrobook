@@ -1,0 +1,26 @@
+---
+title: イントロダクション
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5d/slides006.jpg){group="slides"}
+
+![](slides/s5d/slides007.jpg){group="slides"}
+
+![](slides/s5d/slides008.jpg){group="slides"}
+
+![](slides/s5d/slides009.jpg){group="slides"}
+
+![](slides/s5d/slides010.jpg){group="slides"}
+
+![](slides/s5d/slides011.jpg){group="slides"}
+
+![](slides/s5d/slides012.jpg){group="slides"}
+:::

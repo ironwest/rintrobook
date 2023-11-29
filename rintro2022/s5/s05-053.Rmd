@@ -1,0 +1,144 @@
+---
+title: 練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+ここではdata/stringr.xlsxファイルを利用します
+
+練習問題1 
+
+インポートしてください
+
+練習問題2-1 
+
+target3をname、hr、mlの3つの列にseparateを使ってわけてください。
+
+練習問題2-1 
+
+target3をname、hr、mlの3つの列にextractを使ってわけてください。
+
+練習問題3-1 
+
+target2をname,value,unitの3つの列にseparateを使って分けてください。
+
+練習問題3-2 
+
+target2をname,value,unitの3つの列にextractを使って分けてください。
+
+練習問題4-1 
+
+target1をname,ml,unitの3つの列にseparateを使って分けてください。
+
+練習問題4-2 
+
+target1をname,ml,unitの3つの列にextractを使って分けてください。
+
+解答です。
+
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+練習問題1 
+
+インポートしてください
+
+```{r}
+dat <- read_excel("data/stringr.xlsx")
+dat
+```
+
+練習問題2-1 
+
+target3をname、hr、mlの3つの列にseparateを使ってわけてください。
+
+```{r}
+dat %>% 
+  select(target3) %>% 
+  separate(col = target3,
+           into = c("ope","name","hr","ml"), 
+           sep=":|\\s+", remove=FALSE) %>% 
+  select(-ope)
+```
+
+この方法だと、hrやml等、余計な文字列がくっついているので、str_removeなどで除去してあげる必要がありますね。
+
+練習問題2-1 
+
+target3をname、hr、mlの3つの列にextractを使ってわけてください。
+
+```{r}
+dat %>% 
+  select(target3) %>% 
+  extract(target3, c("name","hr","ml"),
+          regex="ope:(.+) (.+)hr (.+)ml",
+          remove = FALSE)
+```
+
+いかがでしょうか?extractを利用するとseparateよりも正規表現を記載する手間はありますが、より細かく分けることができます。
+
+練習問題3-1 
+
+target2をname,value,unitの3つの列にseparateを使って分けてください。
+
+```{r}
+dat %>% 
+  select(target2) %>% 
+  separate(target2,c("name","value","unit"),
+           sep = ":\\s+|:|\\s+") %>% 
+  mutate(
+    unit = str_remove(value,"\\d+\\.\\d+|\\d+"),
+    value = str_extract(value,"\\d+\\.\\d+|\\d+")
+  )
+```
+
+練習問題3-2 
+
+target2をname,value,unitの3つの列にextractを使って分けてください。
+
+```{r}
+dat %>% 
+  select(target2) %>% 
+  extract(target2,c("name","value","unit"),
+          regex = "(.+)[:\\s]+(\\d+\\.\\d+|\\d+)(.+)$")
+```
+
+いかがでしょうか?
+
+extractの方がより複雑な形に一度で対応できますね?
+
+練習問題4-1 
+
+target1をname,ml,unitの3つの列にseparateを使って分けてください。
+
+```{r}
+dat %>% 
+  select(target1) %>% 
+  separate(target1,c("name","ml","unit"),
+           sep=":|\\s+") %>% 
+  mutate(
+    ml = str_remove(ml,"ml"),
+    unit = str_remove(unit,"unit(s|)")
+  )
+```
+
+練習問題4-2 
+
+target1をname,ml,unitの3つの列にextractを使って分けてください。
+
+```{r}
+dat %>% 
+  select(target1) %>% 
+  extract(target1,c("name","ml","unit"),
+          regex="(.+)[:\\s]+(\\d+)ml (\\d+)unit") %>% 
+  mutate(name = str_trim(name))
+```
+
+以上、いかがでしょうか?
+
+正規表現を考えて抜き出す場合よりもseparateやextractを利用する方が簡単な場合もあるので、どの関数を利用するか、お手元のデータの形をみて、考えてみてください。
+

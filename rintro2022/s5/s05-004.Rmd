@@ -1,0 +1,28 @@
+---
+title: messyデータをtidyデータに変換してみる 例1
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s5a/slides027.jpg){group="slides"}
+
+![](slides/s5a/slides028.jpg){group="slides"}
+
+![](slides/s5a/slides029.jpg){group="slides"}
+
+![](slides/s5a/slides030.jpg){group="slides"}
+
+![](slides/s5a/slides031.jpg){group="slides"}
+
+![](slides/s5a/slides032.jpg){group="slides"}
+
+![](slides/s5a/slides033.jpg){group="slides"}
+
+![](slides/s5a/slides034.jpg){group="slides"}
+:::

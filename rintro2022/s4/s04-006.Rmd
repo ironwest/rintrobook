@@ -1,0 +1,50 @@
+---
+title: as.factorで作成する
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+それでは、ここでは因子型を作成していきます。まずは、1つ前の動画で作成したalcohol変数を変換してみましょう。
+
+とはいっても、スライドで解説した通り、
+
+```{r}
+alcohol = c("週1日以内","週4-6日","週4-6日","毎日","のまない","週1-3日","毎日")
+as.factor(alcohol)
+```
+
+としてあげるだけです。
+
+実行結果をみると含まれるデータの表示のあとに、
+
+5 Levels: のまない 週1-3日 週1日以内 ... 毎日
+
+となっています。
+
+```{r}
+vec_f <- as.factor(alcohol)
+```
+
+因子型に変更した時点で、
+
+```{r}
+as.numeric(alcohol)
+as.character(alcohol)
+
+as.numeric(vec_f) 
+as.character(vec_f)
+```
+
+で変換される挙動が文字列型とはちがってきていますね？
+
+スライドで解説した、対応表というのは、
+
+```{r}
+levels(vec_f)
+```
+
+Levelsという関数でみることができるため、実行結果の一つ目が数字の1に対応して、全部で5levelあるような形になっています。
+
+次の動画では、この水準を手動で置き換える方法について解説していきます。
+

@@ -1,0 +1,21 @@
+---
+title: Rmarkdownとは?
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s7/slides009.jpg){group="slides"}
+
+![](slides/s7/slides010.jpg){group="slides"}
+
+![](slides/s7/slides011.jpg){group="slides"}
+
+![](slides/s7/slides012.jpg){group="slides"}
+:::
+

@@ -1,0 +1,36 @@
+---
+title: 相対パスについて(L39)
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/slides022.jpg){group="slides"}
+
+![](slides/slides023.jpg){group="slides"}
+
+![](slides/slides024.jpg){group="slides"}
+
+![](slides/slides025.jpg){group="slides"}
+
+![](slides/slides026.jpg){group="slides"}
+
+![](slides/slides027.jpg){group="slides"}
+
+![](slides/slides028.jpg){group="slides"}
+
+![](slides/slides029.jpg){group="slides"}
+
+![](slides/slides030.jpg){group="slides"}
+
+![](slides/slides031.jpg){group="slides"}
+
+![](slides/slides032.jpg){group="slides"}
+
+![](slides/slides033.jpg){group="slides"}
+:::

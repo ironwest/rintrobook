@@ -1,0 +1,96 @@
+---
+title: select()の練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message=FALSE}
+library(tidyverse)
+```
+
+
+この練習問題では、data/select.xlsxのファイルを利用します。
+
+課題1:
+ 
+data/select.xlsxファイルを読み込んでください。
+
+解答1:
+
+エクセルファイルなので、tidyverseに追加して、readxlパッケージも読み込んでおきましょう。
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+dat <- read_excel("data/select.xlsx")
+dat
+```
+
+申し訳ありません。罠を仕掛けてみました。
+エクセルファイルは、ファイルの中に、シー構造があるので、一番最初のシートが目とするデータでない場合は、読み込むシートを指定しあげる必要があります。
+なので、正しいスクリプトは、
+
+```{r}
+dat <- read_excel("data/select.xlsx", sheet="data")
+dat
+```
+
+となります。
+コラム名が多数ありますが、tibbleだと、このよう1画面で全部の名前の確認が可能です。
+
+また、
+
+```{r}
+colnames(dat)
+```
+
+としてあげることで、コラム名をベクトルとしとりだすこともできるので、合わせて覚えおいてもよいかもしれません。
+
+課題2: 最後のコラム、addressを、id,sex,ageの後 に移動させてください。
+
+解答2:
+
+これはeverything()を使ってあげる必要があります
+
+```{r}
+dat2 <- dat %>% 
+  select(id,sex,age, address, everything())
+```
+
+あるいは、
+
+```{r}
+dat2 <- dat %>% 
+  select(id:age, address, everything())
+```
+
+課題3:
+
+id,sex,age,addressと喫煙に関するsmoking_, 飲酒に関するalcohol_ではじまる変数を選択してください
+
+解答3:
+
+```{r}
+dat3 <- dat2 %>% 
+  select(id:address, 
+         starts_with("smoking_"), 
+         starts_with("alcohol_"))
+dat3
+```
+
+課題4: 
+idからaddressまでと、statusで終わる列を取得してください。ただし、smokingとalcoholで始まるものを除外してください。
+
+解答4：
+
+```{r}
+dat4 <- dat2 %>% 
+  select(id:address, ends_with("_status")) %>% 
+  select(!c(alcohol_status,smoking_status))
+dat4
+```
+
+以上、select関数、慣れましたか？ここまでで、基本的な列の操作についての解説は終了です。次は行の操作にはいりたいのですが、そのまえに、基本事項を理解いただく必要がありますので、その解説をさせてください。
+

@@ -1,0 +1,14 @@
+{
+  "hash": "67953808db4113d6309f25feeb5a957f",
+  "result": {
+    "markdown": "---\ntitle: 補足 R4.0.0以降のRaw String\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n\n\n少しだけ補足です。\n\n一般的な正規表現は、\\ １つでメタ文字を表してくれるのですが、Rの正規表現は、\\にはエスケープの意味があるので、\\dという数字を表す場合は \\\\dというふうに、一つ目の\\で二つめのバックスラッシュに特別な意味はありませんという意味にしてあげる必要があります。\n\nR 4.0.0以降では、この\\\\というややこしい表記をしないでよいようにするための特別な書き方が導入されており、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n\"\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"\"\n```\n:::\n\n```{.r .cell-code}\nr\"()\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"\"\n```\n:::\n\n```{.r .cell-code}\n\"abc\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"abc\"\n```\n:::\n\n```{.r .cell-code}\nr\"(abc)\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"abc\"\n```\n:::\n:::\n\n\n\nという具合に、r\"\"とかいてあげて、\"\"の内側に、()を入れてあげることで「このテキストは\\に特別な意味がないですよ」という意味になります。なので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n#\"\\d\"\n```\n:::\n\n\n\nだとエラーがでるので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n\"\\\\d\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"\\\\d\"\n```\n:::\n:::\n\n\n\n実際はcatという実際の印字を表現できる関数にいれてあげると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ncat(\"\\\\d\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\\d\n```\n:::\n:::\n\n\n\nと\\が一つになっています。これに、r\"\"の記載方法を用いてあげると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ncat(r\"(\\d)\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\\d\n```\n:::\n\n```{.r .cell-code}\ncat(\"\\\\\\\\d\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\\\\d\n```\n:::\n\n```{.r .cell-code}\ncat(r\"(\\\\d)\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n\\\\d\n```\n:::\n:::\n\n\n\nという具合です。\n\n本コースでは、r\"()\"表記でなく\"\"表記を用いていますが、どちらを用いていただいても構いません。\n\nついでにもう少しこのr()とcatの動きをみておきましょう。\\nは改行を表すので、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ncat(  \"abc\\ndef\\nghi\" )\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nabc\ndef\nghi\n```\n:::\n\n```{.r .cell-code}\ncat(r\"(abc\\ndef\\nghi)\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nabc\\ndef\\nghi\n```\n:::\n\n```{.r .cell-code}\ncat(  \"abc\\\\ndef\\\\nghi\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nabc\\ndef\\nghi\n```\n:::\n:::\n\n\n\nこんな感じの結果になります。\n\nそれでは続けていきましょう。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

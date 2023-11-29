@@ -1,0 +1,229 @@
+---
+title: :時間の集計1(sld103)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+```
+
+```{r}
+{
+  dt1 <- as_date("2020-4-1") %>% as.numeric()
+  dt2 <- as_date("2020-6-1") %>% as.numeric()
+  
+  set.seed(123466)
+  gen_single_id <- function(id){
+    num_med <- sample(1:3,1)
+    
+    tibble(med = sample(LETTERS[1:3],num_med,replace = TRUE),
+           start = sample(dt1:dt2,num_med, replace=TRUE),
+           end = start + sample(1:100, num_med, replace=TRUE))
+  }
+  
+  dat <- tibble(id = 1:200) %>% 
+    mutate(ddd = map(id, gen_single_id))
+  
+  dat <- dat %>% 
+    unnest(c(ddd)) %>% 
+    arrange(id, med) %>% 
+    mutate(across(c(start,end), ~{as.character(as_date(.))}))
+  
+  write_csv(dat,"data/time.csv")
+  
+}
+```
+
+それでは、引き続きスライドで解説した、時間に関する集計についてデータを読み込んで処理を行うことを練習してみましょう。
+
+```{r}
+dat <- read_csv("data/time.csv")
+
+dat
+```
+
+このデータも、私が作成した架空のデータです。idは対象者、medは処方された薬、startとendで処方開始(start)と終了(end)を記載してあります。
+
+まず、このデータ全体を眺めてみましょう。
+
+```{r}
+dat %>% summary()
+```
+
+summary関数を利用するとおおむねの情報が表示されます。
+
+ただし、med変数については文字列であるとだけしか表示されていないので、因子型に変更しておきましょう
+
+```{r}
+dat2 <- dat %>% mutate(med = as.factor(med))
+
+dat2 %>% summary()
+```
+
+これで、このデータは、idが1から200まで、200人分のデータで、このデータにでてくる薬の種類は、A、B、Cの3種類であることがわかります。
+
+また、
+
+```{r}
+dat2 %>% count(id, med)
+```
+
+でさらっと見ると、nが2等も見当たるので、二回同じ薬が同じIDで処方されているデータになっていることもわかります。
+
+countのこの形だとちょっと見ずらいので、base::table関数をこういう場合に利用すると便利です。
+
+```{r}
+table(dat2$id, dat2$med) %>% head() #あるいは、
+
+dat2 %>% {table(.$id, .$med)} %>% head()
+```
+
+{}でくくると、　DATA %>% {}　として、{}の中の「.」がDATAと同じになるので、データの名前がめちゃくちゃ長い場合、
+
+```{r}
+nanika_monosugoku_namae_ga_nagai_data <- dat2 
+
+table(
+  nanika_monosugoku_namae_ga_nagai_data$id,
+  nanika_monosugoku_namae_ga_nagai_data$med
+) %>% head()
+
+nanika_monosugoku_namae_ga_nagai_data %>% 
+  {table(.$id, .$med)} %>% 
+  head()
+```
+
+すっきりと書くことができます。
+
+それではここからは、問題に答える形で解説をすすめていきます
+
+問題:
+
+薬AからC、それぞれの投与期間を日数で最小、平均、最大値を集計してみましょう尚、重複して投与されている場合は、
+
+|----A1-----|
+               |-----A2-----|
+               
+このように期間がかぶっていない場合は、どちらか長い方を
+
+採用、
+
+|----A1----|
+    |-----------A2------|
+    
+このように期間がかぶっている場合は、1つの期間として集計する。
+
+というルールでやってみてください。
+
+次の動画では、どのように処理するかのイメージを解説していきます
+
+set.seed(12345)
+```{r}
+{ #
+  plot_dat <- function(dat, xrange=c(1,100)){
+    gt <- dat %>% 
+      mutate(id = n():1) %>% 
+      ggplot() +
+      geom_segment(aes(x = s, xend = e, y = id, yend = id))  +
+      geom_point(aes(x = s, y=id),color="orange") +
+      geom_point(aes(x = e, y=id),color="darkblue") +
+      theme_void()+
+      coord_cartesian(xlim=c(as_date(xrange[1]),as_date(xrange[2])))
+    
+    gb <- dat %>% 
+      ggplot() +
+      geom_segment(aes(x=s,xend=e,y=1,yend=1))+
+      geom_point(aes(x=s,y=1),color="orange") +
+      geom_point(aes(x=e,y=1),color="darkblue") +
+      theme_void()+
+      coord_cartesian(xlim=c(as_date(xrange[1]),as_date(xrange[2])))
+    
+    cowplot::plot_grid(gt,gb,nrow=2,rel_heights = c(7,1))
+  }
+  
+  
+  dat <- tibble(
+    s = sample(1:100, 10, replace = TRUE),
+    e = s + sample(1:10, 10, replace = TRUE)
+  ) %>% 
+    mutate(s = as_date(s),
+           e = as_date(e))
+  
+  dat <- tribble(
+    ~s, ~e,
+    1,  2,
+    3,  5,
+    5,  6,
+    5,  8,
+    9, 11
+  ) %>% 
+    mutate(s=as_date(s), e=as_date(e))
+  
+  plot_dat(dat, c(1,15))
+  
+  dat %>%
+    arrange(s) %>%
+    mutate(interv = interval(s,e)) %>%
+    mutate(prev_overlap = int_overlaps(interv, lag(interv))) %>% 
+    replace_na(list(prev_overlap=FALSE)) %>% 
+    mutate(presc_id = cumsum(!prev_overlap)) %>% 
+    group_by(presc_id) %>%
+    summarise(s = min(s), e = max(e))
+  
+  dat2 <- dat %>% 
+    arrange(s) %>% 
+    mutate(interv = interval(s,e)) %>% 
+    mutate(post_overlap = int_overlaps(interv, lead(interv))) %>% 
+    mutate(new_e = if_else(post_overlap, lead(e), e, e)) %>% 
+    mutate(e = if_else(post_overlap, new_e, e, e))
+  
+  View(dat2)
+  plot_dat(dat2)  
+  
+  check_overlap <- function(.data){
+    temp <- .data %>% 
+      mutate(new_interval = interval(s,e,tzone = "UTC"))
+    
+    temp <- temp %>% 
+      mutate(
+        new_int_next = int_overlaps(new_interval, lead(new_interval))
+      )
+    
+    any(temp$new_int_next, na.rm=TRUE)
+  }
+  
+  run_test <- function(x){
+    print(x)
+    set.seed(x)
+    dat <- tibble(
+      s = sample(1:100, 10, replace = TRUE),
+      e = s + sample(1:10, 10, replace = TRUE)
+    ) %>% 
+      mutate(s = as_date(s),
+             e = as_date(e))
+    
+    
+    dat2 <- dat %>% 
+      arrange(s) %>% 
+      mutate(interv = interval(s,e)) %>% 
+      mutate(
+        prev_overlap = int_overlaps(lag(interv),interv),
+        post_overlap = int_overlaps(interv, lead(interv))
+      ) %>% 
+      mutate(
+        new_e = if_else(post_overlap, lead(e), e)
+      ) %>% 
+      mutate(e = new_e) %>% 
+      filter(!post_overlap)
+    
+    return(check_overlap(dat2))
+  }
+  
+  res1 <- map_lgl(100:1000, run_test)
+  
+}
+```

@@ -1,0 +1,20 @@
+{
+  "hash": "73a9c6029041eaff719d524d2b87841c",
+  "result": {
+    "markdown": "---\ntitle: データフレーム(データフレームを操作してみよう)(L27)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nさて、表に名前をつけて見ましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou <- data.frame(number = c(1,2,3,4),\n                   name = c(\"A\",\"B\",\"C\",\"D\"))\n```\n:::\n\n\n\nこれで、名前のついた表がRの環境中に読み込まれました。\nここでは、View()と$の使い方を解説いたします。\n\n## View() \n\nまず、View関数です。「v」iewではなくて、「V」iewです。「Vが大文字」です！この関数の中に、hyouを入れて実行すると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nView(hyou) \n```\n:::\n\n\n\nこんな感じで作成した表を表示することができます。\n\n\n## $ \n\nドルサインは、ベクトルを取り出したい時に便利です。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou <- data.frame(number = c(1,2,3,4),\n                   name = c(\"Aさん\",\"Bさん\",\"Cさん\",\"Dさん\"))\n```\n:::\n\n\n\nで作った表ですが、nameをベクトルとして取り出したい！となったときには、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$name\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"Aさん\" \"Bさん\" \"Cさん\" \"Dさん\"\n```\n:::\n:::\n\n\n\nでとりだせます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$number\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4\n```\n:::\n:::\n\n\n\nとりだせましたね。\n\n\nところで、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$name\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"Aさん\" \"Bさん\" \"Cさん\" \"Dさん\"\n```\n:::\n:::\n\n\n\nに下に、Levelsというのが出てます。\n\nこれは、数値型、文字列型に続く型（順番に特に意味はないです）Factor型です。他にも、いくつか型があるのですが、これは、後ほど解説します。\n\n\n## 列の作成、置き換え\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$number\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4\n```\n:::\n:::\n\n\n\nでその列のベクトルを取り出せました。\n実は、この＄記号を利用すれば、新しい変数\nを作成することも可能です。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$new_number\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nNULL\n```\n:::\n:::\n\n\n\n存在していない列を取り出そうとすると、NULLという、「存在していない」ことを表す結果が返ってきます。ここに、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$new_number <- c(100,200,300,400)\n```\n:::\n\n\n\n取り出すのではなく、代入してあげると、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nView(hyou)\n```\n:::\n\n\n\n代入した結果が表示されました！\n\nこのように＄記号をデータフレームと合わせて使うと新しい変数を作成することができます。また、すでに「ある」列名を指定して代入することも可能で、\n\n\n次のコードを実行すると、何が起こるでしょう？\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$number　<- c(100,200,300,400)\nhyou$name <- \"いえーい\"\n\nhyou\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n  number     name new_number\n1    100 いえーい        100\n2    200 いえーい        200\n3    300 いえーい        300\n4    400 いえーい        400\n```\n:::\n:::\n\n\n\nこんな感じで、すでにある列にベクトルを放り込むことができます。\nまた、nameの方は、要素の長さ1のベクトルであるにもかかわらず、きちんと代入されています。これは、ベクトルは勝手に複製されるという話がここでも生きています。ただし、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$name <- c(\"その１\",\"その２\")\n```\n:::\n\n\n\nはOKでも、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhyou$name <- c(\"その１\",\"その２\",\"その３\")\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in `$<-.data.frame`(`*tmp*`, name, value = c(\"その１\", \"その２\", : replacement has 3 rows, data has 4\n```\n:::\n:::\n\n\n\nはトータルの行数の整数倍でないため、最初に実験したようにエラーがでます。\n",
+    "supporting": [
+      "s02-022_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

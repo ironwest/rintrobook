@@ -1,0 +1,23 @@
+---
+title: Openxlsx:Excelへの出力3
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+おまけです。
+
+実は、openxlsxには、データをエクセルファイルに簡単に書き出せる関数が用意されています。
+
+```{r}
+library(tidyverse)
+dat <- tibble(a = 1:10, b = 11:20)
+
+openxlsx::write.xlsx(dat,"easy.xlsx")
+```
+
+easy.xlsxという名前でファイルが作成されて、datの内容が含まれていますね？
+
+以上、駆け足でしたがレポートの作成方法についてでした。
+
+ここまで学んだ知識を駆使して、本コースの最終課題として、実際の状況を想定して、レポートを作成する行程を一緒にやっていきましょう。

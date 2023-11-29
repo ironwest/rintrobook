@@ -1,0 +1,135 @@
+---
+title: 看護記録もどきの加工1
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+それでははじめます。
+必要なパッケージの読み込みましょう
+
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+まずはインポートです。
+
+```{r}
+kiroku <- readxl::read_excel("data/看護記録もどき.xlsx")
+
+View(kiroku)
+```
+
+だいぶややこしいですが順番に考えていきます。
+
+まず、「患者名」列をなんとかしましょう
+
+```{r}
+kiroku %>% select(`患者名`)
+```
+
+患者名の下に、それぞれの測定項目の名前が記載されているため、「患者名」の列をもとに、nameという列を作成して、そこに、患者名を埋めていくようにしてみましょう。
+
+注目する列だけを抜き出して変化をみると、
+
+```{r}
+kiroku %>% 
+  select(`患者名`) %>% 
+  mutate(name = 
+           if_else(
+             str_detect(`患者名`,"^\\s"), 
+             NA_character_,
+             `患者名`)) %>%
+  fill(name)
+```
+
+こんな感じで、Aさんの行なのかBさんのデータがある行なのか、name列を見ることで班別することができるようになりました。
+
+```{r}
+kiroku2 <- kiroku %>% 
+  mutate(name = 
+           if_else(
+             str_detect(`患者名`,"^\\s"), 
+             NA_character_,
+             `患者名`)) %>%
+  fill(name)
+
+kiroku2  
+```
+
+次に、「患者名」列からすでに患者名はとりだしたので、名前を、「測定項目」として、並び替えておきます
+
+```{r}
+kiroku3 <- kiroku2 %>% 
+  select(name, sokutei = `患者名`, everything())
+```
+
+selectでもrenameと同じ書き方できたの覚えていますか？また、everything()とすることで、残りの列も選択できるので変数名を変えながら並び替えることができます。
+
+次に、sokutei列で、患者名が書いてある行は入退院に関するデータが含まれているので、その行をadmissionと書き換えます。
+
+列だけ取り出して変換をみてみると、
+
+```{r}
+kiroku3 %>% 
+  select(sokutei) %>% 
+  mutate(sokutei2 = 
+           if_else(str_detect(sokutei,"^\\s"),
+                   sokutei, "admission"))
+```
+
+こんな感じで、sokutei列のスペースが先頭にあればもとのまま、なければadmissionに書き換えるという処理を行います。
+
+```{r}
+kiroku4 <- kiroku3 %>% 
+  mutate(sokutei = if_else(
+    str_detect(sokutei,"^\\s"),
+    sokutei, "admission"
+  ))
+
+kiroku4
+```
+
+これで各行に対してsokuteiコラムでラベルをつけることができたので、先頭の余分なスペースを削除してからタテのデータに変換します
+
+```{r}
+temp <- kiroku4 %>% 
+  select(sokutei) %>% 
+  mutate(sokutei2 = str_trim(sokutei))
+
+str_view_all(temp$sokutei,"\\s")
+str_view_all(temp$sokutei2,"\\s")
+```
+
+スペース、消えていますね?
+
+```{r}
+kiroku5 <- kiroku4 %>% 
+  mutate(sokutei = str_trim(sokutei))
+
+kiroku5
+```
+
+ここまできたら、これは横持ちデータで、日付のデータが列名になってしまっている形なのでpivot_longerで縦持ちデータに直しましょう
+
+```{r}
+kiroku6 <- kiroku5 %>% 
+  pivot_longer(cols = !c(name,sokutei),
+               names_to = "date",
+               values_to = "val")
+
+kiroku6
+```
+
+NAとなっている部分はデータが存在しないので消します。
+
+```{r}
+kiroku7 <- kiroku6 %>%
+  filter(!is.na(val))
+
+kiroku7
+```
+
+最終的にどのような形にもっていきたいかでこの先の処理は変わります。次の動画では、この先の処理の一例をお示しします。
+

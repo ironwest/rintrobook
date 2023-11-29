@@ -1,0 +1,14 @@
+{
+  "hash": "5cb1ac448306c0ef7e126c39dc9d5627",
+  "result": {
+    "markdown": "---\ntitle: period(sld101)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\nlibrary(lubridate)\n```\n:::\n\n\n\nそれでは、カレンダーの日付を変更するようなを計算していきましょう。\n\nこれ、実は簡単で、dyears、dmonthsではなくて、years、monthsという関数で処理をすれば実現できます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nmonths(1)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"1m 0d 0H 0M 0S\"\n```\n:::\n:::\n\n\n\ndurationと違う表記ですね?\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nclass(months(1))\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"Period\"\nattr(,\"package\")\n[1] \"lubridate\"\n```\n:::\n:::\n\n\n\nこのperiodクラスを日付に足していってみましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndy1 <- as_date(\"2020-2-20\")\ndy2 <- dy1 + months(1)\ndy3 <- dy2 + months(1)\n```\n:::\n\n\n\nきっちりカレンダーの数字を変更させただけですね。\n\nここでちょっと注目いただきたいのは、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nas.numeric(dy3 - dy2)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 31\n```\n:::\n\n```{.r .cell-code}\nas.numeric(dy2 - dy1)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 29\n```\n:::\n:::\n\n\n\nmonths(1)は、「物理的な時間」を無視して単純に月の数字だけを増加させているという形になります。\n\nduration、period、特徴を理解して適切な場面で使わないと、時刻・日付計算で予想しないようなエラーが生じる場面もありますので、是非、ここでなんとなくでもいいので違いを押さえておいてください。\n\nperiodを利用する場合の注意点として、架空の日付が生成される場合があることです。やってみましょう。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndy1 <- as_date(\"2020-01-31\")\n```\n:::\n\n\n\n2020-1-31の1か月後という処理を行うつもりで、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndy1 + months(1)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] NA\n```\n:::\n:::\n\n\n\nとすると、NAとなります。\n\nこれは、\n  2020- 01- 31\n        +1\n  2020- 02- 31\n  \nという風に、2月31日という存在しない日付になってしまったからです。\n\nこのような場合だと、条件を考えて操作をしないといけないので結構てまです。\n\nlubridateには、こういうケースでエラーが出ないようにするための+と-の特別な記号がlubridateに含まれており\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ndy1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"2020-01-31\"\n```\n:::\n\n```{.r .cell-code}\ndy1 + months(1)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] NA\n```\n:::\n\n```{.r .cell-code}\ndy1 %m+% months(1)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"2020-02-29\"\n```\n:::\n\n```{.r .cell-code}\ndy1 - months(2)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] NA\n```\n:::\n\n```{.r .cell-code}\ndy1 %m-% months(2)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"2019-11-30\"\n```\n:::\n:::\n\n\n\nこんな感じで計算することができます。\n\nということでPeriodの紹介でした。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

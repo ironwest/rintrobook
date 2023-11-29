@@ -1,0 +1,76 @@
+---
+title: Wordへの出力2
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+1つ前の動画で、無事にWordファイルへ出力できました。
+
+ただ、この見た目が余り気に食わない場合は、どうすればよいでしょうか?
+
+
+普段利用しているwordのスタイル(見た目)がある等の場合、そのスタイルでの出力ができた方がよいですよね?
+
+実は、テンプレートファイルを用意すれば、非常に簡単に見た目をいじることができます。
+
+
+`tempate.docx`を開いて見た目を編集してみましょう。
+
+その後、example5.Rmdを開いてみてください。
+
+```{filename="example5.Rmd"}
+---
+title: "Example"
+author: "Nishida Norimitsu"
+date: "2021/5/20"
+output:
+  word_document:
+    reference: template.docx
+editor_options:
+  chunk_output_type: console
+---
+
+<!-- このファイルの内容はYAMLを除けば、example4.Rmdとほぼ同一です。先ほどいじったtemplate.docxファイルへの変更内容をこのファイルの出力に反映するために、YAMLのword_document:の部分に、referenceという設定を新たに追加して、template.docxまでのパスを記載してあります。この変更が、このファイルからKnitされるファイルにどのような影響を与えているのか、見てみましょう。-->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(tidyverse)
+```
+
+
+# 色々な形への出力
+
+## 説明分
+
+* さて、ここでは、色々な形に分析結果を出力したい場合の方法を考えましょう。
+* ここでは、比確的よく利用されると想定されるpowerpointとwordファイルへの出力をご説明します。
+* 尚、powerpointはスライドの区切りが##となつておりますので注意してください。
+* また、全体のチャンクの設定でR関係のものを表示しないようにしてあります。
+
+<!--では、上のKnitからknit to wordをまず実行してみてください。いかがでしょうか?実行した場合にYAMLの設定が自動的に書き換わっていることも確認しておいてください。outputで上に書いてあるものが単純にKnitを押したときに優先して出力される形式になるので、入れ替えてKnitボタンをおして動作を確認いただいてもよいかもしれません。
+
+次は、見た目を変える方法を解説します。-->
+
+## 画像を含む区分
+
+```{r}
+ggplot(cars) +
+  geom_point(aes(x=speed,y=dist))+
+  theme_classic()
+```
+
+## 表を含む区分
+
+```{r}
+gtsummary::tbl_summary(cars) %>% 
+  gtsummary::as_flex_table()
+```
+
+いかがでしょうか?無事に反映されていますね?
+シンプルな方法ですが、凝った見た目の文書をRmdで作成することが可能となりますので、もし定期的にWordファイルでのレポートを出さなければならないような状況があるのでしたら、マスターすると結構よいと思います!次はPowerpointファイルです。
+```

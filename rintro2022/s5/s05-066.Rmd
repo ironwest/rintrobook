@@ -1,0 +1,166 @@
+---
+title: 練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは練習問題を解いていきましょう。
+
+問題1 
+
+whoデータを縦持ちデータにしてください。データの説明は、?whoで見ることができます。
+
+問題2 
+
+data/to_wider.csvにあるデータは、whoの日本の部分のデータを縦にしたデータです。このデータを、元の形の横持ちにしてください。
+
+
+
+
+
+
+
+
+問題1 
+
+whoデータを縦持ちデータにしてください。
+
+```{r}
+library(tidyverse)
+
+dat <- who
+```
+
+さて、このデータですが、列名を確認すると、
+
+```{r}
+colnames(dat)
+```
+
+こんな感じです。
+少し厄介なのが、newの後に、sp, sn, ep, relとついていて、その後に性別と年齢がついているデータなのですが、newrelだけなぜかアンダースコアがついていないため、separateで簡単に分けるというわけにはいかなさそうです。
+
+とりあえず、pivot_longerを実行してみましょうここで、colsに指定するものはnewではじまる列です
+
+names_toとvalues_toは"name"と"value"としておきましょう。
+
+```{r}
+tate <- dat %>% 
+  pivot_longer(
+    cols = !c(country, iso2, iso3, year),
+    names_to = "name",
+    values_to = "value"
+  )
+```
+
+とりあえず、先ほどcolnames(dat)で確認しましたが、ここでnewで始まっていた列名をベクトルで取り出してunique関数で一意のものにして見てみましょう。
+
+```{r}
+tate$name %>% unique()
+```
+
+先ほどと同様ですが、このデータをうまく分割する必要があります。
+
+newrelのところを踏まえると、今回はextract関数を利用しましょう。
+
+```{r}
+tate2 <- tate %>% 
+  extract(name, c("new","type","sex","age"), regex="(new_|new)(.+)_(m|f)(\\d+)")
+
+tate2 %>% count(new)
+tate2 %>% count(type)
+tate2 %>% count(sex)
+tate2 %>% count(age)
+```
+
+それぞれ、extractで分割した列の内訳をみると、問題なく取得できているようです。
+
+ただ、new列は必要ありませんので、最後に消しておきましょう。
+
+```{r}
+tate3 <- tate2 %>% 
+  select(!new)
+
+tate3
+```
+
+ここまでをまとめて書いてあげると
+
+```{r}
+dat %>% 
+  pivot_longer(
+    cols = !c(country, iso2, iso3, year),
+    names_to = "name",
+    values_to = "value"
+  ) %>%
+  extract(name, c("new","type","sex","age"), regex="(new_|new)(.+)_(m|f)(\\d+)") %>% 
+  select(!new)
+```
+
+これ、extract部分はpivot_longerの中に入れることが可能なので、この変換、
+
+```{r}
+long_res <- dat %>% 
+  pivot_longer(
+    cols = !c(country, iso2, iso3, year),
+    names_to = c("new","type","sex","age"),
+    values_to = "value",
+    names_pattern = "(new_|new)(.+)_(m|f)(\\d+)"
+  ) %>% 
+  select(!new)
+```
+
+という風に書いてあげることも可能です！
+
+以上、回答でした。
+
+おまけに、
+
+```{r}
+gdat <- long_res %>% 
+  filter(iso3 == "JPN") %>% 
+  filter(sex == "m") %>% 
+  filter(type == "sp") %>% 
+  filter(!is.na(value))
+
+ggplot(gdat) +
+  geom_point(aes(x = year, y = value, color = age)) +
+  geom_line(aes(x = year, y = value, color = age, group=age))
+```
+
+日本の男性のspを年代別にプロットするとこんな感じです。geomを二つ重ねる書き方は解説しておりませんが、ggplotの中級レベルのコースでまた解説いたします。
+
+問題2 
+
+data/to_wider.csvのデータを横持ちにしてください。
+
+この、to_wider.csvのデータ、一つ前の問題の最後のgdatの内容を保存したものです。
+
+```{r}
+dat <- read_csv("data/to_wider.csv")
+
+dat
+```
+
+元にもどしていきましょう。
+
+とは言っても基本的な使い方を行うだけなので、それほど難しくありません。
+
+```{r}
+dat %>% 
+  pivot_wider(id_cols = c(country, iso2, iso3, year),
+              names_from = c(type, sex, age),
+              values_from = value,
+              names_sep = "_")
+```
+
+いかがでしょうか？
+
+お疲れさまでした、このセクション、後もう一つ、データをくっつけるという概念の解説をおこなったら最終問題を行ってすべて終了となります。
+

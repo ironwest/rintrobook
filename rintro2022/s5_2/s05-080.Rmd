@@ -1,0 +1,154 @@
+---
+title: 人口動態統計データの加工3
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+dat <- read_csv(
+  file = "data/mc360000.csv", 
+  locale=locale(encoding="shift-jis"),
+  skip = 3, 
+  col_names = FALSE
+)
+
+row1 <- dat %>% slice(1) %>% as_vector()
+row2 <- dat %>% slice(2) %>% as_vector()
+row3 <- dat %>% slice(3) %>% as_vector()
+
+dat_colname <- tibble(
+  r1 = row1,
+  r2 = row2,
+  r3 = row3
+)
+
+dat_colname <- dat_colname %>% fill(r1,r2,r3,.direction="down")
+dat_colname2 <- dat_colname %>% unite(col = "coln", r1, r2, r3,sep="_", remove=FALSE)
+vec_coln <- dat_colname2 %>% pull(coln)
+dat2 <- dat %>% setNames(vec_coln)
+dat3 <- dat2 %>% slice(-(1:4))
+dat4 <- dat3 %>% rename(cause = NA_NA_NA)
+
+```
+
+もう少しです。cause列、[X数字　説明]という形になっているため、これは二つに分けておきます。
+
+区切られている文字をしらべてきます
+
+```{r}
+str_view_all(dat4$cause[1:3]," ")
+str_view_all(dat4$cause[1:3],"　")
+```
+
+どうやら全角文字のようなので、
+
+```{r}
+dat5 <- dat4 %>% 
+  separate(cause, c("id","name"), sep="　+")
+  
+View(dat5)
+```
+
+準備がととのいました!
+
+```{r}
+dat6 <- dat5 %>% 
+  pivot_longer(
+    cols = !c(id,name),
+    names_to = c("sex","type","year"),
+    values_to = "val",
+    names_sep = "_"
+  )
+
+View(dat6)
+```
+
+ほとんどtidyです
+
+```{r}
+str(dat6)
+```
+
+yearとvalを数値型に変換しておきましょう。また、valは未測定は「-」で記入されているのでそこは欠損値にしておきます（わざわざ変換しなくても、NAに-は勝手におきかわりますが、警告がでるのも気持ち悪いので手動で変換しておきましょう。）
+
+```{r}
+dat7 <- dat6 %>% 
+  mutate(year = as.numeric(year),
+          val = val %>% na_if("-") %>% as.numeric())
+
+View(dat7)
+```
+
+総数がsexに含まれているは気持ち悪いのでこれも消しておきましょう。
+
+```{r}
+dat8 <- dat7 %>% 
+  filter(sex != "総数")
+```
+
+以上、ここまでの処理で、
+
+```{r}
+View(dat)
+```
+
+が、
+
+```{r}
+View(dat7)
+```
+
+になった結果、
+
+```{r}
+gdat <- dat8 %>% 
+  filter(type == "死亡数") %>% 
+  filter(id == "X60")
+title <- gdat$name[1]
+
+ggplot(gdat) + 
+  geom_col(aes(x = year, y = val, fill = sex)) +
+  facet_wrap(~sex) +
+  labs(title = title)
+```
+
+と、こんな感じでグラフを簡単に描画できました。
+
+他にもdistinct関数を利用すると
+
+```{r}
+dat8 %>% 
+  select(id, name) %>% 
+  distinct()
+```
+
+こんな感じで集計することができます。
+
+薬剤関係でX60,X61,X62,X63の4つのidを絞り込んで描画するのであれば、
+
+```{r}
+gdat <- dat8 %>% 
+  filter(type == "死亡数") %>% 
+  filter(id %in% c("X60","X61","X62","X63"))
+
+ggplot(gdat) +
+  geom_col(aes(x = year, y = val, fill = sex)) +
+  facet_wrap(~name)
+```
+
+というグラフを作成することもできます。
+
+尚、%in%　という表記をはじめて利用しましたが、
+
+```{r}
+c(1,2,3, 1, 2, 3, 4, 5, 1) %in% c(2, 4)
+```
+
+こんな感じで、左側のベクトルに対して、右側のベクトルに含まれているかそうでないかという条件でロジカルベクトルを作成することができます。
+
+これを、filterの中で利用すれば、複数の条件で絞り込むことが簡単にできます。
+
+次はここで学んだ智識を使って、食中毒データの処理を行いましょう。

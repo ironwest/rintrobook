@@ -1,0 +1,121 @@
+---
+title: Openxlsx:Excelへの出力2
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+library(openxlsx)
+```
+
+それでは、もととなるエクセルファイルは、template.xlsxという名前のファイルでです。
+
+このエクセルファイルの
+
+B3:H7
+B10:H14
+B17:H21
+
+この範囲にデータを書き込んでみましょう。
+
+```{r}
+dat1 <- tibble(
+  a=rnorm(4),
+  b=rnorm(4),
+  c=rnorm(4),
+  d=rnorm(4),
+  e=rnorm(4),
+  f=rnorm(4),
+  g=rnorm(4)
+)
+
+dat2 <- tibble(
+  a=rgamma(4,1,1),
+  b=rgamma(4,1,1),
+  c=rgamma(4,1,1),
+  d=rgamma(4,1,1),
+  e=rgamma(4,1,1),
+  f=rgamma(4,1,1),
+  g=rgamma(4,1,1)
+)
+
+dat3 <- tibble(
+  a=rpois(4,4),
+  b=rpois(4,4),
+  c=rpois(4,4),
+  d=rpois(4,4),
+  e=rpois(4,4),
+  f=rpois(4,4),
+  g=rpois(4,4)
+)
+
+dat1
+dat2
+dat3
+```
+
+こんなデータとなります。
+
+
+それで、まずは、tempate.xlsxをRに読み込みます
+
+```{r}
+wb <- openxlsx::loadWorkbook("template.xlsx")
+```
+
+dat1を読み込んだwbのB3:H7の範囲に書き込みます
+
+```{r}
+openxlsx::writeData(
+  wb = wb,
+  sheet = "res",
+  x = dat1,
+  startCol = 2,
+  startRow = 3
+)
+```
+
+dat2を読み込んだwbのB10:H14の範囲に書き込みます
+
+```{r}
+openxlsx::writeData(
+  wb = wb,
+  sheet = "res",
+  x = dat1,
+  startCol =  2,
+  startRow = 10
+)
+```
+
+dat3を読み込んだwbのB17:H21の範囲に書き込みます
+
+```{r}
+openxlsx::writeData(
+  wb = wb,
+  sheet = "res",
+  x = dat3,
+  startCol =  2,
+  startRow = 17
+)
+```
+
+保存します
+
+```{r}
+openxlsx::saveWorkbook(wb,"out2.xlsx",overwrite=TRUE)
+```
+
+いかがでしょうか?template.xlsxの内容にデータを付け足すことができていますね?
+
+この方法を利用すれば、エクセルファイルのデザインをすべてプログラム的に書くようなことをしなくてすむので効率的です。
+
+ただし、この方法、元となるエクセルファイル次第ではうまく読み込めないこともあるため、できればラッキーくらいの気持ちでよいかもしれません。
+
+（実務で利用する場合は、個人的には、RからPythonのエクセルファイルを加工するライブラリを呼び出して、それで
+
+* データ加工：R
+* エクセル操作：Python
+
+という形で対応することが多いです。

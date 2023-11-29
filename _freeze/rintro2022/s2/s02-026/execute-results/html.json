@@ -1,0 +1,14 @@
+{
+  "hash": "72dc2071c9f4bd4be9cd7fa4de614138",
+  "result": {
+    "markdown": "---\ntitle: パッケージ(tidyverseでエラーが出た場合)(L31)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n### 1 日本語名を含んだフォルダにRをインストールしている場合\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n.libPaths()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] \"C:/Users/Nori/AppData/Local/R/win-library/4.3\"\n[2] \"C:/Program Files/R/R-4.3.1/library\"           \n```\n:::\n:::\n\n\n\nを実行していただいて、もし日本語名が含まれている場合は、お手数ですが、Rのインストール先のフォルダを日本語名が含まれていない場所にしてください。(インストールの作業動画でもご説明してありますが、もしうまく伝わっていなかったら申し訳ありません。)\n\n\n### 2 インストールの権限がありませんと怒られた場合\n\nRStduioをインストールした場所によっては、パッケージをインストールするための「権限」がないとエラーがでることがあります。\n\nR Studioが、パッケージのインストールのために、ダウンロードしたパッケージを保存しておく場所に、あなたがログインしているアカウントからデータを書き込む権限がないというケースです。（Windows10で良く経験します・・・）\n\n回避方法としては、次にお示しするような手順でRStudioを起動いただければ回避できますのでそちらで試してみてください。\n\n\n### 3 インターネットに接続できない場合\n\nRStudioからの接続ができないような設定になっていると、パッケージのインストールに失敗します。\n\n職場で実行しようとして失敗するのであれば、システム管理者/部署の担当されている方にご相談ください\n\n\nよくある失敗は上記になります。それ以外でインストールまわりで\nお困りなことがあれば、ご相談ください。\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,90 @@
+---
+title: シンプルな書き方での演算(attach)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+dat <- tibble(
+  num = 1:10,
+  fac2 = rep(c("a","b"), 5),
+  fac3 = rep(c("A","B","C"), 4)[1:10]
+)
+```
+
+前の動画では、基本である、個数、和、平均の関数について説明しました。
+ 
+ただ、一般的にtibbleなどからベクトルを取り出す$記号を利用したスクリプトは、
+
+* 書くのにタイプ量が増える、
+* tibbleの名前が長いと可読性が落ちる
+
+というところで、個人的にはお勧めできません。
+
+ですので、この動画では$サインをなるべく使わずに書く方法についてご説明いたします。
+
+方法1：`attach`を利用する方法
+
+一つ前の動画では、平均を求めるのに、
+
+```{r}
+sum(dat$num)/length(dat$num)
+```
+
+と記載していました。
+
+ただ、dat$と何回も打つのは面倒なので、できれば、次のようにnumとだけ打つことでベクトルを呼び出せると便利です。
+
+```{r, error=TRUE}
+sum(num)/length(num) #エラーですね
+```
+
+Environmentペーンの内容を少し覚えておいてください。
+
+```{r, error=TRUE}
+attach(dat) #とすると、ここ以降、dat$とかかなくてもOK
+
+sum(num)/length(num)
+num
+fac2
+fac3
+
+detach(dat) #これでattach効果が消える
+sum(dat$num)/length(dat$num)
+sum(num)/length(num)　#エラー！
+```
+
+簡単ですね？
+
+ただ、detachを忘れたりするとエラーの原因になったり思わぬ動作を引き起こすケースがあります。具体的には。。
+
+```{r}
+num <- 1000 #numという変数を使いたいので作成
+```
+
+100行くらいのスクリプト
+
+```{r}
+attach(dat) #fac2を利用したい
+
+mean(num) #dat$numの平均を求めたつもり
+```
+
+本当に求めたかったのは
+
+```{r}
+mean(dat$num)
+
+detach(dat)
+```
+
+いかがでしょうか？
+
+このようなエラーが生じる可能性があるため、できればattach、detachは使わないようにしています
+
+ただし、ネットで検索した場合によく使われる関数でもあるのでここで紹介しました。
+
+次の動画では、attach, detachを使わないで計算する方法を解説いたします。

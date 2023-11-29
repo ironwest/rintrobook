@@ -1,0 +1,76 @@
+---
+title: themeの実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+それでは、ここでは事前設定されたテーマをグラフに適応していきましょう。
+
+ここでは、msleepデータのグラフに対して操作をおこなっていきます。
+
+```{r}
+library(tidyverse)
+gg <- ggplot(msleep)+
+  geom_point(aes(x=log(bodywt),y=sleep_total,color=vore))
+
+gg
+```
+
+まず。デフォルトの見た目はこんな感じです。
+「それなり」ですが、もっとよくできます。
+
+ggplot2にある、theme_xxxという関数群を今回作成したgg変数に足してあげて描画すると、
+
+```{r}
+gg+theme_bw()
+gg+theme_classic()
+gg+theme_dark()
+gg+theme_gray()
+gg+theme_light()
+gg+theme_linedraw()
+gg+theme_minimal()
+```
+
+こんな感じでグラフがかわります!
+
+いかがでしょうか?
+
+これらのtheme_xxxは、
+
+```{r}
+?theme
+```
+
+のアーギュメントの値をデフォルトで設定されているものにして、グラフ全体の見た目を整えることことができます。
+他に、このtheme関連の関数を提供することが目的のパッケージもあったりします。
+```
+
+install.packages("ggthemes")
+```
+
+```{r}
+library(ggthemes)
+
+gg + ggthemes::theme_base()
+gg + ggthemes::theme_calc()
+gg + ggthemes::theme_economist() #Economist(雑誌)とにたテーマ
+gg + ggthemes::theme_economist_white()
+gg + ggthemes::theme_excel() #説明分がひどいです・・・「絶対につかわないで」
+gg + ggthemes::theme_few()
+gg + ggthemes::theme_fivethirtyeight()
+gg + ggthemes::theme_gdocs()
+gg + ggthemes::theme_stata()
+gg + ggthemes::theme_wsj() #Wall Street Journalとにたテーマ
+```
+
+以上、駆け足でしたが、「ggplot2で基本的なグラフを描けるようになる」を目的に解説してきました。残りのこのセクションの動画、追加でもう少しggplotを使いこなしたい人向けの解説になります。すこしややこしい話もあるので、現時点であまり興味がない人は飛ばしてもらってもよいと思います。
+
+さらにggplotについて学びたい方は、脱初心者のためのデータ可視化コースを別に用意してありますので、そちらを見ていただけると嬉しいです。
+
+ここまででも、ものすごい進歩です!
+
+是非、自分で自分を褒めてあげましょう。
+
+それでは次のセクションでお会いしましょう!
+

@@ -1,0 +1,152 @@
+---
+title: :時間の集計4 Rで実施2(sld126)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+library(lubridate)
+
+plot_id <- function(.data,tgt_id){
+  gdat <- .data %>% 
+    filter(id %in% tgt_id) %>% 
+    mutate(row_n = n():1) %>%
+    mutate(points = map2(start,end, ~{.x:.y})) %>% 
+    select(id,med,row_n,points) %>% 
+    unnest(c(points)) %>% 
+    mutate(points = as_date(points))
+  
+  ggplot(gdat) +
+    geom_point(aes(x = points, y = as.factor(row_n), color = med)) +
+    scale_y_discrete(labels=NULL) +
+    facet_wrap(~id, scales = "free")
+}
+```
+
+ここまでの解説では、各IDの薬剤毎ということは加味しておりませんでしたが、ここからはそこも加味して処理を書いていきます。
+
+ご自身で試みてみましたか？
+
+この処理ですが、id列とmed列を含んだ処理を書いてく形ですやってみましょう
+
+```{r}
+
+dat <- read_csv("data/time.csv")
+dat2 <- dat %>% 
+  arrange(id,med,start) %>% #ここにmed,startを追加  
+  mutate(interv = interval(start, end)) %>%  #同じ
+  group_by(id, med) %>%  #idとmedでグループ化
+  mutate(
+    prev_overlap   = int_overlaps(interv, lag(interv)),
+    prev_edgealign = int_aligns(interv, lag(interv)),
+  ) %>% 
+  mutate(prev_oa = prev_overlap | prev_edgealign) #グループ化後は同じ
+
+View(dat2)
+```
+
+うまく、重複・期間の端が隣接している行をTRUEとふれていますね？
+
+あとは、NAをFALSEで埋めてあげて、
+
+```{r}
+dat3 <- dat2 %>% 
+  replace_na(list(prev_oa = FALSE))
+
+View(dat3)
+```
+
+各IDの各処方毎、処方期間の重複をふくめて、IDを振ってあげます。
+
+```{r}
+dat3
+```
+
+にかけたグループはまだそのまま残っているので、単純に、mutateするだけでよくて、ここも、処理内容は変わりません
+
+```{r}
+dat4 <- dat3 %>% 
+  mutate(presc_id = cumsum(!prev_oa)) 
+
+plot_id(dat, c(39,140))
+dat4 %>% 
+  filter(id %in% c(39,140)) %>% 
+  select(id,med,start,end,presc_id)
+```
+
+いかがでしょうか?うまく、「重複毎」に、presc_idが振られていますね?
+
+後は、
+
+```{r}
+dat5 <- dat4 %>%
+  group_by(id, med, presc_id) %>% #グループを作り直し。id,medを追加
+  summarise(start = min(start), end = max(end)) # 同じ
+```
+
+うまくいきました。
+
+尚、ここで、ちょっとだけ注意が必要なのが、summarise実行時にでているメッセージです
+
+`summarise()` has grouped output by 'id', 'med'.You can override using the `.groups` argument.
+ 
+とあるのですが、これは、summarise実行ででてきた結果に「id med」の二つのグループが残っているというメッセージです。
+
+実際、
+
+```{r}
+dat5
+```
+
+で確認すると確かにグループが残存しています。sumariseでは最後のグループだけが解消されるイメージです。このグループを消したい場合は、
+
+```{r}
+dat5 %>% ungroup()
+```
+
+とグループを消す処理を意図的に入れてあげるか、
+
+```{r}
+dat4 %>%
+  group_by(id, med, presc_id) %>% 
+  summarise(start = min(start), end = max(end), .groups = "drop")
+```
+
+と、summariseの時点で.group引数に"drop"を与えるとsummarise時点でgroupが消えます。こちらの方法、本コースを作成している時点では、実験的な機能なので、将来使えなくなる可能性もあるのでその点ご留意ください。このコースでは、ungroupを主に利用します。それで、
+
+```{r}
+dat_fin <- dat5 %>% 
+  ungroup() %>%
+  arrange(id,med,start) #並び替えておきます。
+```
+
+これで完成です。
+
+可視化して確認しておきましょう
+
+```{r}
+compare_plot <- function(.data1, .data2, tgt_id){
+  pre_graph  <- plot_id(.data1, tgt_id)
+  post_graph <- plot_id(.data2, tgt_id)
+  
+  cowplot::plot_grid(pre_graph, post_graph, nrow=2)
+}
+
+compare_plot(dat,dat_fin,c(2,5,10))
+```
+
+上のグラフがもとのもので、下のグラフが処理後のものですうまく期間が一つにID、薬毎にまとまっていますね？
+
+ただし、今回の処理、一つ上のものとの比較だけをしているため、
+
+```{r}
+compare_plot(dat,dat_fin,c(39,93,140))
+```
+
+id 93番が想定した結果と少し違います。これ、なぜかわかりますか？
+
+少し考えてみてください。次の動画で解説していきます。
+

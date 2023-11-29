@@ -1,0 +1,60 @@
+---
+title: extract() 解説と実践
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+tidyr::には、separateの他にも、正規表現でグループを指定して取り出すような関数も用意されています。
+
+使い方はseparate関数と一緒ですが、sepではなく、regexというargumentを利用しますregexは、正規表現で「グループ」を指定することができますグループの指定の仕方は簡単で()でくくるだけとなります。
+
+やってみましょう
+
+```{r}
+dat <- tibble(tgt = c("glu:102 mg/dl","AST:41 IU/L",
+                      "ALT:32 IU/L","GGT:33 IU/L"))
+
+dat 
+```
+
+これを分けてみましょう。
+
+```{r}
+dat %>% 
+  extract(col=tgt,into=c("name","value","unit"),
+          regex="(.+):(.+) (.+)")
+```
+
+どうでしょうか?
+
+こちらはこちらで便利ですね?
+
+```{r}
+dat4 <- tibble(
+  tgt = c("glu010000890095",
+          "ast003000400050",
+          "alt002000300040")
+)
+```
+
+位置で分けるものも、{}での長さ指定を組み合わせると
+
+```{r}
+dat4 %>% 
+  extract(col=tgt, into=c("name","v1","v2","v3"),
+          regex="(.{3})(.{4})(.{4})(.{4})")
+```
+
+こんな感じでできます。
+
+それでは、練習問題を解いていきましょう。
+

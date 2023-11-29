@@ -1,0 +1,105 @@
+---
+title: テキストファイルの読み込み(L42)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+**注:この記事の内容は、ファイルの置き場所等の問題で、実行結果は表示されていません**
+
+それでは、1つ前の動画で開いた、ワーキングディレクトリの中に、「ichiji」という名前のフォルダを作成して、その中に、「tekitou.txt」という名前のファイルを作りましょう。
+
+tekitou.txtに、好きな文字をアルファベットと数字のみを記載して保存しておきます。
+ 
+この動画では、このテキストファイルに記載した文字列を読み込んでいきます。
+
+読み込むために必要な関数は、readrパッケージに含まれるread_file関数です。readrパッケージは、tidyverseで自動的に読み込まれるパッケージに含まれるので、
+
+```{r}
+library(tidyverse)
+```
+
+とするだけで、read_fまで入力すると、予測候補にでてくるようになっているはずです。
+
+```{r, eval=FALSE}
+?read_file
+```
+
+ヘルプの内容のUsage を確認すると、fileとlocale　Argumentがあり、そのうち、デフォルト値が設定されていないものはfileargumentのみです。
+
+file argumentを確認すると、英文が色々と書いてありますが、ここで大切なのは最初の一文です。
+
+Either a path to a file, a connection, or literal data (either a single string or a raw vector).
+
+と記載されており、ファイルへのパス、コネクションか、リテラルデータを与える
+ 
+となっています。
+ 
+ということで、先ほど作成したtekitou.txtのフルパスをまず与えてみましょう。
+ 
+私の場合、フルパスは、
+
+```{r}
+getwd()
+```
+
+の中のichijiフォルダの中にあるtekitou.txtファイルなので、
+
+```{r}
+full_path <- "D:/R_Course_2021/Section3_インポート/ichiji/tekitou.txt"
+```
+
+full_pathという変数名に保存しておいてあげて、
+
+```{r}
+read_file(full_path)
+```
+
+で無事に読み込むことができました！もちろん、変数に一時的に保存しておかなくても、直接フルパスを書いて
+
+```{r}
+read_file("D:/R_Course_2021/Section3_インポート/ichiji/tekitou.txt")
+```
+
+読み込むことも可能です。ここで注意が必要なのは、ただ読み込んだだけではそれを使うことができないという点です。
+
+読み込んで、別の用途に利用したいような場合は、変数に保存してあげる必要があります。
+
+```{r}
+new_hensu <- read_file(full_path)
+new_hensu
+```
+
+そんなに難しくないですね?
+
+
+また相対パスで指定して読み込むことも可能です。
+
+```{r}
+get_wd()#を基準として、
+full_path#にたどり着く相対パスをちょっと考えてみてください。
+
+read_file("ichiji/tekitou.txt")
+```
+
+こうですね？
+
+相対パス、フルパスよりかなり便利なのですが、それでも毎回打ち出すことにめんどくさくないでしょうか？
+
+そういった方に、RStudioでは、ctrl+spaceキーを""の中で押すことで予測変換のような機能が実装されています。
+
+```{r}
+read_file("") #予測変換で入力してみる
+```
+
+いかがでしょうか？ctrl+spaceを押すたびに、そのディレクトリにあるファイルやフォルダを一覧表示して選択できるようになっています。
+
+長いファイルやフォルダ名であっても、これで入力ミス少なくこれで入力できます。
+
+以上が基本的な「読み込む」ための関数の使い方になります。
+
+次の動画は、この動画で学んだことについての課題です

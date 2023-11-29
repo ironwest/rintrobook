@@ -1,0 +1,99 @@
+---
+title: 実践 str_extract/str_replaceとmutate
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+続いて、ここではmutateとstr_関数を組み合わせる方法を考えましょう。
+
+```{r}
+vec <- c("ast:40IU/L","alt:30IU/L",
+         "ggt:20IU/L","hba1c:4.3mg/dL",
+         "glu:90mg/dL","BMI:23.0kg/m2",
+         "eGFR:60mL/min/1.73m2")
+
+prac <- tibble(target = vec)
+prac
+```
+
+というデータがあって、正規表現を利用して、target列を、name列とvalue列にコロンを境にして取り出して新しい列を作成する場合を考えてみましょう。
+
+これは、（スライド６２）の処理を行う場合そのままです。
+
+列を作るにはmutate関数を利用して、data %>% mutate(列名 = ベクトル)で、列が作れましたね?
+
+str_extract関数を利用すれば、
+
+```{r}
+str_extract(vec,"(?<=:)(\\d+\\.\\d+|\\d+)")
+```
+
+このように、コロンの左側に続く（小数あるいは数字）を抽出することができました。
+
+注：
+
+```{r}
+str_extract(vec,"\\d+\\.\\d+|\\d+")
+```
+
+だけだと、HbA1cの1が引っかかってしまうので、不適切です
+
+後は、
+
+```{r}
+str_extract(vec,"^.+(?=:)")
+```
+
+としてあげれば、先頭から、コロンまでのすべての文字列を取得することができるので検査名の出力が可能となります。
+
+抜き出す正規表現がわかればこれを、mutateに与えてあげれば良いので、結局、
+
+```{r}
+prac2 <- prac %>% 
+  mutate(
+    name = str_extract(target, "^.+(?=:)"),
+    value = str_extract(target, "(?<=:)(\\d+\\.\\d+|\\d+)")
+  ) 
+
+prac2
+```
+
+と分割することができました。
+
+ついでに単位も抜き出してみましょうただ挑戦してみていただくとわかるのですが、ここまでの範囲ではうまく単位を抜き出すことができません
+
+本コース、正規表現をマスターするのが目的ではないので、複数回加工して最終的に単位単独の形にもっていくことを目指しましょう。具体的には
+
+```{r}
+prac2 %>% 
+  mutate(
+    right = str_extract(target,"(?<=:).+$"),
+    tani = str_replace(right, "^(\\d+\\.\\d+|\\d+)","")
+  )
+```
+
+こんな感じです。
+
+まず、rightという列に、コロンの右側を抜き出してあげます
+
+```{r}
+str_extract(vec,"(?<=:).+$")
+```
+
+そうすると、right列は(小数あるいは整数)(単位)という形になるので、str_replace関数で(小数あるいは整数)を""(空白)で置き換えてあげることで単位だけが残るという仕組みです。
+
+いかがでしょうか？
+
+ここではstr_extract、str_replace関数を利用して列を作成する方法について解説いたしました。
+
+この二つをうまく組み合わせることで文字列を含む列の作成はかなり自由にできるようになるはずです
+

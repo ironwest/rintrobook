@@ -1,0 +1,148 @@
+---
+title: 人口動態統計データの加工2
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+dat <- read_csv(
+  file = "data/mc360000.csv", 
+  locale=locale(encoding="shift-jis"),
+  skip = 3, 
+  col_names = FALSE
+)
+```
+
+ここでは、列名を作成することを考えます。
+
+```{r}
+View(dat)
+```
+
+データを眺めると、
+
+1行目　総数    NA    ... NA     NA   ...
+2行目　死亡数  NA    ... 百分率 NA   ...
+3行目　1995　　2000　... 1995   2000 ...
+
+と、こんな感じで、1行目から3行目までで合わせて列のような形です。
+
+これを
+
+1行目　総数    総数   ...
+2行目　死亡数  死亡数 ...
+3行目　1995　　2000　 ...
+
+として、
+
+総数_死亡数_1995 | 総数_死亡数_2000 | ...
+
+というような形の列名にすることができれば、pivot_longerで処理をまとめてできそうです。
+
+ここで1行ずつ抜き出してベクトルに変換しましょう。
+
+1行を抜き出すには、slice関数を利用するか、
+
+data[1,]
+
+の書き方を利用します
+
+```{r}
+row1 <- dat %>% slice(1)
+row1
+row1 <- dat[1,]
+row1
+```
+
+それで、これをベクトルに変換したいのですがそれは、as_vector()でできます
+
+```{r}
+as_vector(row1)
+```
+
+ということで、
+
+```{r}
+row1 <- dat %>% slice(1) %>% as_vector()
+row2 <- dat %>% slice(2) %>% as_vector()
+row3 <- dat %>% slice(3) %>% as_vector()
+
+dat_colname <- tibble(
+  r1 = row1,
+  r2 = row2,
+  r3 = row3
+)
+
+dat_colname
+```
+
+このデータから列名をつくります。
+
+まず、欠損値をうめます。
+
+```{r}
+dat_colname <- dat_colname %>% 
+  fill(r1,r2,r3,.direction="down")
+
+dat_colname
+```
+
+そして、separate関数の反対の動作をする関数があるのでそれを利用していましょう。uniteです。
+
+```{r}
+dat_colname2 <- dat_colname %>% 
+  unite(col = "coln", r1, r2, r3,sep="_", remove=FALSE)
+
+View(dat_colname2)
+```
+
+この作成したcoln列をベクトルとしてとりだして、datの列名にしてあげればよいです
+
+ベクトルとして列を取り出す場合は、pull()を使います。また、setNames関数で文字ベクトルを一括して表の列名にしていできます。
+
+```{r}
+vec_coln <- dat_colname2 %>% 
+  pull(coln)
+
+vec_coln
+
+dat
+```
+
+ちょうど、
+
+```{r}
+length(vec_coln)
+ncol(dat)
+```
+
+ベクトルの長さと列数が一致していますね?
+
+```{r}
+dat2 <- dat %>% setNames(vec_coln)
+
+View(dat2)
+```
+
+うまくいきました。これで、最初の3行は必要ないので、消しましょう。あと、4行目、X60-X84 総数 に該当する行の消しておきます(個別のデータのみにしたい状況としておきまｓ)slice関数は、中の数字に―をつけると削除するという意味になるので、
+
+```{r}
+dat3 <- dat2 %>% 
+  slice(-(1:4))
+
+View(dat3)
+```
+
+いかがでしょうか?
+
+NA_NA_NAという列名はきになるので適当に変えておきましょう
+
+```{r}
+dat4 <- dat3 %>% 
+  rename(cause = NA_NA_NA)
+
+View(dat4)
+```

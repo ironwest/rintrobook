@@ -1,0 +1,20 @@
+{
+  "hash": "9d3a5b128a59d92a7d5612898101eff4",
+  "result": {
+    "markdown": "---\ntitle: チャンクオプションの解説(全体の設定)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n1つ前の動画で、一個のコードチャンクの設定方法を解説しました ただ、チャンク毎に設定するのが面倒で、全体に 設定したい場合もよくあるので、ここではその方法 を解説しておきます。\n \n```{filename=\"example3-2.Rmd\"}\n---\ntitle: \"Example\"\nauthor: \"Nishida Norimitsu\"\ndate: \"2021/5/20\"\noutput: html_document\neditor_options: \n  chunk_output_type: console\n---\n\n\n\nここでは全体設定について解説していきます。\nとはいっても、実は非常に簡単で、一番最初に、\n上のようなsetupという名前のチャンクを作成してあげるだけです。（RStudioでRmarkdownを作成した場合、自動的に含まれています。）\n\nこの設定、歯車で操作すると、自動的に`knitr::opts_chunk$set()`の中身が切り替わりますね?ここで設定したものは、個別のチャンクで別の設定を行わない限り、自動的に適応されます。なので、echo, warning, messageを全部FALSEにすると、RのスクリプトやR関係のものが一切出力されなくなるので、見た目ではRで作ったと悟られにくい資料を作成したりすることもできます。\n\nまた、この部分、一番最初に実行される部分なので、Rmdの中で利用するパッケージを呼び出す等の使い方を私はよくやります\n\n追加のパッケージを利用する必要がある場合はここに書いてみても良いかもしれません。\n\n```\n",
+    "supporting": [
+      "s07-007_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

@@ -1,0 +1,117 @@
+---
+title: 指定方法(L45)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+ここからは、今から作成するtekitou2.txtをRに読み込む方法について解説していきます。
+
+まずは、あえて文字化けするファイルを作成していきましょう
+
+File->New File->Text File
+
+で新しいファイルを作成して、そのなかになんでも良いので日本語を入力します。そして、
+
+File->Save with Encoding
+
+で「CP932」を選択して保存してください。
+
+このCP932というのは、Windowsでは標準的に使われている文字コードです。
+
+では、このファイルを読み込みます。
+
+```{r}
+library(readr)
+read_file("ichiji/tekitou2.txt")
+```
+
+うまく読み込めましたか?
+
+私の画面と同様に、見事に文字化けしているはずです。
+
+これは、Rでは、utf-8という文字コードが
+標準で使われるため、
+
+先ほど、CP932の文字コードで保存したファイルを
+UTF-8の文字コードで読み込んだため、
+めちゃくちゃな記号となってしまったという
+のが実態です。
+
+CP932の文字コードの問題は、マックであれば
+そもそもUTF-8が標準的な文字コードであるため
+問題にはなりませんが、Windowsだと
+頻繁に出会います
+
+この問題を解決するには、read_file関数に
+読み込もうとするファイルがどの文字コードで
+保存されているかを指定してあげればよいです。
+
+文字コードを指定するためには、
+
+```{r}
+locale()
+```
+
+という関数で呼び出した結果の、Encodingの値を変更してあげることで、実は簡単に対応できます。今、locale()で呼び出したオブジェクトを変数に保存しましょう。
+
+(これからは、結果や変数、Rの中に存在するもののことをまとめてオブジェクトと呼びます)
+
+```{r}
+initial_locale <- locale()
+initial_locale
+```
+
+このinitial_localeを、read_file関数のlocale Argumentに渡してあげると、
+
+```{r}
+read_file("ichiji/tekitou2.txt", 
+          locale = initial_locale)
+```
+
+先ほどと同様に文字化けした結果がでてきています。このtekitou2.txtはcp932の文字コードで保存されているため、read_fileのlocale Argumentに対して、きちんと、CP932で読み込むように指定してあげる必要があります。
+
+この、文字コードの指定、実はすごく簡単で
+
+```{r}
+?locale
+```
+
+の、encoding ArgumentをデフォルトのUTF-8からcp932に変更してあげるだけで
+
+```{r}
+locale_with_cp932 <- locale(encoding = "cp932")
+locale_with_cp932
+```
+
+このオブジェクトを利用して、read_fileを呼び出してあげると、
+
+```{r}
+read_file("ichiji/tekitou2.txt", 
+          locale = locale_with_cp932)
+```
+
+うまくいきました！
+
+今回は、説明のためにわざわざlocaleオブジェクトを含んだ変数を作成していますが、一般的には、
+
+```{r}
+read_file("ichiji/tekitou2.txt", locale(encoding="cp932"))
+```
+
+という風に、
+
+```{r}
+?read_file
+```
+
+のUsageのところの並び順で値を与えてあげれば読み込めますので、readrの関数で日本語の文字化けに出会ったときは、locale(encoding="cp932")というコマンドを覚えておいてください。
+
+次の動画では、文字コードがわからない場合の対処方法について解説を行いますが、少しマニアックな話となりますので、飛ばしていただいて構いません。
+
+今後、動画のタイトルに(さらに知りたい人へ)と書いてあるものは飛ばしても問題ないようにコースを作成しておりますので時間のない方は、どんどん飛ばして進んでもらっても大丈夫です。
+

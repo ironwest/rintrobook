@@ -1,0 +1,245 @@
+---
+title: 練習問題 解答
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+まず、データを取り込みましょう
+
+```{r}
+library(tidyverse)
+library(readxl)
+dat <- read_excel("data/ifelse_casewhen.xlsx")
+
+dat
+```
+
+課題1:
+
+身長と体重を利用して、BMIを計算してその結果をbmiという名前の列に保存してください。
+
+まず、datのweight列が文字列型になっているので数字に変換してみましょう。
+
+```{r}
+dat_weight <- dat %>% 
+  select(weight) %>% 
+  mutate(num_weight = as.numeric(weight))
+
+View(dat_weight)
+```
+
+ところどころ、欠損しています。
+
+とりあえず、欠損している列のみを抜き出して眺めてみましょう。
+
+欠損の有無は、is.na()関数というものを用います。
+
+```{r}
+dat_weight %>% 
+  filter(is.na(num_weight))
+```
+
+はい。ここは、意図的に入力ミスをいれています。
+
+5でなくてS
+1でなくてl
+0でなくてOが使われています。
+
+他のデータはすべて数字にNAになることなく変換できているので、とりあえず、上の3つを置き換えてから数値に変換しましょう。
+
+```{r}
+dat1 <- dat %>% 
+  mutate(
+    replace_weight = str_replace_all(weight, 
+                                 c("S"="5",
+                                   "l"="1",
+                                   "O"="0"))
+  ) %>% 
+  mutate(num_weight = as.numeric(replace_weight))
+
+View(dat1)
+```
+
+これで、無事、weight列が数字に変換されました。BMIを計算しましょう。
+
+```{r}
+dat1 <- dat1 %>% 
+  mutate(bmi = num_weight/(height/100)^2)
+
+dat1$bmi
+summary(dat1$bmi)
+```
+
+課題2:
+
+bmi列の値を利用して、if_else関数を使って、BMIが25以上であれば1、25未満であれば0となる列、obese、を作成してください。
+
+ここでif_else関数の動作を確認しておきます。
+
+```{r}
+dat2 <- dat1 %>% 
+  mutate(obese = if_else(bmi >= 25, 1, 0))
+```
+
+ここで作成した変数の分布を確認するためにはsummaryでもよいのですが、
+
+```{r}
+dat2$obese %>% summary()
+```
+
+数値型の場合は平均値等がでてきてしまい、個数がわかりません。個数を確認したい場合は、dplyr::count関数という便利な関数があります。
+
+```{r}
+dat2 %>% count(obese)
+```
+
+あるいは、base::tableも使いやすいです。
+
+```{r}
+dat2$obese %>% table()
+```
+countは、パイプの中で変数名だけ書くような使い方ができますが、tableはベクトルを与えないといけないので注意が必要です
+
+課題3:
+
+血圧の表示が"120/80"のように入力されています。これを、sbpとdbpの二つの変数に分割してください。
+
+```{r}
+dat2$bp[1:10]
+```
+
+このデータを分割するために、正規表現を利用してsbpとdbpを抜き出してみましょう。
+
+```{r}
+dat3 <- dat2 %>% 
+  mutate(
+    sbp = str_extract(bp,"^\\d+(?=/)"),
+    dbp = str_extract(bp,"(?<=/)\\d+$")
+  )
+
+dat3 %>% select(ends_with("bp"))
+```
+
+抜き出せましたね。文字列型になっているので数値型に戻しておきましょう
+
+```{r}
+dat3 <- dat3 %>% 
+  mutate(
+    sbp = as.numeric(sbp),
+    dbp = as.numeric(dbp)
+  )
+```
+
+課題4:
+
+課題3で作成した変数、sbp、dbpを利用して、
+
+sbpが120未満かつdbpが80未満であれば「至適血圧」
+sbpが130未満かつ/あるいはdbp85未満であれば「正常血圧」
+sbpが140未満かつ/あるいはdbp90未満であれば「正常高値血圧」
+sbpが160未満かつ/あるいはdbp100未満であれば「1度高血圧」
+sbpが180未満かつ/あるいはdbp110未満であれば「2度高血圧」
+sbpが180以上かつ/あるいはdbp110以上であれば「3度高血圧」
+
+とした因子型の列を作成してください。
+
+ここではcase_whenを利用しましょう。だいぶ複雑です。かつ/あるいはを条件設定するのがややこしいので、収縮期、拡張期それぞれで判定してより重い方を採用する形にしました。
+
+```{r}
+dat4 <- dat3 %>% 
+  mutate(sbp_kubun = case_when(
+    sbp <  120  ~ 1,
+    sbp <  130  ~ 2,
+    sbp <  140  ~ 3,
+    sbp <  160  ~ 4,
+    sbp <  180  ~ 5,
+    sbp >= 180  ~ 6
+  )) %>% 
+  mutate(dbp_kubun = case_when(
+    dbp <  80 ~ 1,
+    dbp <  85 ~ 2,
+    dbp <  90 ~ 3,
+    dbp < 100 ~ 4,
+    dbp < 110 ~ 5,
+    dbp >=110 ~ 6
+  ))
+```
+
+count関数は2変数でも使えます。
+
+```{r}
+dat4 %>% 
+  count(sbp_kubun, dbp_kubun)
+```
+
+このsbp_kubunとdbp_kubunの値で大きいほうを採用すれば良いので、if_elseを利用しましょう。
+
+```{r}
+dat4 <- dat4 %>% 
+  mutate(bp_kubun = if_else(
+    sbp_kubun >= dbp_kubun, sbp_kubun, dbp_kubun
+  ))
+
+dat4 %>% 
+  count(bp_kubun, sbp_kubun, dbp_kubun)
+```
+
+きちんと狙った通りに分けられていますね?あとは、数値を因子型のラベルをあててあげれば完成です。
+
+```{r}
+bplabel <- c("至適","正常","正常高値","1度","2度","3度")
+
+dat4 <- dat4 %>% 
+ mutate(bp_kubun = factor(bp_kubun, levels = 1:6, labels=bplabel))
+
+dat4 %>% count(bp_kubun)
+View(dat4)
+```
+
+できあがりです。
+
+課題5：
+
+課題1から課題4までで作成した変数を利用して、高血圧、肥満、飲酒、喫煙のリスクの個数を計算したriskという名前の列を作成してください。
+
+(尚、ここでは、高血圧を1度から3度高血圧、肥満はBMI25以上とします)
+
+血圧のカテゴリーが、0か1になっていないためこれを変換しておきましょう。
+
+```{r}
+dat4 %>% 
+  count(bp_kubun)
+
+dat5 <- dat4 %>% 
+  mutate(risk_bp = if_else(as.numeric(bp_kubun) >= 4, 1, 0))
+
+dat5 %>% count(risk_bp, bp_kubun)
+```
+
+ちゃんと0と1で分けられていますね?後は、リスクの個数を足し合わせるだけです。一応、データを確認しておくと、
+
+```{r}
+dat5 %>% 
+  count(obese, risk_bp, alcohol, smoking)
+```
+
+です。
+
+risk列の作成は簡単ですね?
+
+```{r}
+dat5 <- dat5 %>% 
+  mutate(risk = obese + risk_bp + alcohol + smoking)
+
+dat5 %>% count(risk)
+```
+
+以上です!
+
+どうでしょうか？
+相当ややこしく感じられたかもしれませんが、ここまで学んでいただいた関数のみで、ここまでデータの加工ができます。
+
+次以降はこれらのデータの加工をより便利にしてくれる関数群を解説していきます。
+

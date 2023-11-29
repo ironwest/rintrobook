@@ -1,0 +1,25 @@
+---
+title: 関数の説明(L32)
+page-layout: full
+title-block-banner: true
+comments: false
+
+
+
+editor_options: 
+  chunk_output_
+---
+
+![](slides/slides070.jpg)
+![](slides/slides071.jpg)
+![](slides/slides072.jpg)
+![](slides/slides073.jpg)
+![](slides/slides074.jpg)
+![](slides/slides075.jpg)
+![](slides/slides076.jpg)
+![](slides/slides077.jpg)
+![](slides/slides078.jpg)
+![](slides/slides079.jpg)
+![](slides/slides080.jpg)
+![](slides/slides081.jpg)
+

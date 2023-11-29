@@ -1,0 +1,106 @@
+---
+title: 応用 全角から半角数字への変換
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+```{r}
+vec <- c("１３４．５ｍｌ投与","A薬５錠　分３")
+```
+
+日本語のデータ分析を行う場合に、避けては通れないのが、全角の数字が出現している場合の問題です。
+
+正規表現は、数字はあたるはあたります
+
+```{r}
+str_extract(vec,"\\d+")
+```
+
+また、日本語も問題なく扱えます。
+
+```{r}
+str_extract(vec,"薬")
+vec
+```
+ 
+が、
+
+```{r}
+str_extract(vec,"(\\d+\\.\\d+)(?=ｍｌ)") #X
+```
+
+これは、「.」が、全角であるために拾えません。
+
+```{r}
+str_extract(vec,"(\\d+．\\d+)(?=ｍｌ)")
+```
+
+また、
+
+```{r}
+as.numeric("５")
+```
+
+と文字列を数字に変更しようとしても、NAが帰ってくるため、全角の数字が出現している場合は半角に早期に戻しておくほうが無難です。
+
+パッケージを利用した方法等もいろいろありますがここでは自作関数を作成する方法を試してみましょう。
+
+str_replace_allはnamed vectorという、名前付きベクトルを与えてあげると複数のパターンに対して置き換えを実施してくれます。
+
+例えば、
+
+```{r}
+test1 <- c("aaa" = "bbb", "AAA" = "BBB")
+str_replace_all("aaa<<<>>>AAA", test1)
+```
+
+ということで、
+
+```{r}
+replacer <- c(
+  "１" = "1",
+  "２" = "2",
+  "３" = "3",
+  "４" = "4",
+  "５" = "5",
+  "６" = "6",
+  "７" = "7",
+  "８" = "8",
+  "９" = "9",
+  "０" = "0"
+)
+
+vec <- c("１２３","２３４","５６７","８９０")
+
+str_replace_all(vec,replacer)
+```
+
+とこんな感じで全角を置き換えることができます。この置き換え、関数化しておくと、
+
+```{r}
+num_zen_to_han <- function(vec){
+  replacer <- c(
+    "１" = "1","２" = "2","３" = "3","４" = "4",
+    "５" = "5","６" = "6","７" = "7","８" = "8",
+    "９" = "9","０" = "0", "．" = "."
+  ) 
+  
+  return(str_replace_all(vec,replacer))
+} 
+
+dat <- tibble(tgt = c("１２３","３４６.７","３４.５６３"))
+
+dat %>% 
+  mutate(han = num_zen_to_han(tgt))
+```
+
+できました!必要に応じて、実施してみてください

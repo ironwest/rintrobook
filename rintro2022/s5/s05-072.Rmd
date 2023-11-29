@@ -1,0 +1,236 @@
+---
+title: 練習問題
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE)
+```
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+ここでは、保険証番号からデータを生成するようなことを行っていきましょう。
+
+尚、ここで利用しているデータは、
+
+[https://hogehoge.tk/personal/](https://hogehoge.tk/personal/)
+
+の疑似個人情報生成サービスのデータを利用しているもので、実際データは利用していません。
+
+この練習問題では、data/join.xlsxファイルを利用します。
+
+問題1:
+
+ファイルには、
+
+* data
+* todouhuken
+* houbetu
+
+と名前の付いた3種類のシートが含まれています。
+
+それぞれ、dat, pref, houという名前をつけてインポートしてください。
+
+問題2　
+
+datデータのidコラムには7桁の数字が文字列として保存されています。
+
+(実際のものとは少し違いますが、)このidは保険証の番号で、
+
+* 最初の2桁:保険の種類
+* 次の2桁:都道府県
+* 最後の3桁:保険者番号
+
+となっています。
+
+このid列を、
+
+* 最初の2桁:保険の種類　列名:type
+* 次の2桁:都道府県　　　列名:pref　
+* 最後の3桁:保険者番号　列名:hoken
+　
+の3つの列に分割してください。
+
+問題3
+
+type列の値を利用して問題1で読み込んだhouデータと結合してください。
+
+問題4
+
+pref列の値を利用して、問題1で読み込んだprefデータと結合してください。
+
+
+
+
+
+
+
+
+
+
+問題1:ファイルには、
+
+* data
+* todouhuken
+* houbetu
+
+と名前の付いた3種類のシートが含まれています。
+
+それぞれ、dat, pref, houという名前をつけてインポートしてください。
+
+```{r}
+library(tidyverse)
+library(readxl)
+
+dat <- read_excel("data/join.xlsx",sheet="data")
+pref <- read_excel("data/join.xlsx",sheet="todouhuken")
+hou <- read_excel("data/join.xlsx",sheet="houbetu")
+```
+
+問題2　
+
+datデータのidコラムには7桁の数字が文字列として保存されています。
+
+(実際のものとは少し違いますが、)このidは保険証の番号で、
+
+* 最初の2桁:保険の種類
+* 次の2桁:都道府県
+* 最後の3桁:保険者番号
+
+となっています。
+このid列を、
+
+* 最初の2桁:保険の種類　列名:type
+* 次の2桁:都道府県　　　列名:pref　
+* 最後の3桁:保険者番号　列名:hoken
+　
+の3つの列に分割してください。
+
+
+この3つの列への分割ですが、separateを使うのであれば、
+
+```{r}
+dat2 <- dat %>% 
+  separate(id, 
+           c("type","pref","hoken"),
+           sep=c(2,4))
+dat2
+```
+
+あるいは、extractを使うのであれば、
+
+```{r}
+dat2 <- dat %>% 
+  extract(id,
+          c("type","pref","hoken"),
+          regex="(.{2})(.{2})(.{3})")
+dat2
+```
+
+となります。もちろん、mutateとstr_extractを利用してもOKです。
+
+問題3
+
+type列の値を利用して問題1で読み込んだhouデータと結合してください。
+
+```{r}
+hou
+```
+
+はこんな感じのデータです。
+
+結合したいのは法別番号とtype列の値ですね?
+
+```{r}
+dat3 <- dat2 %>% 
+  left_join(hou, by=c("type"="法別番号"))
+```
+
+問題4
+
+pref列の値を利用して、問題1で読み込んだprefデータと結合してください。
+
+こっちは、
+
+```{r}
+dat3
+pref
+
+dat3 %>% 
+  left_join(pref, by=c("pref"="id"))
+```
+とやりませんでしたか？
+
+エラーが生じています。
+
+実は、結合するためのカギとなる、byに与える列の型が一致している必要があります。
+
+```{r}
+str(dat3) #prefは文字列型
+str(pref) #idは数値型
+```
+
+ということで変換しましょう。
+
+どっちをどっちに変換するかなのですが、今回の場合は、
+
+```{r}
+dat4 <- dat3 %>% 
+  mutate(pref = as.numeric(pref))
+
+dat4 <- dat4 %>% 
+  left_join(pref, by=c("pref"="id"))
+
+dat4
+```
+
+とした場合楽です。
+
+実は、dat3のpref列、1桁の数字が、01 02 03 のように0始まりで必ず2桁になるようになっているため、
+
+```{r}
+pref2 <- pref %>% 
+  mutate(id = as.character(id))
+
+dat4_ng <- dat3 %>% 
+  left_join(pref2, by=c("pref"="id"))
+
+View(dat4_ng)
+```
+
+06と6が違う文字列であると認識されてところどころ欠損が発生してしまいます。こういう場合は、
+
+```{r}
+formatC(6,width=2,flag="0")
+formatC(6,width=4,flag="0")
+```
+
+で幅を指定した文字列で桁が足らない場合に0で埋めるような関数があるので、as.characterではなく、
+
+```{r}
+pref3 <- pref %>% 
+  mutate(id = formatC(id, width=2, flag="0"))
+
+dat4_ok <- dat3 %>% 
+  left_join(pref3, by=c("pref"="id"))
+
+View(dat4_ok)
+```
+
+いけました！
+
+これでtypeとpref列は必要ないので、
+
+```{r}
+dat4 %>% 
+  select(!c(type, pref))
+```
+
+が完成形となります。
+
+お疲れさまでした!
+これでセクション5の解説部分、すべて終了です。残りは、練習用に準備したデータを加工してTidyなデータにしていくところを、やっていってみましょう。

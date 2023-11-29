@@ -1,0 +1,35 @@
+---
+title: パスとディレクトリについて(L38)
+title-block-banner: true
+filters:
+  - lightbox
+lightbox: 
+  match: auto
+---
+
+
+::: {layout-ncol=3}
+![](slides/slides010.jpg){group="slides" }
+
+![](slides/slides011.jpg){group="slides" }
+
+![](slides/slides012.jpg){group="slides" }
+
+![](slides/slides013.jpg){group="slides" }
+
+![](slides/slides014.jpg){group="slides" }
+
+![](slides/slides015.jpg){group="slides" }
+
+![](slides/slides016.jpg){group="slides" }
+
+![](slides/slides017.jpg){group="slides" }
+
+![](slides/slides018.jpg){group="slides" }
+
+![](slides/slides019.jpg){group="slides" }
+
+![](slides/slides020.jpg){group="slides" }
+
+![](slides/slides021.jpg){group="slides" }
+:::

@@ -1,0 +1,20 @@
+{
+  "hash": "f251d0af8faa211390b308ff21841f80",
+  "result": {
+    "markdown": "---\ntitle: ベクトルとロジカル\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n:::\n\n\n\n\n\nベクトルも比較オペレーターでLogicalの形で表せます\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec <- c(1:20)\nvec\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20\n```\n:::\n:::\n\n\n\nこの1から20までの数字で、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec == 1\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n```\n:::\n:::\n\n\n\nとすると、vecの中で1が該当する部分がTRUEになり、それ以外はFALSEです。これは、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n1 == vec\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n```\n:::\n:::\n\n\n\n逆でもなりたちます。\n\n＞なども同じような理屈で、TRUE、FALSEを返してくれます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec > 10\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE\n[13]  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE\n```\n:::\n\n```{.r .cell-code}\nvec < 5\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n[13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE\n```\n:::\n:::\n\n\nということで、比較オペレーターを用いると、ベクトルの長さと同じ長さのロジカルベクトルが返ってきます。\n\n大抵のRコースで最初に学ぶことをここで紹介します。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20\n```\n:::\n:::\n\n\n\nから特定の値を抜き出したい場合には、<ベクトル>[<Logicalベクトル>]という表現でできます。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec <- c(1:5)\nvec\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4 5\n```\n:::\n\n```{.r .cell-code}\nvec[c(TRUE, TRUE, TRUE, TRUE, TRUE)]\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4 5\n```\n:::\n\n```{.r .cell-code}\nvec[c(TRUE, TRUE, TRUE, TRUE, FALSE)]\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 3 4\n```\n:::\n\n```{.r .cell-code}\nvec[c(TRUE, TRUE, FALSE, TRUE, FALSE)]\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 1 2 4\n```\n:::\n\n```{.r .cell-code}\nvec[c(F,T,F,T,F)]\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 2 4\n```\n:::\n:::\n\n\n\nということは、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec > 3\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE FALSE FALSE  TRUE  TRUE\n```\n:::\n:::\n\n\n\nがロジカルベクトルを返すことを利用してあげれば、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nvec[vec > 3]\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 4 5\n```\n:::\n:::\n\n\n\nという感じでベクトルから任意の比較オペレーターを利用した条件でベクトルの要素を取り出すことができます。\n\nこの、ベクトル[ロジカルベクトル]は、Rで要素を取り出すときの基本的な書き方になるので、覚えておいていただくと役にたつと思います。(ただ、Tidyverseでデータ処理をする場合はそれほど頻出しません。)\n\n次はロジカルオペレーターと呼ばれるものを紹介します。\n\n",
+    "supporting": [
+      "s05-021_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

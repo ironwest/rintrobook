@@ -1,0 +1,55 @@
+---
+title: 実践 基本
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+
+```{r, message = FALSE}
+library(tidyverse)
+```
+
+それでは、まずpivot_longerから練習してみましょう。
+
+```{r}
+yoko <- tibble(
+  city = c("札幌","東京","那覇"),
+  `2018-04-01` = c("晴れ", "雨", "曇り"),
+  `2018-04-02` = c("雨", "雨", "晴れ"),
+  `2018-04-03` = c("晴れ", "雨", "曇り"),
+)
+
+yoko
+```
+
+この表はスライドの再現です。
+
+人には見やすいですが、tidyなデータではないということはお判りでしょうか？
+
+スライドでの解説通りにpivot_longerを利用してみると、
+
+```{r}
+tate <- yoko %>% 
+  pivot_longer(
+    cols = !city,
+    names_to = "date",
+    values_to = "tenki"
+  )
+
+tate
+```
+
+見事、縦方向のデータにかわりました。この縦方向のデータ、今度はpivot_widerでもとにもどしてみると、
+
+```{r}
+tate %>% 
+  pivot_wider(
+    id_cols = city,
+    names_from = date,
+    values_from = tenki
+  )
+```
+
+もどりましたね?
+

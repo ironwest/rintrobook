@@ -1,0 +1,31 @@
+---
+title: 　Parseとは(L52)
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE, include = TRUE)
+```
+
+parseとは、プログラミング言語であつかえる形にデータを変換するという意味がある英単語です。
+
+```{r}
+parse_number(c("a",1,2,3))
+
+parse_character(c("a","b","c",1,2,3))
+```
+
+ベクトルは基本的には同じ型である必要がありました
+
+```{r}
+ c(1,2,3,"a")
+```
+
+parse_**は、読み込んだ列に対して、型変換を行う関数です。
+
+通常、read_***関数が自動で処理をしてくれるので、意識しなくてもよいですが、自動処理に頼り切っていると落とし穴があります。
+
+次の動画から、うまくインポートできない例を見ていきます
+

@@ -1,0 +1,19 @@
+---
+title: Markdownとは?
+page-layout: full
+title-block-banner: true
+comments: false
+filters:
+  - lightbox
+lightbox:
+  match: auto
+---
+
+::: {layout-ncol=3}
+![](slides/s7/slides006.jpg){group="slides"}
+
+![](slides/s7/slides007.jpg){group="slides"}
+
+![](slides/s7/slides008.jpg){group="slides"}
+:::
+

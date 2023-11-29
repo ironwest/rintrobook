@@ -1,0 +1,121 @@
+---
+title: 看護記録もどきの加工2
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```{r, message = FALSE}
+library(tidyverse)
+
+{
+  kiroku7 <- readxl::read_excel("data/看護記録もどき.xlsx") %>% 
+    mutate(name = 
+            if_else(
+              str_detect(`患者名`,"^\\s"), 
+              NA_character_,
+              `患者名`)) %>%
+    fill(name) %>% 
+    select(name, sokutei = `患者名`, everything()) %>% 
+    mutate(sokutei = if_else(
+      str_detect(sokutei,"^\\s"),
+      sokutei, "admission"
+    )) %>% 
+    mutate(sokutei = str_trim(sokutei)) %>% 
+    pivot_longer(cols = !c(name,sokutei),
+                names_to = "date",
+                values_to = "val") %>%
+    filter(!is.na(val))
+}
+```
+
+例えば処理例として、
+
+```{r}
+wide <- kiroku7 %>% 
+  pivot_wider(
+    id_cols = c(name, date),
+    names_from = sokutei,
+    values_from = val
+  ) %>% 
+  arrange(name, date)
+```
+
+で、sokutei項目毎の列を入れたwideデータに変換して、
+
+```{r}
+View(wide)
+
+wide2 <- wide %>% 
+  rename(bp = `血圧`, pulse = `脈拍`, rr = `呼吸回数`, meal = `食事`)
+```
+
+変数名を英語に変えておいて、
+
+```{r}
+wide2 %>% 
+  select(bp) %>% 
+  separate(bp,c("am","pm"),sep="-", remove=FALSE) %>% 
+  separate(am,c("am_sbp","am_dbp"), sep="/",remove=FALSE) %>% 
+  separate(pm,c("pm_sbp","pm_dbp"), sep="/",remove=FALSE) %>%
+  mutate(
+    am_sbp = str_trim(am_sbp) %>% na_if(""),
+    pm_sbp = na_if(pm_sbp,"")
+  )
+```
+
+こんな感じで、bp列を午前と午後のSBP、DBP、計4つの列に分割します。
+
+同じように、脈拍、
+
+```{r}
+wide2 %>% 
+  select(pulse) %>% 
+  separate(pulse,c("am_pulse","pm_pulse"), remove=FALSE) %>% 
+  mutate(pm_pulse = na_if(pm_pulse,""))
+```
+
+呼吸回数
+
+```{r}
+wide2 %>% 
+  select(rr) %>% 
+  separate(rr,c("am_rr","pm_rr"),
+           sep="-",remove=FALSE) %>% 
+  mutate(
+    am_rr = str_replace(am_rr,"回",""),
+    pm_rr = 
+      str_replace(pm_rr,"回","") %>% 
+      str_trim() %>% 
+      na_if("")
+  )
+```
+
+食事
+
+```{r}
+wide2 %>% 
+  select(meal) %>% 
+  separate(meal, c("morning_meal","lunch_meal","dinner_meal"),
+           sep="-", remove=FALSE) %>% 
+  mutate(
+    morning_meal = 
+      str_remove(morning_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  ) %>% 
+  mutate(
+    lunch_meal = str_remove(lunch_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  ) %>% 
+  mutate(
+    dinner_meal = str_remove(dinner_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  )
+```
+
+も分割することが可能です。
+次の動画で、これらをまとめて処理をしていきます。
+

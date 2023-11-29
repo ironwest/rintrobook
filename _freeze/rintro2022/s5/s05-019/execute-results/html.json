@@ -1,0 +1,14 @@
+{
+  "hash": "8f6421323d281dcc9c860b9419216a00",
+  "result": {
+    "markdown": "---\ntitle: 「==」オペレーター\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nlibrary(tidyverse)\n```\n:::\n\n\n\nこのLogicalがよく出現するのは、「結果」をRの中で表現する場合です\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n5 == 5\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n\n```{.r .cell-code}\n5 == 3\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n:::\n\n\n\nのように==記号を使うことで、==の左右の値が一致しているかを確認することができるのですが、\n\nその結果が一致していればTRUE、一致していなければFALSEと返っています。\n\nこの==記号、文字列でも利用できて、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n\"ごはんが美味しい\" == \"ごはんが美味しい\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n\n```{.r .cell-code}\n\"ごはんが美味しい\" == \"味噌汁が美味しい\"\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] FALSE\n```\n:::\n:::\n\n\n\nというように左右の文字列を比較することもできます。\n\n「=」が2つなのには注意をしておいてください。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n340 = 340\n```\n\n::: {.cell-output .cell-output-error}\n```\nError in 340 = 340: invalid (do_set) left-hand side to assignment\n```\n:::\n:::\n\n\n\n「=」 は　 「<-」 と同じ意味をもっていて、上の例では、340という変数に340を代入しようとしたものの、数に別の意味は持たせられない！とおこられました。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na <- 10\na\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 10\n```\n:::\n\n```{.r .cell-code}\nb = 10\nb\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 10\n```\n:::\n:::\n\n\n\nただ、＝での代入はできるのですが非推奨とされており、<-を使うことが推奨されています。なぜかはわかりません。あと、->で右方向に代入することも可能ですが、こっちもあんまり見る表記ではありません。\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\n123 -> c\nc\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 123\n```\n:::\n:::\n\n\n\nこの==、直接的に書いたら、何を当たり前のという気持ちになるのですが、複雑な計算をやった後、その結果「a」、が10になるはずとわかっている場合に、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\na == 10\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] TRUE\n```\n:::\n:::\n\n\n\nで真偽を確かめるというような使い方もできます。あと、タイトルでも記載していますが、==のように左右を比較する記号のことを比較オペレーターと呼びます。次はその他の比較オペレーターの話です。\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

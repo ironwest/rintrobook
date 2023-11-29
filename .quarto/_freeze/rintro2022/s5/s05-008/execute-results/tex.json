@@ -1,0 +1,20 @@
+{
+  "hash": "7448cc0875d4bc5b0a9c0968345c8234",
+  "result": {
+    "markdown": "---\ntitle: 関数の作り方(演習問題と解答)\npage-layout: full\ntitle-block-banner: true\ncomments: false\n---\n\n\n\nでは、function関数を利用して関数を作成する演習を行います。\n\n例題1:\n\n数値を二つ受け取って、その数値を足し合わせて返す関数を作成してみましょう。関数の名前はtasizanとしてください。\n\n例題1の解答:\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ntasizan <- function(num1,num2){\n  return(num1 + num2)\n}\n```\n:::\n\n\n\nひとつ前の動画と同じですね。アーギュメントの数はここでは二つにしてあります。\n\nそれでは、同じように、hikizan, kakezan関数を作成してみてください。動画をとめてどうぞ。\n\nできましたか?\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nhikizan <- function(num1,num2){\n  return(num1 - num2)\n}\n\nhikizan(100,30)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 70\n```\n:::\n\n```{.r .cell-code}\nkakezan <- function(num1, num2){\n  return(num1 * num2)\n}\n\nkakezan(3,5)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 15\n```\n:::\n:::\n\n\n\nそれほど複雑ではありませんね?\n\nあと、書き方としては、1行で終わるような単純な関数の場合は、\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\ntasu <- function(n1,n2) n1 + n2\n\ntasu(1,2)\n```\n\n::: {.cell-output .cell-output-stdout}\n```\n[1] 3\n```\n:::\n:::\n\n\n\nと\n\n<名前> <- function(<アーギュメント>)　<処理>\n\nという風に書いても大丈夫です。\n\n以上、関数作成の基礎の基礎でした。\n次はこのセクションでtidyデータに次いで大切な概念である、パイプ関数について解説を行います。\n",
+    "supporting": [
+      "s05-008_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {
+      "knitr": [
+        "{\"type\":\"list\",\"attributes\":{},\"value\":[]}"
+      ]
+    },
+    "preserve": null,
+    "postProcess": false
+  }
+}

@@ -1,0 +1,202 @@
+---
+title: 看護記録もどきの加工3
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+```
+library(tidyverse)
+
+{
+
+  kiroku  <- readxl::read_excel("data/看護記録もどき.xlsx")
+  kiroku7 <- kiroku %>% 
+    mutate(name = 
+            if_else(
+              str_detect(`患者名`,"^\\s"), 
+              NA_character_,
+              `患者名`)) %>%
+    fill(name) %>% 
+    select(name, sokutei = `患者名`, everything()) %>% 
+    mutate(sokutei = if_else(
+      str_detect(sokutei,"^\\s"),
+      sokutei, "admission"
+    )) %>% 
+    mutate(sokutei = str_trim(sokutei)) %>% 
+    pivot_longer(cols = !c(name,sokutei),
+                names_to = "date",
+                values_to = "val") %>%
+    filter(!is.na(val))
+
+  wide <- kiroku7 %>% 
+    pivot_wider(
+      id_cols = c(name, date),
+      names_from = sokutei,
+      values_from = val
+    ) %>% 
+    arrange(name, date)
+
+  wide2 <- wide %>% 
+    rename(bp = `血圧`, pulse = `脈拍`, rr = `呼吸回数`, meal = `食事`)
+
+  
+}
+```
+
+まとめて処理をしていきましょう。、
+
+```
+wide3 <- wide2 %>% 
+  #血圧
+  separate(bp,c("am","pm"),sep="-") %>% 
+  separate(am,c("am_sbp","am_dbp"), sep="/") %>% 
+  separate(pm,c("pm_sbp","pm_dbp"), sep="/") %>%
+  mutate(
+    am_sbp = str_trim(am_sbp) %>% na_if(""),
+    pm_sbp = na_if(pm_sbp,""),
+  ) %>% 
+  
+  #脈拍
+  separate(pulse,c("am_pulse","pm_pulse")) %>% 
+  mutate(pm_pulse = na_if(pm_pulse,"")) %>% 
+  
+  #呼吸回数
+  separate(rr,c("am_rr","pm_rr"),sep="-") %>% 
+  mutate(
+    am_rr = str_replace(am_rr,"回",""),
+    pm_rr = 
+      str_replace(pm_rr,"回","") %>% 
+      str_trim() %>% 
+      na_if("")
+  ) %>% 
+
+  #食事
+  separate(meal, c("morning_meal","lunch_meal","dinner_meal"),
+           sep="-") %>% 
+  mutate(
+    morning_meal = 
+      str_remove(morning_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  ) %>% 
+  mutate(
+    lunch_meal = str_remove(lunch_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  ) %>% 
+  mutate(
+    dinner_meal = str_remove(dinner_meal,"割") %>% 
+      str_trim() %>% 
+      na_if("")
+  )
+
+View(wide3)
+```
+
+これで全部わけることができました。
+
+ただし、amとpmがデータなので、これは縦にしておきましょう
+
+```
+long <- wide3 %>% 
+  pivot_longer(cols=!c(name,date,admission),
+               names_to = c("timing","sokutei"),
+               values_to = "val",
+               names_sep = "_") 
+```
+
+valの値、数値型にしておきましょうただし、
+
+```
+long$val
+as.numeric(long$val)
+```
+
+何か、おかしい変換が起こっているみたいなので、
+
+```
+convert <- long %>% 
+  select(val) %>% 
+  mutate(val2 = as.numeric(val)) 
+
+ng <- convert %>% filter(!is.na(val) & is.na(val2))
+ng
+```
+
+valは欠損していないのに、val2は欠損しているものを眺めると、こんな感じです。これだけだとなぜかわからないので、
+
+```
+ng$val
+```
+
+こうすると、スペースが入っているように見えます。
+
+```
+long %>% 
+  select(val) %>% 
+  mutate(val2 = str_trim(val) %>% as.numeric()) 
+```
+
+str_trimを変換前に挟むと警告はでてきませんでした
+
+```
+as.numeric("　16") #全角スペース
+```
+
+が入っているとうまく変換できないみたいです。
+
+ということで、
+
+```
+long
+
+long2 <- long %>% 
+  mutate(val = str_trim(val) %>% as.numeric())
+
+long2
+```
+
+後は、
+
+```
+wide <- long2 %>% 
+  pivot_wider(
+    id_cols = c(name,date,admission, timing),
+    names_from = sokutei,
+    values_from = val
+  )
+
+View(wide)
+
+meal_data <- wide %>% 
+  select(name,date,admission,timing,meal) %>% 
+  filter(!is.na(meal))
+
+sokutei_data <- wide %>% 
+  select(name, date, admission, timing, sbp, 
+         dbp, pulse, rr) %>% 
+  filter( str_detect(timing, "am|pm"))
+```
+
+できました。
+
+とりあえず、こんな感じで加工できればセクション5の関数群は使いこなせていると思います！
+
+ここまでで、こんなデータが、
+
+```
+View(kiroku)
+```
+
+こうなりました!
+
+```
+View(sokutei_data)
+View(meal_data)
+```
+
+いかがでしょうか?
+
+次は実際の厚生労働省のデータを加工してみましょう。
+
