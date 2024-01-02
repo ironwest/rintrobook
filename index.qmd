@@ -2,6 +2,7 @@
 
 Udemyコースのテキスト版です。コースでの説明で利用したスライドの内容を含めて、復習できるようにしてあります。もし興味を持っていただけたなら、受講いただけますと幸いです。
 
-尚、サポートサイトは、[https://bunseki-data.com/r-onlinecourse/](https://bunseki-data.com/r-onlinecourse/)にありますので、こちらもよろしくお願いします。オンラインコースの割引クーポンなどもあります。
+コースのURLは、[こちら](https://www.udemy.com/course/data-analysis-by-r-for-medical-profession/?referralCode=CDDBB546898AC0890672)です。割引クーポンは[サポートサイト](https://bunseki-data.com/r-onlinecourse/)に掲載しております。
+
 
 
